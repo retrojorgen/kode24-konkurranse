@@ -1,0 +1,19 @@
+{
+  "name": "kode24",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:retrojorgen/kode24.git",
+  "author": "Jørgen Jacobsen <jorgen.jacobsen@aller.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "mailchimp-api-v3": "^1.12.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=dev node server.js",
+    "heroku-postbuild": "cd client && yarn && yarn run build"
+  }
+}
