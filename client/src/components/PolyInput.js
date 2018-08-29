@@ -29,7 +29,7 @@ const PolyInputContainer = styled.span`
   padding-bottom: 10px;
   .input {
     position: relative;
-    
+    white-space: pre; 
     &:after {
       content: "";
       position: absolute;
@@ -61,6 +61,9 @@ class PolyInput extends Component {
   }
 
   addKey (key) {
+    if(key === " ") {
+      key = '\u0020';
+    }
     let characters = this.state.characters;
     if(characters.length < 100) {
       characters.push(key);
@@ -104,8 +107,10 @@ class PolyInput extends Component {
             this.removeLastCharacter();
             break;        
         default:
-            if(event.key.length < 2) 
-              this.addKey(event.key.toUpperCase());
+            if(event.key.length < 2) {
+              console.log('adding key', key);
+              this.addKey(key.toUpperCase());
+            }
             break;
     }
   }
@@ -118,7 +123,7 @@ class PolyInput extends Component {
     let typed = this.state.characters;
     return (
       <PolyInputContainer>
-        <span className="input">{typed}</span>
+        <span className="input">{typed.join('')}</span>
       </PolyInputContainer>
     )
   }

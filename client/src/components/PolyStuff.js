@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PolyInput from './PolyInput';
+import { getHelp, getListFromDirectory, checkPath } from '../api/FileSystem';
 
 const PolyWrapper = styled.div`
   position: absolute;
@@ -15,6 +16,7 @@ const PolyWrapper = styled.div`
   font-size: 20px;
   text-shadow: 0 1px 2px rgba(102, 0, 204, 0.6);
   overflow: hidden;
+  text-transform: uppercase;
   p {
     margin: 0;
     text-transform: uppercase;
@@ -51,11 +53,17 @@ class PolyStuff extends Component {
 
 
   state = {
-    lines: []
+    lines: [],
+    path: ["home"],
+    lastCommand: ""
   };
 
+  getPathString () {
+    let pathString = this.state.path.join("/") + "/";
+    return pathString;
+  }
+
   addLines (newLines) {
-    console.log('adding lines', newLines);
     let lines = this.state.lines;
     lines = lines.concat(newLines);
     this.setState(
@@ -65,8 +73,21 @@ class PolyStuff extends Component {
     )
   }
 
+  clearLines () {
+    this.setState(
+      {
+        lines: []
+      }
+    )
+  }
+
+  _getHelp() {
+    getHelp((response) => {
+      this.addLines(response);
+    })
+  }
+
   componentDidMount () {
-    console.log('hest');
     this.addLines([
           {"type": "regular", content: "╔═ SZTAKI PolyTechnica ═╗"},
           {"type": "regular", content: "║........Szervusz!.......║"},
@@ -82,36 +103,109 @@ class PolyStuff extends Component {
     ])
   }
 
-  parseLine (line) {
-    let lines = [{
-      type: "command",
-      content: line
-    }];
-    lines.push({
-      type: "error",
-      content: "These lines can no be parseables"
+  addErrorLine (errorMessage) {
+    this.addLines([
+      {
+        type: "error",
+        content: errorMessage
+      }
+    ]);
+  }
+
+  setPath (path) {
+    this.setState({
+      path: path
     });
-    this.addLines(lines);
+    if(!this.state.path.length) {
+      this.setState({
+        path: ["home"]
+      })
+    }
+  }
+
+  changePath (path) {
+    checkPath(path, (response) => {
+      this.setPath(response.path);
+    }, () => {
+      this.addErrorLine("No directory of this exists");
+    })
+  }
+
+  _getListFromDirectory () {
+    getListFromDirectory(this.getPathString(), (response) => {
+      this.addLines(response);
+    })
+  }
+
+  _parsePathRequest (path) {
+    if(path === "..") {
+      if(this.state.path.length <= 1) {
+        this.addErrorLine("Stay in homes please");
+      } else {
+        let newPath = this.state.path.slice(0);
+        newPath.pop();
+        this.setState({path: newPath});
+      }
+    } else {
+      this.changePath(this.getPathString() + path);
+    }
+  }
+
+  parseLine (line) {
+
+    this.addLines({
+      type: "command",
+      path: this.getPathString,
+      content: line
+    });
+
+
+    line = line.join('');
+    let lineContent = line.split(" ");
+    if(lineContent.length > 2) {
+      this.addErrorLine("Too many commands to understand");
+      return;  
+    }
+
+    switch (lineContent[0]) {
+      case "HELP":
+        this._getHelp();
+        break;
+      case "CLEAR":
+        this.clearLines();
+        break;
+      case "LIST":
+        this._getListFromDirectory();
+        break;
+      case "CD":
+        if(lineContent.length > 1)
+          this._parsePathRequest(lineContent[1]);
+        else {
+          this.addErrorLine("Can not just simply CD");
+        }
+        break;         
+      default: break;  
+    } 
   }
 
   render () {
-    console.log('lines', this.state.lines);
     let lines = this.state.lines;
+    let pathString = this.getPathString();
     return (
       <PolyWrapper>
         <PolyLines>
           {lines.map((line, index) => {
             if(line.type === "command") 
-              return (<p key={index}>☭/>&nbsp;{line.content}</p>)
+              return (<p key={index}>☭/{line.path}>&nbsp;{line.content}</p>)
             if(line.type === "error")
-              return ( <p key={index}>**&nbsp;{line.content}&nbsp;**</p>)
+              return ( <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>)
               if(line.type === "regular")
               return ( <p key={index}>{line.content}</p>)  
             return (<p key={index}></p>);  
           })}
         </PolyLines>
         <PolyInputWrapper>
-          <span>☭/>&nbsp;</span><PolyInput sendToParse={this.parseLine.bind(this)}/>
+          <span>☭/{pathString}>&nbsp;</span><PolyInput sendToParse={this.parseLine.bind(this)}/>
         </PolyInputWrapper>
       </PolyWrapper>
     )
