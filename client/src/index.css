@@ -10,7 +10,8 @@ body {
   font-family: 'VT323', monospace;
   height: 100%;
   width: 100%;
-  color: white;
+  color: #73e36d;
+  text-shadow: 0 0 20px #1d6119;
   background-color: #262822;
 }
 

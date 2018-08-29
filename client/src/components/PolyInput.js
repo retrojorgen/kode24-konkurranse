@@ -22,7 +22,7 @@ const blinking = keyframes`
   }
 `;
 
-const PolyInputContainer = styled.div`
+const PolyInputContainer = styled.span`
   bakground-color: transparent;
   border: 0;
   padding-top: 10px;
@@ -34,7 +34,7 @@ const PolyInputContainer = styled.div`
       content: "";
       position: absolute;
       top: 3px;
-      right: -0.7em;
+      right: -0.4em;
       width: 10px;
       height: 16px;
       background-color: white;
@@ -118,7 +118,7 @@ class PolyInput extends Component {
     let typed = this.state.characters;
     return (
       <PolyInputContainer>
-        <span>☭/&nbsp;</span><span className="input">{typed}</span>
+        <span className="input">{typed}</span>
       </PolyInputContainer>
     )
   }
