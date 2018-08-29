@@ -96,19 +96,15 @@ class PolyInput extends Component {
     switch( keyCode ) {
         case ENTER_KEY:
             this.sendToParse();
-            console.log('enter');
             break;
-        case BACK_KEY:
-            console.log('Back');
+        case BACK_KEY:;
             this.removeLastCharacter();
             break;
         case BACK_KEY_ALTERNATIVE:
-            console.log('Back');
             this.removeLastCharacter();
             break;        
         default:
             if(event.key.length < 2) {
-              console.log('adding key', key);
               this.addKey(key.toUpperCase());
             }
             break;
