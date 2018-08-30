@@ -13,7 +13,7 @@ const getHelp = (success, fail) => {
 }
 
 const getListFromDirectory = (path, success, fail) => {
-    fetch('/api/filesystem/' + path + "?command=list", {
+    fetch(('/api/filesystem/' + path + "?command=list").toLowerCase(), {
         method: 'get',
         headers:{
             'Content-Type': 'application/json'
@@ -25,6 +25,25 @@ const getListFromDirectory = (path, success, fail) => {
         success(response);
     });
   }
+const getContentsOfFile = (path, file, success, fail) => {
+    fetch(('/api/filesystem/' + path + "?command=print&file=" + file).toLowerCase(), {
+        method: 'get',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('404');
+        }
+      })
+    .then(response => {
+        success(response);
+    })
+    .catch(error => fail(error));
+}
 
 const checkPath = (path, success, fail) => {
     fetch(('/api/filesystem/' + path).toLowerCase(), {
@@ -46,4 +65,4 @@ const checkPath = (path, success, fail) => {
     .catch(error => fail(error));
 }  
 
-export { getHelp, getListFromDirectory, checkPath };
+export { getHelp, getListFromDirectory, checkPath, getContentsOfFile };

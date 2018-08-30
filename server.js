@@ -13,6 +13,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+function getFileContents (path, file) {
+  if(files[path] && files[path][file]) {
+    return files[path][file];
+  }
+    return false;
+}
+
 // Put all API endpoints under '/api'
 app.get('/api/test', (req, res) => {
   res.json({title: "kode24"});
@@ -43,9 +50,7 @@ app.get('/api/help', (req, res) => {
       {type: "regular", content: "* LIST - LIST THE CONTENTS OF SELF"},
       {type: "regular", content: "* CD %DIRECTORY% - ENTER MY DIRECTORIES"},
       {type: "regular", content: "* CD .. - MOVE UP TO DIRECTORY"},
-      {type: "regular", content: "* PRINT %FILE% - OUTPUT CONTENT OF THE FILES"},
-      {type: "regular", content: "* CONTACT %FILE%  - SPECIAL VIEW FOR .CT FILES"},
-      {type: "regular", content: "* PHOTO %FILE%  - SPECIAL VIEW FOR .PHOTO FILES"},
+      {type: "regular", content: "* PRINT %FILE% - OUTPUT CONTENT OF THE FILES, TO SCREEN AND OFFICE PRINTER"},
       {type: "regular", content: "* RUN %FILE%  - RUN .HU EXECUTABLE FILES"},
       {type: "regular", content: "* HELP - GET HIELP"}
     ]
@@ -113,13 +118,28 @@ app.get('/api/filesystem/home/documents', (req, res) => {
 });
 
 app.get('/api/filesystem/home/contacts', (req, res) => {
+  if(req.query.command)
+    req.query.command = req.query.command.toLowerCase();
   switch (req.query.command) {
     case "list":
       res.json([
         {type: "regular", content: "Total 1"},
-        {type: "regular", content: "../"}
+        {type: "regular", content: "../"},
+        {type: "regular", content: "marco.ct"},
+        {type: "regular", content: "mother.ct"},
+        {type: "regular", content: "luca.ct"},
+        {type: "regular", content: "ripak.ct"},
       ]);
       break;
+    case "print":
+      if(req.query.file && getFileContents("contacts", req.query.file)) {
+        console.log('getting file', getFileContents("contacts", req.query.file));
+        res.json(getFileContents("contacts", req.query.file));
+      } else {
+        res.status(401).json({});
+      }
+      break;
+
     default:
       res.json(
         {
@@ -139,7 +159,7 @@ app.get('/api/filesystem/home/www/', (req, res) => {
         {type: "regular", content: "Total 2"},
         {type: "regular", content: "../"},
         {type: "regular", content: "KODE24/"},
-        {type: "regular", content: "DATE_MY_THIRD_COUSIN/"},
+        {type: "regular", content: "family_dating/"},
       ]);
       break;
     default:
@@ -153,7 +173,8 @@ app.get('/api/filesystem/home/www/', (req, res) => {
 });
 
 app.get('/api/filesystem/home/www/kode24/', (req, res) => {
-
+  if(req.query.command)
+    req.query.command = req.query.command.toLowerCase();
   switch (req.query.command) {
     case "list":
       res.json([
@@ -161,6 +182,15 @@ app.get('/api/filesystem/home/www/kode24/', (req, res) => {
         {type: "regular", content: "../"},
         {type: "regular", content: "INDEX.HTML"},
       ]);
+      break;
+    case "print":
+      console.log('printing');
+      if(req.query.file && getFileContents("kode24", req.query.file)) {
+        console.log('getting file', getFileContents("kode24", req.query.file));
+        res.json(getFileContents("kode24", req.query.file));
+      } else {
+        res.status(401).json({});
+      }
       break;
     default:
       res.json(
@@ -172,8 +202,9 @@ app.get('/api/filesystem/home/www/kode24/', (req, res) => {
   }
 });
 
-app.get('/api/filesystem/home/www/date_my_third_cousin/', (req, res) => {
-
+app.get('/api/filesystem/home/www/family_dating/', (req, res) => {
+  if(req.query.command)
+    req.query.command = req.query.command.toLowerCase();
   switch (req.query.command) {
     case "list":
       res.json([
@@ -182,10 +213,19 @@ app.get('/api/filesystem/home/www/date_my_third_cousin/', (req, res) => {
         {type: "regular", content: "INDEX.HTML"},
       ]);
       break;
+    case "print":
+      console.log('printing');
+      if(req.query.file && getFileContents("family_dating", req.query.file)) {
+        console.log('getting file', getFileContents("family_dating", req.query.file));
+        res.json(getFileContents("family_dating", req.query.file));
+      } else {
+        res.status(401).json({});
+      }
+      break;  
     default:
       res.json(
         {
-          path: ["home","www", "date_my_third_cousin"]
+          path: ["home","www", "family_dating"]
         }
       );
       break;

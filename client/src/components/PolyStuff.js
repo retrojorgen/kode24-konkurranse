@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PolyInput from './PolyInput';
-import { getHelp, getListFromDirectory, checkPath } from '../api/FileSystem';
+import { getHelp, getListFromDirectory, checkPath, getContentsOfFile } from '../api/FileSystem';
 
 const PolyWrapper = styled.div`
   position: absolute;
@@ -17,6 +17,13 @@ const PolyWrapper = styled.div`
   text-shadow: 0 1px 2px rgba(102, 0, 204, 0.6);
   overflow: hidden;
   text-transform: uppercase;
+  .photo {
+    img {
+      width: 200px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }
   p {
     margin: 0;
     text-transform: uppercase;
@@ -59,7 +66,9 @@ class PolyStuff extends Component {
   };
 
   getPathString () {
+    
     let pathString = this.state.path.join("/") + "/";
+    console.log(this.state.path, pathString);
     return pathString;
   }
 
@@ -123,6 +132,7 @@ class PolyStuff extends Component {
     }
   }
 
+  
   changePath (path) {
     checkPath(path, (response) => {
       this.setPath(response.path);
@@ -131,9 +141,18 @@ class PolyStuff extends Component {
     })
   }
 
+  
   _getListFromDirectory () {
     getListFromDirectory(this.getPathString(), (response) => {
       this.addLines(response);
+    })
+  }
+
+  _getContentsOfFile (file) {
+    getContentsOfFile(this.getPathString(), file, (response) => {
+      this.addLines(response);
+    }, () => {
+      this.addErrorLine("File not to be found");
     })
   }
 
@@ -155,7 +174,7 @@ class PolyStuff extends Component {
 
     this.addLines({
       type: "command",
-      path: this.getPathString,
+      path: this.getPathString(),
       content: line
     });
 
@@ -177,6 +196,14 @@ class PolyStuff extends Component {
       case "LIST":
         this._getListFromDirectory();
         break;
+      case "PRINT":
+        
+        if(lineContent.length > 1)
+          this._getContentsOfFile(lineContent[1]);
+        else {
+          this.addErrorLine("Can not just simply PRINT");
+        }
+        break;  
       case "CD":
         if(lineContent.length > 1)
           this._parsePathRequest(lineContent[1]);
@@ -191,6 +218,7 @@ class PolyStuff extends Component {
   render () {
     let lines = this.state.lines;
     let pathString = this.getPathString();
+    console.log('pathstring is', pathString);
     return (
       <PolyWrapper>
         <PolyLines>
@@ -199,8 +227,10 @@ class PolyStuff extends Component {
               return (<p key={index}>☭/{line.path}>&nbsp;{line.content}</p>)
             if(line.type === "error")
               return ( <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>)
-              if(line.type === "regular")
+            if(line.type === "regular")
               return ( <p key={index}>{line.content}</p>)  
+            if(line.type === "photo")
+              return ( <div key={index} className="photo"><img src={"/images/" + line.content} /></div>)    
             return (<p key={index}></p>);  
           })}
         </PolyLines>
