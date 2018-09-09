@@ -13,7 +13,7 @@ const getHelp = (success, fail) => {
 }
 
 const getListFromDirectory = (path, success, fail) => {
-    fetch(('/api/filesystem/' + path + "?command=list").toLowerCase(), {
+    fetch(('/api/filesystem/' + path + "?command=dir").toLowerCase(), {
         method: 'get',
         headers:{
             'Content-Type': 'application/json'

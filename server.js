@@ -13,222 +13,166 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-function getFileContents (path, file) {
-  if(files[path] && files[path][file]) {
-    return files[path][file];
+function getFileFromPathObj (pathObj, file) {
+  if(pathObj["documents"][file]) {
+    return pathObj["documents"][file];
   }
     return false;
 }
 
-// Put all API endpoints under '/api'
-app.get('/api/test', (req, res) => {
-  res.json({title: "kode24"});
-});
-/**
-app.get('/api/help', (req, res) => {
-  res.json(
-    [
-      {type: "regular", content: "!! NO INCLUDING OF PERCENTAGE, THANK YOU"},
-      {type: "regular", content: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"},
-      {type: "regular", content: "* LIST %DIRECTORY% - LIST THE CONTENTS OF SELF"},
-      {type: "regular", content: "* CD %DIRECTORY% - ENTER MY DIRECTORIES"},
-      {type: "regular", content: "* CD .. - MOVE UP TO DIRECTORY"},
-      {type: "regular", content: "* PRINT %FILE% - OUTPUT CONTENT OF THE FILES"},
-      {type: "regular", content: "* CONTACT %FILE%  - SPECIAL VIEW FOR .CT FILES"},
-      {type: "regular", content: "* RUN %FILE%  - RUN .HU EXECUTABLE FILES"},
-      {type: "regular", content: "* CLEAR - WHEN IT GETS MESSY"},
-      {type: "regular", content: "* HELP - GET HIELP"}
-    ]
-  );
-}); */
+function getFilesFromPathObj (pathObj) {
+  let documents = [];
+  if(pathObj.documents) {
+    documents = Object.keys(pathObj.documents);
+    documents.sort();
+  }
+  documents = documents.map((file) => {
+    return {
+      type: "regular",
+      content: file
+    }
+  });
+  return documents;
+}
+
+function getFoldersFromPathObj (pathObj) {
+  let folders = [];
+  if(pathObj.folders) {
+    folders = Object.keys(pathObj.folders);
+    folders.sort();
+  }
+  folders = folders.map((folder) => {
+    return {
+      type: "regular",
+      content: folder + "\\"
+    }
+  }); // append / to all for pretty printing
+  return folders;
+}
+
+function getContentsFromPath (path) {
+  let pathObj = files[path[0]]; // root path
+  if(path.length > 1) { // we have subpath
+    for (let x = 1; x < path.length; x++) { // skip home path
+        if(pathObj["folders"][path[x]]) { // repeat until we reach correct path
+          pathObj = pathObj["folders"][path[x]];
+        } else {
+          // we have a path that does not exist return false
+          return false;
+        }
+    }
+  }
+  // we have successfully found a path, return it!
+  
+  return pathObj;
+}
+
+
+function parseFileSystemRequest(path, command, file) {
+  let pathObj = getContentsFromPath(path);
+  if(pathObj) {
+    if(command) {
+      switch (command) {
+        case "dir":
+          return getFoldersFromPathObj(pathObj).concat(getFilesFromPathObj(pathObj));
+          break;
+        case "print":
+        
+        if(file) {
+          return getFileFromPathObj(pathObj, file);
+        } else {
+          return false;
+        }
+        default:
+          // can not interpret command
+          return false;    
+      }
+    } else {
+      return path;
+    }
+  } else {
+    // path does not exist
+    return false;
+  }
+
+}
 
 app.get('/api/help', (req, res) => {
   res.json(
     [
-      {type: "regular", content: "!! NO INCLUDING OF PERCENTAGE, THANK YOU"},
+      {type: "regular", content: "!! TOMS DATAMASKIN, HJÆLPEDOKUMENT"},
       {type: "regular", content: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"},
-      {type: "regular", content: "* LIST - LIST THE CONTENTS OF SELF"},
-      {type: "regular", content: "* CD %DIRECTORY% - ENTER MY DIRECTORIES"},
-      {type: "regular", content: "* CD .. - MOVE UP TO DIRECTORY"},
-      {type: "regular", content: "* PRINT %FILE% - OUTPUT CONTENT OF THE FILES, TO SCREEN AND OFFICE PRINTER"},
-      {type: "regular", content: "* RUN %FILE%  - RUN .HU EXECUTABLE FILES"},
-      {type: "regular", content: "* HELP - GET HIELP"}
+      {type: "regular", content: "* DIR - LIST UT INHOLD I MAPPA DU ER I"},
+      {type: "regular", content: "* CD %DIRECTORY% - BYTT TIL EI MAPPE INNI MAPPA"},
+      {type: "regular", content: "* CD .. - FLØTT OPP EI MAPPE"},
+      {type: "regular", content: "* PRINT %FILE% - SKRIV UT EI AV FILANE"},
+      {type: "regular", content: "* HELP - FÅ HJÆLP"}
     ]
   );
 });
 
 app.get('/api/filesystem/home/', (req, res) => {
-  switch (req.query.command) {
-    case "list":
-      res.json([
-        {type: "regular", content: "Total 6"},
-        {type: "regular", content: "../"},
-        {type: "regular", content: "WWW/"},
-        {type: "regular", content: "CONTACTS/"},
-        {type: "regular", content: "PHOTOS/"},
-        {type: "regular", content: "DOCUMENTS/"},
-        {type: "regular", content: "WEBCONFIG.TXT"},
-        {type: "regular", content: "CUSTOMERS.TXT"}
-      ]);
-      break;
-    default:
-      res.json(
-        {
-          path: ["home"], 
-        }
-      );
-      break;
+  let response = parseFileSystemRequest(["home"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
   }
 });
 
-app.get('/api/filesystem/home/photos', (req, res) => {
-  switch (req.query.command) {
-    case "list":
-      res.json([
-        {type: "regular", content: "Total 1"},
-        {type: "regular", content: "../"}
-      ]);
-      break;
-    default:
-      res.json(
-        {
-          path: ["home", "photos"], 
-        }
-      );
-      break;
+app.get('/api/filesystem/home/img', (req, res) => {
+  let response = parseFileSystemRequest(["home", "img"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
   }
 });
 
-app.get('/api/filesystem/home/documents', (req, res) => {
-  switch (req.query.command) {
-    case "list":
-      res.json([
-        {type: "regular", content: "Total 1"},
-        {type: "regular", content: "../"}
-      ]);
-      break;
-    default:
-      res.json(
-        {
-          path: ["home", "documents"], 
-        }
-      );
-      break;
+app.get('/api/filesystem/home/sms', (req, res) => {
+  let response = parseFileSystemRequest(["home", "sms"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
   }
 });
 
-app.get('/api/filesystem/home/contacts', (req, res) => {
-  if(req.query.command)
-    req.query.command = req.query.command.toLowerCase();
-  switch (req.query.command) {
-    case "list":
-      res.json([
-        {type: "regular", content: "Total 1"},
-        {type: "regular", content: "../"},
-        {type: "regular", content: "marco.ct"},
-        {type: "regular", content: "mother.ct"},
-        {type: "regular", content: "luca.ct"},
-        {type: "regular", content: "ripak.ct"},
-      ]);
-      break;
-    case "print":
-      if(req.query.file && getFileContents("contacts", req.query.file)) {
-        console.log('getting file', getFileContents("contacts", req.query.file));
-        res.json(getFileContents("contacts", req.query.file));
-      } else {
-        res.status(401).json({});
-      }
-      break;
+app.get('/api/filesystem/home/www', (req, res) => {
+  let response = parseFileSystemRequest(["home", "www"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
+  }
+});
 
-    default:
-      res.json(
-        {
-          path: ["home", "contacts"], 
-        }
-      );
-      break;
+app.get('/api/filesystem/home/www/kode24', (req, res) => {
+  let response = parseFileSystemRequest(["home", "www", "kode24"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
+  }
+});
+
+app.get('/api/filesystem/home/www/hotel-caesar-fans', (req, res) => {
+  let response = parseFileSystemRequest(["home", "www", "hotel-caesar-fans"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
   }
 });
 
 
 
 app.get('/api/filesystem/home/www/', (req, res) => {
-  switch (req.query.command) {
-    case "list":
-      res.json([
-        {type: "regular", content: "Total 2"},
-        {type: "regular", content: "../"},
-        {type: "regular", content: "KODE24/"},
-        {type: "regular", content: "family_dating/"},
-      ]);
-      break;
-    default:
-      res.json(
-        {
-          path: ["home","www"]
-        }
-      );
-      break;
-  }
-});
-
-app.get('/api/filesystem/home/www/kode24/', (req, res) => {
-  if(req.query.command)
-    req.query.command = req.query.command.toLowerCase();
-  switch (req.query.command) {
-    case "list":
-      res.json([
-        {type: "regular", content: "Total 1"},
-        {type: "regular", content: "../"},
-        {type: "regular", content: "INDEX.HTML"},
-      ]);
-      break;
-    case "print":
-      console.log('printing');
-      if(req.query.file && getFileContents("kode24", req.query.file)) {
-        console.log('getting file', getFileContents("kode24", req.query.file));
-        res.json(getFileContents("kode24", req.query.file));
-      } else {
-        res.status(401).json({});
-      }
-      break;
-    default:
-      res.json(
-        {
-          path: ["home","www", "kode24"]
-        }
-      );
-      break;
-  }
-});
-
-app.get('/api/filesystem/home/www/family_dating/', (req, res) => {
-  if(req.query.command)
-    req.query.command = req.query.command.toLowerCase();
-  switch (req.query.command) {
-    case "list":
-      res.json([
-        {type: "regular", content: "Total 1"},
-        {type: "regular", content: "../"},
-        {type: "regular", content: "INDEX.HTML"},
-      ]);
-      break;
-    case "print":
-      console.log('printing');
-      if(req.query.file && getFileContents("family_dating", req.query.file)) {
-        console.log('getting file', getFileContents("family_dating", req.query.file));
-        res.json(getFileContents("family_dating", req.query.file));
-      } else {
-        res.status(401).json({});
-      }
-      break;  
-    default:
-      res.json(
-        {
-          path: ["home","www", "family_dating"]
-        }
-      );
-      break;
+  let response = parseFileSystemRequest(["home", "www"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
   }
 });
 

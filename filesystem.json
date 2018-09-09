@@ -1,0 +1,108 @@
+{
+  "home": {
+    "folders": {
+      "www": {
+        "folders": {
+          "kode24": {
+            "folders": {},
+            "documents": {
+              "index.html" : [
+                {"type": "regular", "content": "<!DOCTYPE HTML>"},
+                {"type": "regular", "content": "<HTML>"},
+                {"type": "regular", "content": "<HEAD>"},
+                {"type": "regular", "content": "<TITLE>KODE24 - NORGES FØRSTE NETTAVIS FOR UTVIKLERE</TITLE>"},
+                {"type": "regular", "content": "</HEAD>"},
+                {"type": "regular", "content": "<BODY>"},
+                {"type": "regular", "content": "<object width=\"100%\" height=\"100%\" data=\"helloworld.swf\"></object>"},
+                {"type": "regular", "content": "</BODY>"},
+                {"type": "regular", "content": "</HTML>"}
+              ] 
+            }
+          },
+          "hotel-caesar-fans": {
+            "folders": {},
+            "documents": {
+              "index.html": [
+                {"type": "regular", "content": "<!DOCTYPE HTML>"},
+                {"type": "regular", "content": "<HTML>"},
+                {"type": "regular", "content": "<HEAD>"},
+                {"type": "regular", "content": "<TITLE>Fansite for tidenes tv-serie</TITLE>"},
+                {"type": "regular", "content": "</HEAD>"},
+                {"type": "regular", "content": "<BODY>"},
+                {"type": "regular", "content": "<!-- Personlig prosjekt Tom -->"},
+                {"type": "regular", "content": "<TABLE>"},
+                {"type": "regular", "content": "<TR>"},
+                {"type": "regular", "content": "<TH>NAVN</TH>"},
+                {"type": "regular", "content": "<TH>SEXYHET</TH>"},
+                {"type": "regular", "content": "<TH>ULEMPER</TH>"},
+                {"type": "regular", "content": "</TR>"},
+                {"type": "regular", "content": "<TR>"},
+                {"type": "regular", "content": "<TD>Astrid Anker-Hansen</TD>"},
+                {"type": "regular", "content": "<TD>8/10</TD>"},
+                {"type": "regular", "content": "<TD>RULLESTOL OG HÅR SOM EN ALIEN</TD>"},
+                {"type": "regular", "content": "</TR>"},
+                {"type": "regular", "content": "</TR>"},
+                {"type": "regular", "content": "<TR>"},
+                {"type": "regular", "content": "<TD>julie Anker-Hansen</TD>"},
+                {"type": "regular", "content": "<TD>11/10</TD>"},
+                {"type": "regular", "content": "<TD>feilfri</TD>"},
+                {"type": "regular", "content": "</TR>"},
+                {"type": "regular", "content": "</BODY>"},
+                {"type": "regular", "content": "</HTML>"}
+              ]
+            }
+            
+          }
+        },
+        "documents": {}
+      },
+
+      "img": {
+        "folders": {},
+        "documents": {
+          "dsc22.jpg" : [
+            {"type": "photo", "content": "dsc22.jpg"},
+            {"type": "regular", "content": "Verdens fineste fabrikk <3"}
+          ]    
+        }
+      },
+      "sms": {
+        "folders": {},
+        "documents": {
+          "mor-2352262.sms" : [
+            {"type": "photo", "content": "mother.png"},
+            {"type": "regular", "content": "Avsender: Muttern"},
+            {"type": "regular", "content": "Melding:"},
+            {"type": "regular", "content": "Hei Tom!"},
+            {"type": "regular", "content": "Kommæru fortsatt på søndag?"},
+            {"type": "regular", "content": "Det blir biff stroganoff med hele familien"},
+            {"type": "regular", "content": "da vettu! Blir gyselig snålt."},
+            {"type": "regular", "content": "Hilsen morra di!"}
+          ],
+          "soster-235222.sms" : [
+            {"type": "photo", "content": "luca.png"},
+            {"type": "regular", "content": "Avsender: Søstra mi Trine"},
+            {"type": "regular", "content": "Melding:"},
+            {"type": "regular", "content": "Halå Tom!"},
+            {"type": "regular", "content": "Det blir Lilly May på torsdan, da åpnære"},
+            {"type": "regular", "content": "igjen etter mattilsynet stengte forrige uke!"},
+            {"type": "regular", "content": "Hele familien kjørær favorittretten din,"},
+            {"type": "regular", "content": "chopsuy!."},
+            {"type": "regular", "content": "Hilsen søstra di"}
+          ]
+        }
+      }
+    },
+    "documents": {
+      "webconfig.bat" : [
+        {"type": "regular", "content": "For å kjøre webserver skriv"},
+        {"type": "regular", "content": "webstart %passord%"},
+        {"type": "regular", "content": " "},
+        {"type": "regular", "content": "hint: passordet består av 3 ord med bindestrek"},
+        {"type": "regular", "content": "hint: ord 1: Fornavnet på  min favorittperson i Hotel Cæsar"},
+        {"type": "regular", "content": "hint: ord 2: Min livrett"},
+        {"type": "regular", "content": "hint: ord 3: DSC22.jpg"} 
+      ]
+    }
+  }
+}

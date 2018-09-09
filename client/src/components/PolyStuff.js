@@ -18,8 +18,11 @@ const PolyWrapper = styled.div`
   overflow: hidden;
   text-transform: uppercase;
   .photo {
+    .little {
+      width: 50px;
+    }
     img {
-      width: 200px;
+      max-width: 100%;
       margin-top: 10px;
       margin-bottom: 10px;
     }
@@ -67,7 +70,7 @@ class PolyStuff extends Component {
 
   getPathString () {
     
-    let pathString = this.state.path.join("/") + "/";
+    let pathString = this.state.path.join("\\") + "\\";
     console.log(this.state.path, pathString);
     return pathString;
   }
@@ -98,14 +101,15 @@ class PolyStuff extends Component {
 
   componentDidMount () {
     this.addLines([
-          {"type": "regular", content: "╔═ SZTAKI PolyTechnica ═╗"},
-          {"type": "regular", content: "║........Szervusz!.......║"},
-          {"type": "regular", content: "║....böngésző terminál...║"},
-          {"type": "regular", content: "╠════════════════╣"},
-          {"type": "regular", content: "║.....User as logged.....║"},
-          {"type": "regular", content: "║.......Marco Zseni......║"},
-          {"type": "regular", content: "╚════════════════╝"},
-          {"type": "regular", content: "For hielp type help"},
+          {"type": "regular", content: "╔═══ TOMS DATALAGRING ═══╗"},
+          {"type": "regular", content: "║.........VELKOMMEN!........║"},
+          {"type": "regular", content: "║..HER ER ALLE FILANE DINE..║"},
+          {"type": "regular", content: "╠══════════════════╣"},
+          {"type": "regular", content: "║.......LOGGET INN SOM......║"},
+          {"type": "regular", content: "║.........SJEFEN SJØL.......║"},
+          {"type": "regular", content: "║.....TOM JEREMIASSEN.......║"},
+          {"type": "regular", content: "╚══════════════════╝"},
+          {"type": "regular", content: "For HJÆLP SKRIV HELP"},
           {"type": "regular", content: "***"},
           {"type": "regular", content: "**"},
           {"type": "regular", content: "*"}
@@ -135,9 +139,9 @@ class PolyStuff extends Component {
   
   changePath (path) {
     checkPath(path, (response) => {
-      this.setPath(response.path);
+      this.setPath(response);
     }, () => {
-      this.addErrorLine("No directory of this exists");
+      this.addErrorLine("Den derre mappa der fins ikke");
     })
   }
 
@@ -152,14 +156,14 @@ class PolyStuff extends Component {
     getContentsOfFile(this.getPathString(), file, (response) => {
       this.addLines(response);
     }, () => {
-      this.addErrorLine("File not to be found");
+      this.addErrorLine("Fant ikke fila jeg");
     })
   }
 
   _parsePathRequest (path) {
     if(path === "..") {
       if(this.state.path.length <= 1) {
-        this.addErrorLine("Stay in homes please");
+        this.addErrorLine("Kanke gå uti der!");
       } else {
         let newPath = this.state.path.slice(0);
         newPath.pop();
@@ -182,7 +186,7 @@ class PolyStuff extends Component {
     line = line.join('');
     let lineContent = line.split(" ");
     if(lineContent.length > 2) {
-      this.addErrorLine("Too many commands to understand");
+      this.addErrorLine("Nå blei jeg litt forvirra");
       return;  
     }
 
@@ -193,7 +197,7 @@ class PolyStuff extends Component {
       case "CLEAR":
         this.clearLines();
         break;
-      case "LIST":
+      case "DIR":
         this._getListFromDirectory();
         break;
       case "PRINT":
@@ -201,14 +205,14 @@ class PolyStuff extends Component {
         if(lineContent.length > 1)
           this._getContentsOfFile(lineContent[1]);
         else {
-          this.addErrorLine("Can not just simply PRINT");
+          this.addErrorLine("Må ha noe å printe også eller?");
         }
         break;  
       case "CD":
         if(lineContent.length > 1)
           this._parsePathRequest(lineContent[1]);
         else {
-          this.addErrorLine("Can not just simply CD");
+          this.addErrorLine("Cd som i compact disc da eller?");
         }
         break;         
       default: break;  
@@ -218,13 +222,12 @@ class PolyStuff extends Component {
   render () {
     let lines = this.state.lines;
     let pathString = this.getPathString();
-    console.log('pathstring is', pathString);
     return (
       <PolyWrapper>
         <PolyLines>
           {lines.map((line, index) => {
             if(line.type === "command") 
-              return (<p key={index}>☭/{line.path}>&nbsp;{line.content}</p>)
+              return (<p key={index}>C:\{line.path}>&nbsp;{line.content}</p>)
             if(line.type === "error")
               return ( <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>)
             if(line.type === "regular")
@@ -235,7 +238,7 @@ class PolyStuff extends Component {
           })}
         </PolyLines>
         <PolyInputWrapper>
-          <span>☭/{pathString}>&nbsp;</span><PolyInput sendToParse={this.parseLine.bind(this)}/>
+          <span>C:\{pathString}>&nbsp;</span><PolyInput sendToParse={this.parseLine.bind(this)}/>
         </PolyInputWrapper>
       </PolyWrapper>
     )
