@@ -147,6 +147,48 @@ app.get('/api/filesystem/home/www', (req, res) => {
   }
 });
 
+app.get('/api/webstart/', (req, res) => {
+  let command = req.query.command;
+  let passwords = [
+    "Steinar Schjøtt",
+    "Halfdan Christensen",
+    "Jan Njerve",
+    "Bjørg Vik",
+    "Kalle Zwilgmeyer",
+    "Kjell Thorjussen",
+    "Ulla-Mari Brantenberg",
+    "Tommy Sørbø",
+    "Hilde Vemren,",
+    "Lars Vik",
+    "Tor Arne Ursin",
+    "Anders Vangen",
+    "Audun Kleive",
+    "Kjersti Wold",
+    "Bård Henrik Bosrup",
+    "Gunilla Sussmann,",
+    "Fredrik Brattberg,",
+    "Jan Erik Fillan",
+    "Kjetil Aleksander Lie",
+    "Kristoffer Olsen",
+    "Aleksander Walmann",
+    "Didrik Solli-Tangen",
+  ];
+
+  let randomCelebrity = Math.floor(Math.random()*((passwords.length-0)-0+1)+0);
+  if(command === "chopsoy-julie-hydro") {
+    res.json([
+      {"type": "regular", "content": "WEBSERVER KJØRER!"},
+      {"type": "regular", "content": "* AUTH KODE:" + passwords[randomCelebrity] + " er Porsgrunns stolthet!"},
+      {"type": "regular", "content": "** Send auth-koden og adressen din til hei@kode24.no,"},
+      {"type": "regular", "content": "** Så fårru no artig i posten!"},
+      {"type": "regular", "content": "*** Obs! Gjelder så langt lageret rekker."},
+      {"type": "regular", "content": "***      Kun en levering per addresse."},
+    ]);
+  } else {
+    res.status(401).json({})
+  }
+});
+
 app.get('/api/filesystem/home/www/kode24', (req, res) => {
   let response = parseFileSystemRequest(["home", "www", "kode24"], req.query.command, req.query.file);
   if(response) {

@@ -21,12 +21,25 @@ const blinking = keyframes`
     opacity: 1;
   }
 `;
-
 const PolyInputContainer = styled.span`
   bakground-color: transparent;
   border: 0;
   padding-top: 10px;
   padding-bottom: 10px;
+  .input-wrapper {
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+  .mobile-input {
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+    opacity: 0;
+  }
   .input {
     position: relative;
     white-space: pre; 
@@ -37,7 +50,7 @@ const PolyInputContainer = styled.span`
       right: -0.4em;
       width: 10px;
       height: 16px;
-      background-color: white;
+      background-color: #73e36d;
       animation: ${blinking} 1s linear infinite;
     }
   }
@@ -47,6 +60,13 @@ class PolyInput extends Component {
   state = {
     characters: []
   };
+
+  inputRef = React.createRef();
+
+  focusInput () {
+    console.log('setting focus');
+    this.inputRef.current.focus();
+  }
 
   removeLastCharacter () {
     let characters = this.state.characters;
@@ -118,7 +138,14 @@ class PolyInput extends Component {
   render () {
     let typed = this.state.characters;
     return (
-      <PolyInputContainer>
+      <PolyInputContainer onClick={() => {
+          console.log('hest');
+          this.focusInput()
+        }
+        }>
+        <div className="input-wrapper">
+          <input name="mobile-input" className="mobile-input" ref={this.inputRef} />
+        </div>
         <span className="input">{typed.join('')}</span>
       </PolyInputContainer>
     )

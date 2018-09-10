@@ -60,7 +60,7 @@
       "img": {
         "folders": {},
         "documents": {
-          "dsc22.jpg" : [
+          "hydro.jpg" : [
             {"type": "photo", "content": "dsc22.jpg"},
             {"type": "regular", "content": "Verdens fineste fabrikk <3"}
           ]    
@@ -87,21 +87,20 @@
             {"type": "regular", "content": "Det blir Lilly May på torsdan, da åpnære"},
             {"type": "regular", "content": "igjen etter mattilsynet stengte forrige uke!"},
             {"type": "regular", "content": "Hele familien kjørær favorittretten din,"},
-            {"type": "regular", "content": "chopsuy!."},
+            {"type": "regular", "content": "chopsoy!."},
             {"type": "regular", "content": "Hilsen søstra di"}
           ]
         }
       }
     },
     "documents": {
-      "webconfig.bat" : [
+      "webinfo.txt" : [
         {"type": "regular", "content": "For å kjøre webserver skriv"},
-        {"type": "regular", "content": "webstart %passord%"},
+        {"type": "regular", "content": "webstart passord1-passord2-passord3"},
         {"type": "regular", "content": " "},
-        {"type": "regular", "content": "hint: passordet består av 3 ord med bindestrek"},
-        {"type": "regular", "content": "hint: ord 1: Fornavnet på  min favorittperson i Hotel Cæsar"},
-        {"type": "regular", "content": "hint: ord 2: Min livrett"},
-        {"type": "regular", "content": "hint: ord 3: DSC22.jpg"} 
+        {"type": "regular", "content": "hint passord1: min favorittmat"},
+        {"type": "regular", "content": "hint passord2: fornavnet på min favorittskuespiller"},
+        {"type": "regular", "content": "hint passord3: Min favorittfabrikk"}
       ]
     }
   }

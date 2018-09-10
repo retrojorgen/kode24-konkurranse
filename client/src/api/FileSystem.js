@@ -45,6 +45,26 @@ const getContentsOfFile = (path, file, success, fail) => {
     .catch(error => fail(error));
 }
 
+const webStart  = (password, success, fail) => {
+    fetch(('/api/webstart/?command=' + password.toLowerCase()), {
+        method: 'get',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('404');
+        }
+      })
+    .then(response => {
+        success(response);
+    })
+    .catch(error => fail(error));
+}
+
 const checkPath = (path, success, fail) => {
     fetch(('/api/filesystem/' + path).toLowerCase(), {
         method: 'get',
@@ -65,4 +85,4 @@ const checkPath = (path, success, fail) => {
     .catch(error => fail(error));
 }  
 
-export { getHelp, getListFromDirectory, checkPath, getContentsOfFile };
+export { getHelp, getListFromDirectory, checkPath, getContentsOfFile, webStart };

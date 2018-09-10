@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PolyInput from './PolyInput';
-import { getHelp, getListFromDirectory, checkPath, getContentsOfFile } from '../api/FileSystem';
+import { getHelp, getListFromDirectory, checkPath, getContentsOfFile, webStart } from '../api/FileSystem';
 
 const PolyWrapper = styled.div`
   position: absolute;
@@ -17,12 +17,15 @@ const PolyWrapper = styled.div`
   text-shadow: 0 1px 2px rgba(102, 0, 204, 0.6);
   overflow: hidden;
   text-transform: uppercase;
+  @media (min-width: 1025px) {
+    padding: 40px;
+  }
   .photo {
     .little {
       width: 50px;
     }
     img {
-      max-width: 100%;
+      max-width: 320px;
       margin-top: 10px;
       margin-bottom: 10px;
     }
@@ -160,6 +163,14 @@ class PolyStuff extends Component {
     })
   }
 
+  _webStart (command) {
+    webStart(command, (response) => {
+      this.addLines(response);
+    }, () => {
+      this.addErrorLine("Ser ikke ut som passordet stemte gitt");
+    })
+  }
+
   _parsePathRequest (path) {
     if(path === "..") {
       if(this.state.path.length <= 1) {
@@ -199,6 +210,13 @@ class PolyStuff extends Component {
         break;
       case "DIR":
         this._getListFromDirectory();
+        break;
+      case "WEBSTART":
+        if(lineContent.length > 1) {
+          this._webStart(lineContent[1]);  
+        } else {
+          this.addErrorLine("Mangler passord");
+        }
         break;
       case "PRINT":
         
