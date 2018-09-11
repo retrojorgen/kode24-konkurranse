@@ -182,7 +182,10 @@ app.get('/api/webstart/', (req, res) => {
       {"type": "regular", "content": "** Send auth-koden og adressen din til hei@kode24.no,"},
       {"type": "regular", "content": "** Så fårru no artig i posten!"},
       {"type": "regular", "content": "*** Obs! Gjelder så langt lageret rekker."},
-      {"type": "regular", "content": "***      Kun en levering per addresse."},
+      {"type": "regular", "content": "*** Kun en levering per addresse."},
+      {"type": "regular", "content": "-------------------------------."},
+      {"type": "regular", "content": "få med deg lanseringen: facebook.com/kode24no"},
+      {"type": "regular", "content": "-------------------------------."}
     ]);
   } else {
     res.status(401).json({})
