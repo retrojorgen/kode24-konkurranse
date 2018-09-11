@@ -105,11 +105,17 @@ class PolyStuff extends Component {
 
   componentDidMount () {
     this.addLines([
-          {"type": "regular", content: "║.........VELKOMMEN!........║"},
+          {"type": "regular", content: "_____________________________"},
+          {"type": "regular", content: "║.........VELKOMMEN.........║"},
+          {"type": "regular", content: "║......TIL PORSGRUNNS.......║"},
+          {"type": "regular", content: "║.......TREDJE BESTE........║"},
+          {"type": "regular", content: "║.....INTERNETTHOSTING......║"},
+          {"type": "regular", content: "║...........................║"},
           {"type": "regular", content: "║..HER ER ALLE FILANE DINE..║"},
           {"type": "regular", content: "║.......LOGGET INN SOM......║"},
           {"type": "regular", content: "║.........SJEFEN SJØL.......║"},
           {"type": "regular", content: "║.....TOM JEREMIASSEN.......║"},
+          {"type": "regular", content: "║___________________________║"}
           {"type": "regular", content: "For HJÆLP SKRIV HELP"},
           {"type": "regular", content: "***"},
           {"type": "regular", content: "**"},
