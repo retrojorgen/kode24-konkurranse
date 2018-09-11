@@ -82,6 +82,7 @@ const PolyInputContainer = styled.span`
     left: 400%;
     bottom: 0;
     opacity: 0;
+    caret-color: transparent;
   }
   .input {
     position: relative;
