@@ -23,32 +23,24 @@
             "folders": {},
             "documents": {
               "index.html": [
-                {"type": "regular", "content": "<!DOCTYPE HTML>"},
-                {"type": "regular", "content": "<HTML>"},
-                {"type": "regular", "content": "<HEAD>"},
+                {"type": "regular", "content": "<!DOCTYPE HTML><HTML><HEAD>"},
                 {"type": "regular", "content": "<TITLE>Fansite for tidenes tv-serie</TITLE>"},
-                {"type": "regular", "content": "</HEAD>"},
-                {"type": "regular", "content": "<BODY>"},
+                {"type": "regular", "content": "</HEAD><BODY>"},
                 {"type": "regular", "content": "<!-- Personlig prosjekt Tom -->"},
-                {"type": "regular", "content": "<TABLE>"},
-                {"type": "regular", "content": "<TR>"},
+                {"type": "regular", "content": "<TABLE><TR>"},
                 {"type": "regular", "content": "<TH>NAVN</TH>"},
                 {"type": "regular", "content": "<TH>SEXYHET</TH>"},
                 {"type": "regular", "content": "<TH>ULEMPER</TH>"},
-                {"type": "regular", "content": "</TR>"},
-                {"type": "regular", "content": "<TR>"},
+                {"type": "regular", "content": "</TR><TR>"},
                 {"type": "regular", "content": "<TD>Astrid Anker-Hansen</TD>"},
                 {"type": "regular", "content": "<TD>8/10</TD>"},
                 {"type": "regular", "content": "<TD>RULLESTOL OG HÅR SOM EN ALIEN</TD>"},
-                {"type": "regular", "content": "</TR>"},
-                {"type": "regular", "content": "</TR>"},
-                {"type": "regular", "content": "<TR>"},
+                {"type": "regular", "content": "</TR><TR>"},
                 {"type": "regular", "content": "<TD>julie Anker-Hansen</TD>"},
                 {"type": "regular", "content": "<TD>11/10</TD>"},
                 {"type": "regular", "content": "<TD>feilfri</TD>"},
-                {"type": "regular", "content": "</TR>"},
-                {"type": "regular", "content": "</BODY>"},
-                {"type": "regular", "content": "</HTML>"}
+                {"type": "regular", "content": "</TR></BODY></HTML>"},
+                {"type": "regular", "content": "-------END OF FILE---------"}
               ]
             }
             
@@ -60,7 +52,7 @@
       "img": {
         "folders": {},
         "documents": {
-          "hydro.jpg" : [
+          "IMG1.jpg" : [
             {"type": "photo", "content": "dsc22.jpg"},
             {"type": "regular", "content": "Verdens fineste fabrikk <3"}
           ]    
@@ -69,26 +61,30 @@
       "sms": {
         "folders": {},
         "documents": {
-          "mor-2352262.sms" : [
-            {"type": "photo", "content": "mother.png"},
+          "mor1.sms" : [
             {"type": "regular", "content": "Avsender: Muttern"},
+            {"type": "regular", "content": "dato: 14.09.2001"},
+            {"type": "regular", "content": "----------------"},
             {"type": "regular", "content": "Melding:"},
             {"type": "regular", "content": "Hei Tom!"},
             {"type": "regular", "content": "Kommæru fortsatt på søndag?"},
             {"type": "regular", "content": "Det blir biff stroganoff med hele familien"},
             {"type": "regular", "content": "da vettu! Blir gyselig snålt."},
-            {"type": "regular", "content": "Hilsen morra di!"}
+            {"type": "regular", "content": "Hilsen morra di!"},
+            {"type": "regular", "content": "----------------"}
           ],
-          "soster-235222.sms" : [
-            {"type": "photo", "content": "luca.png"},
+          "soster1.sms" : [
             {"type": "regular", "content": "Avsender: Søstra mi Trine"},
+            {"type": "regular", "content": "dato: 14.09.2001"},
+            {"type": "regular", "content": "----------------"},
             {"type": "regular", "content": "Melding:"},
             {"type": "regular", "content": "Halå Tom!"},
             {"type": "regular", "content": "Det blir Lilly May på torsdan, da åpnære"},
             {"type": "regular", "content": "igjen etter mattilsynet stengte forrige uke!"},
             {"type": "regular", "content": "Hele familien kjørær favorittretten din,"},
             {"type": "regular", "content": "chopsoy!."},
-            {"type": "regular", "content": "Hilsen søstra di"}
+            {"type": "regular", "content": "Hilsen søstra di"},
+            {"type": "regular", "content": "----------------"}
           ]
         }
       }

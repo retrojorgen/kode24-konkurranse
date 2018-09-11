@@ -186,16 +186,14 @@ class PolyStuff extends Component {
   }
 
   parseLine (line) {
-
+    console.log('pars@r linja', line);
     this.addLines({
       type: "command",
       path: this.getPathString(),
       content: line
     });
 
-
-    line = line.join('');
-    let lineContent = line.split(" ");
+    let lineContent = line.toUpperCase().split(" ");
     if(lineContent.length > 2) {
       this.addErrorLine("Nå blei jeg litt forvirra");
       return;  
@@ -219,7 +217,6 @@ class PolyStuff extends Component {
         }
         break;
       case "PRINT":
-        
         if(lineContent.length > 1)
           this._getContentsOfFile(lineContent[1]);
         else {

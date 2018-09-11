@@ -30,8 +30,9 @@ const PolyInputContainer = styled.span`
 
     position: absolute;
     left: 0;
-    bottom: 0;
+    top: 0;
     width: 100%;
+    height: 100%;
     overflow: hidden;
   }
   .mobile-input {
@@ -58,7 +59,8 @@ const PolyInputContainer = styled.span`
 
 class PolyInput extends Component {
   state = {
-    characters: []
+    characters: "",
+    previousInputs: []
   };
 
   inputRef = React.createRef();
@@ -87,23 +89,28 @@ class PolyInput extends Component {
     let characters = this.state.characters;
     if(characters.length < 100) {
       characters.push(key);
-      this.setState(
-        {
-          characters: characters
-        }
-      )
+      
     }
     
 
   }
 
   sendToParse () {
+    let characters = this.state.characters;
     this.props.sendToParse(this.state.characters);
+    let previousInputs = this.state.previousInputs;
+    previousInputs.push(characters);
     this.setState(
       {
-        characters: []
+        characters: "",
+        previousInputs: previousInputs
       }
     )
+  }
+  updateInput (value) {
+    this.setState({
+      characters: value
+    });
   }
 
   handleKeyDown = (event) => {
@@ -116,17 +123,6 @@ class PolyInput extends Component {
     switch( keyCode ) {
         case ENTER_KEY:
             this.sendToParse();
-            break;
-        case BACK_KEY:;
-            this.removeLastCharacter();
-            break;
-        case BACK_KEY_ALTERNATIVE:
-            this.removeLastCharacter();
-            break;        
-        default:
-            if(event.key.length < 2) {
-              this.addKey(key.toUpperCase());
-            }
             break;
     }
   }
@@ -144,9 +140,9 @@ class PolyInput extends Component {
         }
         }>
         <div className="input-wrapper">
-          <input name="mobile-input" className="mobile-input" ref={this.inputRef} />
+          <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
         </div>
-        <span className="input">{typed.join('')}</span>
+        <span className="input">{typed}</span>
       </PolyInputContainer>
     )
   }
