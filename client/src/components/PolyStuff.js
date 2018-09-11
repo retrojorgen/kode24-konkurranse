@@ -198,6 +198,9 @@ class PolyStuff extends Component {
     }
 
     switch (lineContent[0]) {
+      case "CD..":
+        this._parsePathRequest("..");
+        break;
       case "HELP":
         this._getHelp();
         break;

@@ -104,7 +104,7 @@ app.get('/api/help', (req, res) => {
       {type: "regular", content: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"},
       {type: "regular", content: "* DIR - LIST UT INHOLD I MAPPA DU ER I"},
       {type: "regular", content: "* CD %DIRECTORY% - BYTT TIL EI MAPPE INNI MAPPA"},
-      {type: "regular", content: "* CD .. - FLØTT OPP EI MAPPE"},
+      {type: "regular", content: "* CD.. - FLØTT OPP EI MAPPE"},
       {type: "regular", content: "* PRINT %FILE% - SKRIV UT EI AV FILANE"},
       {type: "regular", content: "* HELP - FÅ HJÆLP"}
     ]
@@ -198,8 +198,18 @@ app.get('/api/filesystem/home/www/kode24', (req, res) => {
   }
 });
 
-app.get('/api/filesystem/home/www/hotel-caesar-fans', (req, res) => {
-  let response = parseFileSystemRequest(["home", "www", "hotel-caesar-fans"], req.query.command, req.query.file);
+app.get('/api/filesystem/home/www/caesar-fans', (req, res) => {
+  let response = parseFileSystemRequest(["home", "www", "caesar-fans"], req.query.command, req.query.file);
+  if(response) {
+    res.json(response);
+  } else {
+    res.status(401).json({})
+  }
+});
+
+
+app.get('/api/filesystem/home/www/altinn', (req, res) => {
+  let response = parseFileSystemRequest(["home", "www", "altinn"], req.query.command, req.query.file);
   if(response) {
     res.json(response);
   } else {
