@@ -115,7 +115,7 @@ class PolyStuff extends Component {
           {"type": "regular", content: "║.......LOGGET INN SOM......║"},
           {"type": "regular", content: "║.........SJEFEN SJØL.......║"},
           {"type": "regular", content: "║.....TOM JEREMIASSEN.......║"},
-          {"type": "regular", content: "║___________________________║"}
+          {"type": "regular", content: "║___________________________║"},
           {"type": "regular", content: "For HJÆLP SKRIV HELP"},
           {"type": "regular", content: "***"},
           {"type": "regular", content: "**"},
