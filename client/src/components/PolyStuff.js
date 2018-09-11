@@ -254,7 +254,7 @@ class PolyStuff extends Component {
           })}
         </PolyLines>
         <PolyInputWrapper>
-          <span>C:\{pathString}>&nbsp;</span><PolyInput sendToParse={this.parseLine.bind(this)}/>
+          <PolyInput pathString={pathString} sendToParse={this.parseLine.bind(this)}/>
         </PolyInputWrapper>
       </PolyWrapper>
     )

@@ -209,6 +209,7 @@ app.get('/api/filesystem/home/www/caesar-fans', (req, res) => {
 
 
 app.get('/api/filesystem/home/www/altinn', (req, res) => {
+  console.log('got here');
   let response = parseFileSystemRequest(["home", "www", "altinn"], req.query.command, req.query.file);
   if(response) {
     res.json(response);

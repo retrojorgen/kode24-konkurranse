@@ -44,14 +44,13 @@
               ]
             } 
           },
-          "ALTINN": {
+          "altinn": {
             "folders": {},
             "documents": {
               "index.html": [
                 {"type": "regular", "content": "<!DOCTYPE HTML><HTML><HEAD>"},
                 {"type": "regular", "content": "<TITLE>ALTINN.no</TITLE>"},
                 {"type": "regular", "content": "</HEAD><BODY>"},
-                {"type": "regular", "content": "<!-- Personlig prosjekt Tom -->"},
                 {"type": "regular", "content": "<TABLE><TR>"},
                 {"type": "regular", "content": "<TH>NAVN</TH>"},
                 {"type": "regular", "content": "<TH>LØNN</TH>"},
@@ -78,11 +77,11 @@
             {"type": "regular", "content": "Verdens fineste fabrikk <3"}
           ],
           "img2.jpg" : [
-            {"type": "photo", "content": "dsc22.jpg"},
+            {"type": "photo", "content": "dsc23.jpg"},
             {"type": "regular", "content": "Rådhuset"}
           ],
           "img3.jpg" : [
-            {"type": "photo", "content": "dsc22.jpg"},
+            {"type": "photo", "content": "dsc24.jpg"},
             {"type": "regular", "content": "LILLY MAY - kinarestaurant i toppklasse"}
           ]    
         }

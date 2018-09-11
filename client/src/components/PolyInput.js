@@ -26,6 +26,21 @@ const PolyInputContainer = styled.span`
   border: 0;
   padding-top: 10px;
   padding-bottom: 10px;
+  display: flex;
+  width: 100%;
+  .mobile-input {
+    flex: 1 1 100%;
+    background-color: transparent;
+    color: #0dff00;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    border: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    padding: 0;
+    outline: none;
+  }
   .input-wrapper {
 
     position: absolute;
@@ -77,25 +92,9 @@ const PolyInputContainer = styled.span`
       
     }
   }
-  .mobile-input {
-    position: absolute;
-    left: 400%;
-    bottom: 0;
-    opacity: 0;
-  }
-  .input {
-    position: relative;
-    white-space: pre; 
-    &:after {
-      content: "";
-      position: absolute;
-      top: 3px;
-      right: -0.4em;
-      width: 10px;
-      height: 16px;
-      background-color: #73e36d;
-      animation: ${blinking} 1s linear infinite;
-    }
+
+  .path-view {
+    white-space: nowrap;
   }
 `;
 
@@ -111,6 +110,9 @@ class PolyInput extends Component {
   focusInput () {
     console.log('setting focus');
     this.inputRef.current.focus();
+    this.setState({
+      hasFocus: true
+    });
   }
 
   removeLastCharacter () {
@@ -155,6 +157,7 @@ class PolyInput extends Component {
       characters: value
     });
   }
+  
 
   handleKeyDown = (event) => {
     const keyCode = event.keyCode;
@@ -176,16 +179,18 @@ class PolyInput extends Component {
 
   render () {
     let typed = this.state.characters;
+    let pathString = this.props.pathString;
     return (
       <PolyInputContainer onClick={() => {
-          console.log('hest');
           this.focusInput()
         }
         }>
         <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`}>
-          <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
+          
         </div>
-        <span className="input">{typed}</span>
+        
+        <div className="path-view">C:\{pathString}>&nbsp;</div>
+        <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
       </PolyInputContainer>
     )
   }
