@@ -237,7 +237,9 @@ class PolyStuff extends Component {
           this.addErrorLine("Cd som i compact disc da eller?");
         }
         break;         
-      default: break;  
+      default: 
+        this.addErrorLine("Detta forstod jeg ikke");
+        break;  
     } 
   }
 
