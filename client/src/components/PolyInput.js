@@ -34,10 +34,49 @@ const PolyInputContainer = styled.span`
     width: 100%;
     height: 100%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        transition: opacity 1s ease-in-out;
+        background-color: green;
+        opacity: 0;
+        z-index: 10;
+      }
+      &:after {
+        content: "Start";
+        background-color: black;
+        color: green;
+        font-size: 1.4em;
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 4px;
+        transition: opacity 1s ease-in-out;
+        opacity: 0;
+        position: relative;
+        z-index: 11;
+    }
+    &.show-info {
+      &:before {
+        opacity: 1;
+        transition: opacity 1s ease-in-out;
+      }
+      &:after {
+        opacity: 1;
+        transition: opacity 1s ease-in-out;
+      }
+      
+    }
   }
   .mobile-input {
     position: absolute;
-    left: 100%;
+    left: 400%;
     bottom: 0;
     opacity: 0;
   }
@@ -60,7 +99,8 @@ const PolyInputContainer = styled.span`
 class PolyInput extends Component {
   state = {
     characters: "",
-    previousInputs: []
+    previousInputs: [],
+    hasFocus: false
   };
 
   inputRef = React.createRef();
@@ -139,7 +179,7 @@ class PolyInput extends Component {
           this.focusInput()
         }
         }>
-        <div className="input-wrapper">
+        <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`}>
           <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
         </div>
         <span className="input">{typed}</span>

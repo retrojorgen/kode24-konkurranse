@@ -53,6 +53,7 @@ const PolyWrapper = styled.div`
     width: 100%;
     height: 100%;
     background: repeating-linear-gradient(#00000000,#0000003b 2px,#0000005e 2px,#00000000 4px);
+    z-index:20;
   }
 `;
 
