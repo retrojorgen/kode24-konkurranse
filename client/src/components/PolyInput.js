@@ -44,32 +44,35 @@ const PolyInputContainer = styled.span`
         top: 0;
         width: 100%;
         height: 100%;
-        transition: opacity 1s ease-in-out;
+        transition: all 1s ease-in-out;
         background-color: green;
         opacity: 0;
         z-index: 10;
       }
       &:after {
-        content: "Start";
+        content: "Logg inn på Toms maskin";
+        max-width: 100px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,1);
         background-color: black;
-        color: green;
+        color: white;
         font-size: 1.4em;
         display: inline-block;
         padding: 10px 20px;
         border-radius: 4px;
-        transition: opacity 1s ease-in-out;
+        transition: all 1s ease-in-out;
         opacity: 0;
         position: relative;
         z-index: 11;
-    }
+      }
     &.show-info {
       &:before {
         opacity: 1;
-        transition: opacity 1s ease-in-out;
+        transition: all 1s ease-in-out;
       }
       &:after {
         opacity: 1;
-        transition: opacity 1s ease-in-out;
+        transition: all 1s ease-in-out;
       }
       
     }
