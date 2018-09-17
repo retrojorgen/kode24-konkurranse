@@ -1,26 +1,6 @@
 import React, { Component } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
-const blinking = keyframes`
-  0% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  60% {
-    opacity: 0;
-  }
-
-  90% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-`;
 const PolyInputContainer = styled.span`
   bakground-color: transparent;
   border: 0;
@@ -108,38 +88,15 @@ class Input extends Component {
   inputRef = React.createRef();
 
   focusInput () {
-    console.log('setting focus');
     this.inputRef.current.focus();
     this.setState({
       hasFocus: true
     });
   }
 
-  removeLastCharacter () {
-    let characters = this.state.characters;
-    if(characters.length) {
-      characters.pop();
-      this.setState(
-        {
-          characters: characters
-        }
-      );
-    }
-  }
-
-  addKey (key) {
-    if(key === " ") {
-      key = '\u0020';
-    }
-    let characters = this.state.characters;
-    if(characters.length < 100) {
-      characters.push(key);
-      
-    }
-    
-
-  }
-
+  // Sends command typed by user to parsing
+  // dumps command in array for later use
+  // perhaps implement up on keyboard for repeat?
   sendToParse () {
     let characters = this.state.characters;
     this.props.sendToParse(this.state.characters);
@@ -152,6 +109,8 @@ class Input extends Component {
       }
     )
   }
+  
+  // when input field changes update value in state
   updateInput (value) {
     this.setState({
       characters: value
@@ -161,16 +120,8 @@ class Input extends Component {
 
   handleKeyDown = (event) => {
     const keyCode = event.keyCode;
-    const key = event.key.toString();
-    const ENTER_KEY = 13;
-    const BACK_KEY = 91;
-    const BACK_KEY_ALTERNATIVE = 8;
-
-    switch( keyCode ) {
-        case ENTER_KEY:
-            this.sendToParse();
-            break;
-    }
+    if(keyCode === 13)
+      this.sendToParse();
   }
 
   componentWillMount () {
@@ -178,17 +129,10 @@ class Input extends Component {
   }
 
   render () {
-    let typed = this.state.characters;
     let pathString = this.props.pathString;
     return (
-      <PolyInputContainer onClick={() => {
-          this.focusInput()
-        }
-        }>
-        <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`}>
-          
-        </div>
-        
+      <PolyInputContainer onClick={ () => this.focusInput() }>
+        <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`} />
         <div className="path-view">C:\{pathString}>&nbsp;</div>
         <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
       </PolyInputContainer>

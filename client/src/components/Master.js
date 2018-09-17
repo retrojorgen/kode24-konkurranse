@@ -189,7 +189,6 @@ class Master extends Component {
   }
 
   parseLine (line) {
-    console.log('pars@r linja', line);
     this.addLines({
       type: "command",
       path: this.getPathString(),
@@ -256,12 +255,12 @@ class Master extends Component {
             if(line.type === "regular")
               return ( <p key={index}>{line.content}</p>)  
             if(line.type === "photo")
-              return ( <div key={index} className="photo"><img src={"/images/" + line.content} /></div>)    
+              return ( <div key={index} className="photo"><img src={"/images/" + line.content} alt="" /></div>)    
             return (<p key={index}></p>);  
           })}
         </PolyLines>
         <PolyInputWrapper>
-          <PolyInput pathString={pathString} sendToParse={this.parseLine.bind(this)}/>
+          <Input pathString={pathString} sendToParse={this.parseLine.bind(this)}/>
         </PolyInputWrapper>
       </PolyWrapper>
     )
