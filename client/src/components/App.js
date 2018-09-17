@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PolyStuff from '../components/PolyStuff';
+import Master from '../components/Master';
 import { injectGlobal } from 'styled-components';
 
 injectGlobal`
@@ -29,7 +29,7 @@ injectGlobal`
 class App extends Component {
   render() {
     return (
-      <PolyStuff />
+      <Master />
     );
   }
 }

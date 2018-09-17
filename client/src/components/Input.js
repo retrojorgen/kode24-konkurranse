@@ -98,7 +98,7 @@ const PolyInputContainer = styled.span`
   }
 `;
 
-class PolyInput extends Component {
+class Input extends Component {
   state = {
     characters: "",
     previousInputs: [],
@@ -197,4 +197,4 @@ class PolyInput extends Component {
 
 }
 
-export default PolyInput;
+export default Input;

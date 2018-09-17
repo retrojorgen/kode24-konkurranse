@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import PolyInput from './PolyInput';
+import Input from './Input';
 import { getHelp, getListFromDirectory, checkPath, getContentsOfFile, webStart } from '../api/FileSystem';
 
 const PolyWrapper = styled.div`
@@ -63,14 +63,13 @@ const PolyLines = styled.div`
 const PolyInputWrapper = styled.div`
 `;  
 
-class PolyStuff extends Component {
+class Master extends Component {
 
 
   state = {
     lines: [],
-    path: ["home"],
-    lastCommand: ""
-  };
+    path: ["home"]
+  }
 
   getPathString () {
     
@@ -270,4 +269,4 @@ class PolyStuff extends Component {
 
 }
 
-export default PolyStuff;
+export default Master;
