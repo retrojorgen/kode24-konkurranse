@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from './Input';
-import { getHelp, getListFromDirectory, checkPath, getContentsOfFile, webStart } from '../api/FileSystem';
+import { getHelp, getListFromDirectory, getContentsOfFile, webStart } from '../api/FileSystem';
+import FolderListing from './folder';
 
 const PolyWrapper = styled.div`
   position: absolute;
@@ -68,13 +69,13 @@ class Master extends Component {
 
   state = {
     lines: [],
-    path: ["home"]
+    path: [""]
   }
 
   getPathString () {
+    let pathString = this.state.path.join("\\");
     
-    let pathString = this.state.path.join("\\") + "\\";
-    console.log(this.state.path, pathString);
+    if(!pathString) pathString = "\\";
     return pathString;
   }
 
@@ -132,31 +133,23 @@ class Master extends Component {
   }
 
   setPath (path) {
+    path = path.split("\\");
     this.setState({
       path: path
     });
-    if(!this.state.path.length) {
-      this.setState({
-        path: ["home"]
-      })
-    }
   }
 
   
   changePath (path) {
-    checkPath(path, (response) => {
-      this.setPath(response);
+    
+    getListFromDirectory(path, (response) => {
+      this.setPath(path);
     }, () => {
       this.addErrorLine("Den derre mappa der fins ikke");
     })
   }
 
   
-  _getListFromDirectory () {
-    getListFromDirectory(this.getPathString(), (response) => {
-      this.addLines(response);
-    })
-  }
 
   _getContentsOfFile (file) {
     getContentsOfFile(this.getPathString(), file, (response) => {
@@ -173,6 +166,18 @@ class Master extends Component {
       this.addErrorLine("Ser ikke ut som passordet stemte gitt");
     })
   }
+
+  _getListFromDirectory () {
+    getListFromDirectory(this.getPathString(), (response) => {
+      response.type = "folder-list";
+      this.setState(
+        {
+          lines: [...this.state.lines, response]
+        }
+      )
+    })
+  }
+
 
   _parsePathRequest (path) {
     if(path === "..") {
@@ -244,18 +249,21 @@ class Master extends Component {
   render () {
     let lines = this.state.lines;
     let pathString = this.getPathString();
+    console.log(lines);
     return (
       <PolyWrapper>
         <PolyLines>
           {lines.map((line, index) => {
             if(line.type === "command") 
-              return (<p key={index}>C:\{line.path}>&nbsp;{line.content}</p>)
+              return (<p key={index}>C:{line.path}>&nbsp;{line.content}</p>)
             if(line.type === "error")
               return ( <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>)
             if(line.type === "regular")
               return ( <p key={index}>{line.content}</p>)  
             if(line.type === "photo")
               return ( <div key={index} className="photo"><img src={"/images/" + line.content} alt="" /></div>)    
+            if(line.type === "folder-list")
+              return (<FolderListing key={index} content={line} />)
             return (<p key={index}></p>);  
           })}
         </PolyLines>
