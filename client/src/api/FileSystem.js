@@ -15,24 +15,35 @@ const getHelp = (success, fail) => {
 const getListFromDirectory = (path, success, fail) => {
     if(!path)
         path = "\\";
-    fetch(('/api/filesystem/'), {
+    fetch('/api/filesystem/', {
         method: 'post',
         headers:{
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({path: path})
      })
-    .then(res => res.json())
+     .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('404');
+        }
+      })
     .then(response => {
         success(response);
-    });
+    })
+    .catch(error => fail(error));
   }
-const getContentsOfFile = (path, file, success, fail) => {
-    fetch(('/api/filesystem/' + path + "?command=print&file=" + file).toLowerCase(), {
-        method: 'get',
+const getContentsOfFile = (path, fileName, success, fail) => {
+    fetch('/api/thefiles', {
+        method: 'post',
         headers:{
             'Content-Type': 'application/json'
-        }
+        },
+        body : JSON.stringify({
+            path: path,
+            fileName: fileName
+        })
     })
     .then(response => {
         if (response.ok) {
@@ -47,12 +58,16 @@ const getContentsOfFile = (path, file, success, fail) => {
     .catch(error => fail(error));
 }
 
-const webStart  = (password, success, fail) => {
-    fetch(('/api/webstart/?command=' + password.toLowerCase()), {
-        method: 'get',
+const submitPathCode = (path, code, success, fail) => {
+    fetch('/api/code', {
+        method: 'post',
         headers:{
             'Content-Type': 'application/json'
-        }
+        },
+        body : JSON.stringify({
+            path: path,
+            code: code
+        })
     })
     .then(response => {
         if (response.ok) {
@@ -68,4 +83,4 @@ const webStart  = (password, success, fail) => {
 }
 
 
-export { getHelp, getListFromDirectory, getContentsOfFile, webStart };
+export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode };

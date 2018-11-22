@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from './Input';
-import { getHelp, getListFromDirectory, getContentsOfFile, webStart } from '../api/FileSystem';
+import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode } from '../api/FileSystem';
 import FolderListing from './folder';
+import TxtListing from './txt';
 
 const PolyWrapper = styled.div`
   position: absolute;
@@ -15,7 +16,7 @@ const PolyWrapper = styled.div`
   justify-content: flex-end;
   padding: 20px;
   font-size: 20px;
-  text-shadow: 0 1px 2px rgba(102, 0, 204, 0.6);
+  text-shadow: 0 0 20px #0eff00;
   overflow: hidden;
   text-transform: uppercase;
   @media (min-width: 1025px) {
@@ -72,6 +73,29 @@ class Master extends Component {
     path: [""]
   }
 
+  componentDidMount () {
+    this.addLines({
+      type: "txt",
+      content: [ 
+          "_____________________________",
+          "║.........VELKOMMEN.........║",
+          "║......TIL PORSGRUNNS.......║",
+          "║.......TREDJE BESTE........║",
+          "║.....INTERNETTHOSTING......║",
+          "║...........................║",
+          "║..HER ER ALLE FILANE DINE..║",
+          "║.......LOGGET INN SOM......║",
+          "║.........SJEFEN SJØL.......║",
+          "║.....TOM JEREMIASSEN.......║",
+          "║___________________________║",
+          "For HJÆLP SKRIV HELP",
+          "***",
+          "**",
+          "*"
+        ]
+      })
+  }
+
   getPathString () {
     let pathString = this.state.path.join("\\");
     
@@ -80,11 +104,9 @@ class Master extends Component {
   }
 
   addLines (newLines) {
-    let lines = this.state.lines;
-    lines = lines.concat(newLines);
     this.setState(
       {
-        lines: lines
+        lines: [...this.state.lines, newLines]
       }
     )
   }
@@ -103,48 +125,22 @@ class Master extends Component {
     })
   }
 
-  componentDidMount () {
-    this.addLines([
-          {"type": "regular", content: "_____________________________"},
-          {"type": "regular", content: "║.........VELKOMMEN.........║"},
-          {"type": "regular", content: "║......TIL PORSGRUNNS.......║"},
-          {"type": "regular", content: "║.......TREDJE BESTE........║"},
-          {"type": "regular", content: "║.....INTERNETTHOSTING......║"},
-          {"type": "regular", content: "║...........................║"},
-          {"type": "regular", content: "║..HER ER ALLE FILANE DINE..║"},
-          {"type": "regular", content: "║.......LOGGET INN SOM......║"},
-          {"type": "regular", content: "║.........SJEFEN SJØL.......║"},
-          {"type": "regular", content: "║.....TOM JEREMIASSEN.......║"},
-          {"type": "regular", content: "║___________________________║"},
-          {"type": "regular", content: "For HJÆLP SKRIV HELP"},
-          {"type": "regular", content: "***"},
-          {"type": "regular", content: "**"},
-          {"type": "regular", content: "*"}
-    ])
-  }
-
   addErrorLine (errorMessage) {
-    this.addLines([
+    this.addLines(
       {
         type: "error",
         content: errorMessage
       }
-    ]);
+    );
   }
-
-  setPath (path) {
-    path = path.split("\\");
-    this.setState({
-      path: path
-    });
-  }
-
   
   changePath (path) {
-    
     getListFromDirectory(path, (response) => {
-      this.setPath(path);
-    }, () => {
+      path = path.split("\\");
+      this.setState({
+        path: path
+      });
+    }, (error) => {
       this.addErrorLine("Den derre mappa der fins ikke");
     })
   }
@@ -159,13 +155,7 @@ class Master extends Component {
     })
   }
 
-  _webStart (command) {
-    webStart(command, (response) => {
-      this.addLines(response);
-    }, () => {
-      this.addErrorLine("Ser ikke ut som passordet stemte gitt");
-    })
-  }
+
 
   _getListFromDirectory () {
     getListFromDirectory(this.getPathString(), (response) => {
@@ -177,6 +167,8 @@ class Master extends Component {
       )
     })
   }
+
+
 
 
   _parsePathRequest (path) {
@@ -191,6 +183,15 @@ class Master extends Component {
     } else {
       this.changePath(this.getPathString() + path);
     }
+  }
+
+
+  _submitPathCode (code) {
+    submitPathCode(this.getPathString(), code, (response) => {
+      this.addLines(response);
+    }, () => {
+      this.addErrorLine("Ser ikke ut som passordet stemte gitt");
+    })
   }
 
   parseLine (line) {
@@ -219,11 +220,11 @@ class Master extends Component {
       case "DIR":
         this._getListFromDirectory();
         break;
-      case "WEBSTART":
+      case "JULEKODE":
         if(lineContent.length > 1) {
-          this._webStart(lineContent[1]);  
+          this._submitPathCode(lineContent[1]);  
         } else {
-          this.addErrorLine("Mangler passord");
+          this.addErrorLine("Mangler kodeord");
         }
         break;
       case "PRINT":
@@ -249,7 +250,6 @@ class Master extends Component {
   render () {
     let lines = this.state.lines;
     let pathString = this.getPathString();
-    console.log(lines);
     return (
       <PolyWrapper>
         <PolyLines>
@@ -259,12 +259,13 @@ class Master extends Component {
             if(line.type === "error")
               return ( <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>)
             if(line.type === "regular")
-              return ( <p key={index}>{line.content}</p>)  
+              return ( <p key={index}>{line.content}</p>)
+            if(line.type === "txt")
+              return (<TxtListing key={index} content={line} />)
             if(line.type === "photo")
-              return ( <div key={index} className="photo"><img src={"/images/" + line.content} alt="" /></div>)    
+              return ( <div key={index} className="photo"><img src={line.path} alt="" /></div>)    
             if(line.type === "folder-list")
-              return (<FolderListing key={index} content={line} />)
-            return (<p key={index}></p>);  
+              return (<FolderListing key={index} content={line} />)  
           })}
         </PolyLines>
         <PolyInputWrapper>

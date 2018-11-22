@@ -33,17 +33,23 @@
     "folders": [
     ],
     "files": [
-      { "name":"d1quiz.txt", "type":"txt", "size": 1400},
-      { "name":"hest.png", "type":"png", "size": 1400, "path": "images/dsc22.jpg"}
-    ]
+      { "name":"d1quiz.txt", "type":"txt", "size": 1400, "content": 
+        ["Dagens oppgave er litt komplisert.", "fisk fis og fjert"]
+      },
+      { "name":"hest.png", "type":"photo", "size": 1400, "path": "/images/dsc22.jpg"}
+    ],
+    "passphrase": "fisefjert"
   },
   "\\02-DES" : {
     "availableFrom": "12-01-2018",
     "folders": [
     ],
     "files": [
-      { "name":"d2quiz.txt", "type":"txt"},
-      { "name":"hest.png", "type":"png"}
-    ]
+      { "name":"d2quiz.txt", "type":"txt", "size": 1400, "content": 
+        ["fiskefjas.", "kameler og kukkær"]
+      },
+      { "name":"fiskefis.png", "type":"photo"}
+    ],
+    "passphrase": "kamelfjert"
   }
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 const FolderListing = (props) => {
-    console.log(props);
     let folders = props.content.folders || [];
     let files = props.content.files || [];
     let availableFrom = props.content.availableFrom;
