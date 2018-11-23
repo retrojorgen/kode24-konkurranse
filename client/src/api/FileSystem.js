@@ -23,9 +23,9 @@ fetch('/api/verify/', {
  })
  .then(response => {
     if (response.ok) {
-      return response.json();
+        return response.json();
     } else {
-      throw new Error('404');
+        throw new Error('401');
     }
   })
 .then(response => {
@@ -45,19 +45,41 @@ const getListFromDirectory = (path, success, fail) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({path: path})
-     })
-     .then(response => {
+        })
+        .then(response => {
         if (response.ok) {
-          return response.json();
+            return response.json();
         } else {
-          throw new Error('404');
+            throw new Error('404');
         }
-      })
+        })
     .then(response => {
         success(response);
     })
     .catch(error => isAuth(error, fail));
-  }
+}
+
+const createUser = (email, username, success, fail) => {
+    fetch('/api/user/create', {
+        method: 'post',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email: email, username: username})
+        })
+        .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('404');
+        }
+        })
+    .then(response => {
+        success(response);
+    })
+    .catch(error => isAuth(error, fail));
+}
+
 const getContentsOfFile = (path, fileName, success, fail) => {
     fetch('/api/files', {
         method: 'post',
@@ -107,4 +129,4 @@ const submitPathCode = (path, code, success, fail) => {
 }
 
 
-export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified };
+export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser };

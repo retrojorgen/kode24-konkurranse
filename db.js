@@ -5,7 +5,8 @@ mongoose.connect('mongodb://' + process.env.DBUSER + ':' + process.env.DBPASSWOR
 const SubmissionSchema = new mongoose.Schema({
     fullpath: { type: String},
     email: { type: String },
-    username: { type: String}
+    username: { type: String},
+    submitted: { type: Date, default: Date.now }
 });
 
 const UserSchema = new mongoose.Schema({
@@ -81,20 +82,22 @@ async function getFolderFromPath (fullpath) {
 
 async function AddAnswer (fullpath, email, username) {
 
-    let folder = getFolderFromPath(fullpath);
+    let folder = await getFolderFromPath(fullpath);
     let today = new Date();
 
-    if(folder.availableFrom.getDate() !== today.getDate())
-        return 3;
-    else {
-        if(await getSubmission(email, fullpath)) {
-            return 2;
+    let newSubmission = new Submission({
+        fullpath: fullpath,
+        email: email,
+        username: username
+    });
+        
+    if(await getSubmission(email, fullpath)) {
+        return 2;
+    } else {
+        await newSubmission.save();
+        if(folder.availableFrom.getDate() !== today.getDate()) {   
+            return 3;
         } else {
-            let newSubmission = new Submission({
-                email: email,
-                username: username
-            });
-            await newSubmission.save();
             return 1;
         }
     }

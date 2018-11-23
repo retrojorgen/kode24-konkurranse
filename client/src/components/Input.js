@@ -99,7 +99,15 @@ class Input extends Component {
   // perhaps implement up on keyboard for repeat?
   sendToParse () {
     let characters = this.state.characters;
-    this.props.sendToParse(this.state.characters);
+    if(this.props.user && !this.props.user.email) {
+      this.props.sendToEmail(this.state.characters);
+    } else if (this.props.user && this.props.user.email && !this.props.user.username) {
+      this.props.sendToUsername(this.state.characters);
+    }
+    else if(this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified) {
+      this.props.sendToParse(this.state.characters);
+    }
+    
     let previousInputs = this.state.previousInputs;
     previousInputs.push(characters);
     this.setState(
@@ -129,8 +137,19 @@ class Input extends Component {
   }
 
   render () {
+
     let pathString = this.props.pathString;
-    pathString = `${this.props.type === "editor" ? "C:" + pathString + ">": pathString + ":"}`;  
+    if(this.props.user && !this.props.user.email) {
+      pathString = "Din e-postadresse:";
+    } else if (this.props.user && this.props.user.email && !this.props.user.username) {
+      pathString = "Ditt kallenavn:";
+    }
+    else if(this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified) {
+      pathString =  `[${this.props.user.username}]@C:${pathString}>`;
+    }
+    
+    
+    
     return (
       <PolyInputContainer onClick={ () => this.focusInput() }>
         <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`} />

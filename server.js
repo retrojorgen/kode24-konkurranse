@@ -46,7 +46,7 @@ const isLoggedIn = async function (req, res, next) {
       res.send("401", "Invalid user");  
     }
   } else {
-    res.send("401", "user not logged in");
+    res.send("401", "\"user not logged in\"");
   }
 }
 
@@ -89,6 +89,8 @@ app.post('/api/code', isLoggedIn, async (req,res) => {
 
   let folder = await db.getFolderFromPath(path);
 
+  let today = new Date();
+
   if(!folder.passphrase) {
     res.send(404, {type: "error", content: "error"});
   } else {
@@ -104,11 +106,11 @@ app.post('/api/code', isLoggedIn, async (req,res) => {
         } 
         if(answer === 2) {
           res.send({
-            type: "txt", content: ["Du er allerede med i trekningen"]
+            type: "txt", content: ["Du har allerede deltatt i denne dagens konkurranse."]
           });
         }
         if(answer === 3) {
-          res.send(404, { type: "txt", content: [`Riktig! Konkurransen for denne dagen, ${competitionDate.getDate()}. desember, er dessverre over. Sjekk dagens konk i mappen `] });
+          res.send({ type: "txt", content: [`Riktig! Du kan dessvere kun delta i dagens konkurranse, men du får poeng for riktig svar fortsatt!`, `Sjekk dagens konk i mappen ${today.getDate()}-DES`] });
         }
     }
   }   
@@ -118,15 +120,7 @@ app.post('/api/user/create', async (req,res) => {
   let email = req.body.email;
   let username = req.body.username;
   let createdUser = await db.addUser(email, username);
-  res.cookie('id', createdUser._id, { expires: new Date(Date.now() + 900000), httpOnly: true });
-  res.send(createdUser);
-})
-
-app.post('/api/user/verify', async (req,res) => {
-  let email = req.body.email;
-  let username = req.body.username;
-  let createdUser = await db.addUser(email, username);
-  res.cookie('id', createdUser._id, { expires: new Date(Date.now() + 900000), httpOnly: true });
+  res.cookie('id', createdUser._id, { expires: new Date(Date.now() + 9000000000), httpOnly: true });
   res.send(createdUser);
 })
 
