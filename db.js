@@ -2,16 +2,10 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://' + process.env.DBUSER + ':' + process.env.DBPASSWORD + '@ds123753.mlab.com:23753/kode24-julebase')
 
 
-const CompetitionsSchema = new mongoose.Schema({
-    type: { type: String},
-    name: { type: String},
-    namespace: { type: String},
-    participants: [
-        {
-            userId: { type: mongoose.Schema.Types.ObjectId },
-            submitted: { type: Date, default: Date.now }
-        }
-    ]
+const SubmissionSchema = new mongoose.Schema({
+    fullpath: { type: String},
+    email: { type: String },
+    username: { type: String}
 });
 
 const UserSchema = new mongoose.Schema({
@@ -19,24 +13,29 @@ const UserSchema = new mongoose.Schema({
     username: { type: String}
 });
 
-const Competitions = mongoose.model('Competitions', CompetitionsSchema);
+const FolderSchema = new mongoose.Schema({
+    fullpath: { type: String},
+    parent: { type: String},
+    name: { type: String},
+    availableFrom: { type: Date, default: Date.now },
+    passphrase: { type: String}
+});
+
+const FileSchema = new mongoose.Schema({
+    fullpath: { type: String},
+    name: { type: String},
+    type: { type: String},
+    size: { type: Number},
+    content: [] 
+});
+
+
+
+const Submission = mongoose.model('Submissions', SubmissionSchema);
+const Folder = mongoose.model('Folders', FolderSchema);
 const User = mongoose.model('Users', UserSchema);
+const File = mongoose.model('Files', FileSchema);
 
-async function findAllCompetitions () {
-    const competitions = await Competitions.find({});
-    return competitions;
-}
-
-async function findCompetition (namespace) {
-
-    try {
-        const competitions = await Competitions.findOne({namespace: namespace});
-        return competitions;
-    } catch (error) {
-        return error;
-    }
-    
-}
 
 async function addUser (email, username) {
     try {
@@ -54,58 +53,60 @@ async function addUser (email, username) {
 
 async function findUserById (userId) {
     try {
-        const user = User.findById(userId);
-        return user;
+        return User.findById(userId);
     } catch (error) {
         return false;
     }
 }
 
-async function AddAnswer (namespace, participantId, canparticipate) {
+async function getFileInpath (fullpath, fileName) {
+    return await File.findOne({fullpath: fullpath, name: fileName.toLowerCase()});
+}
 
-    const competition = await findCompetition (namespace);
+async function getFilesInPath (fullpath) {
+    return await File.find({fullpath: fullpath});
+}
 
-    console.log(competition);
+async function getSubFoldersOfPath (fullpath) {
+    return await Folder.find({parent: fullpath});
+}
 
-    if(competition) {
-        
-        let participant = competition.participants.find((participant) => participant.email === participant.email);
-        if(!canparticipate) {
-            return 3;
+async function getSubmission (email, fullpath) {
+    return await Submission.findOne({email: email, fullpath: fullpath});
+}
+
+async function getFolderFromPath (fullpath) {
+    return await Folder.findOne({fullpath: fullpath});
+}
+
+async function AddAnswer (fullpath, email, username) {
+
+    let folder = getFolderFromPath(fullpath);
+    let today = new Date();
+
+    if(folder.availableFrom.getDate() !== today.getDate())
+        return 3;
+    else {
+        if(await getSubmission(email, fullpath)) {
+            return 2;
         } else {
-            if(!participant) {
-                competition.participants.push(
-                    {
-                        userId: participantId,
-                        submitted: new Date()
-                    }
-                )
-                await competition.save();
-                return 2; 
-            } else {
-                return 1;
-            }
+            let newSubmission = new Submission({
+                email: email,
+                username: username
+            });
+            await newSubmission.save();
+            return 1;
         }
-        
-    } else {
-        return false;
     }
-
-
-
-
-   const newCompetition = new Competitions({
-    type: "bla",
-    name: "bla2",
-    namespace: "hest",
-    participants: []
-   })
-   const saveCompetition = await newCompetition.save((status) => console.log(status));
-   return saveCompetition;
 }
 
 
 module.exports = {
     AddAnswer: AddAnswer,
-    addUser: addUser
+    addUser: addUser,
+    findUserById: findUserById,
+    getFilesInPath: getFilesInPath,
+    getFolderFromPath: getFolderFromPath,
+    getSubFoldersOfPath: getSubFoldersOfPath,
+    getFileInpath: getFileInpath
 }  

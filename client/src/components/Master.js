@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from './Input';
-import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode } from '../api/FileSystem';
+import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified } from '../api/FileSystem';
 import FolderListing from './folder';
 import TxtListing from './txt';
 
@@ -67,10 +67,34 @@ const PolyInputWrapper = styled.div`
 
 class Master extends Component {
 
-
-  state = {
-    lines: [],
-    path: [""]
+  constructor(props) {
+    super(props);
+    this.state = {
+      lines: [],
+      path: [""],
+      folderData: [],
+    }
+  }
+  
+  _isVerified () {
+    isVerified((user) => {
+      this.setState({
+        user: {
+          email: user.email,
+          username: user.username,
+          verified: true
+        }
+      })
+    }, (error) => {
+      this.setState({
+        user: {
+          email: "",
+          username: "",
+          verified: false
+        }
+      })
+      console.log(error);
+    })
   }
 
   componentDidMount () {
@@ -94,6 +118,7 @@ class Master extends Component {
           "*"
         ]
       })
+    this._isVerified();
   }
 
   getPathString () {
@@ -194,6 +219,44 @@ class Master extends Component {
     })
   }
 
+  validateEmail (email) {
+    var re = /\S+@\S+\.\S+/;
+    if(re.test(email)) {
+      let user = this.state.user;
+      user.email = email;
+      this.setState({
+        user: user
+      })
+      this.addLines({
+        type: "txt",
+        content: [ 
+            `E-postadressen ${email} er godkjent!`,
+          ]
+        })
+    } else {
+      this.addErrorLine("Ikke en gyldig epostadresse");
+    }
+  }
+
+  validateUsername (username) {
+    if(username.length > 20) {
+      this.addErrorLine("Brukernavnet må være kortere enn 20 tegn");
+    } else {
+      let user = this.state.user;
+      user.username = username;
+      this.setState({
+        user: user
+      });
+      this.addLines({
+        type: "txt",
+        content: [ 
+            `Brukernavnet ${username} er godkjent!`,
+            `Logger deg inn kompis..`,
+          ]
+        })
+    }
+  } 
+
   parseLine (line) {
     this.addLines({
       type: "command",
@@ -250,6 +313,7 @@ class Master extends Component {
   render () {
     let lines = this.state.lines;
     let pathString = this.getPathString();
+    let user = this.state.user;
     return (
       <PolyWrapper>
         <PolyLines>
@@ -269,7 +333,10 @@ class Master extends Component {
           })}
         </PolyLines>
         <PolyInputWrapper>
-          <Input pathString={pathString} sendToParse={this.parseLine.bind(this)}/>
+          {
+            (!user)
+          }
+          <InputHandler user={user} pathString={pathString} sendToParse={this.validateEmail.bind(this)} />
         </PolyInputWrapper>
       </PolyWrapper>
     )
@@ -278,3 +345,21 @@ class Master extends Component {
 }
 
 export default Master;
+
+const InputHandler = (props) => {
+  if(!props.user) {
+    return (<div></div>)
+  }
+    
+  if(props.user && !props.user.email) {
+    return (<Input pathString="Din E-postadresse" type="login" sendToParse={props.sendToParse}></Input>)
+  }
+
+  if(props.user && props.user.email && !props.user.username) {
+    return (<Input pathString="Ditt nick" type="login" sendToParse={props.sendToParse}></Input>)
+  }
+
+  if(props.user.email && props.user.username && props.user.verified) {
+    return (<Input pathString={props.pathString} type="editor" sendToParse={props.sendToParse}></Input>)
+  }  
+} 

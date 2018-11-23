@@ -12,6 +12,30 @@ const getHelp = (success, fail) => {
   });
 }
 
+const isAuth = (error, callback) => {
+    console.log(error);
+    callback(error);
+}
+
+const isVerified = (success, fail) => {
+fetch('/api/verify/', {
+    method: 'get'
+ })
+ .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('404');
+    }
+  })
+.then(response => {
+    success(response);
+})
+.catch(error => isAuth(error, fail));
+}
+
+
+
 const getListFromDirectory = (path, success, fail) => {
     if(!path)
         path = "\\";
@@ -32,10 +56,10 @@ const getListFromDirectory = (path, success, fail) => {
     .then(response => {
         success(response);
     })
-    .catch(error => fail(error));
+    .catch(error => isAuth(error, fail));
   }
 const getContentsOfFile = (path, fileName, success, fail) => {
-    fetch('/api/thefiles', {
+    fetch('/api/files', {
         method: 'post',
         headers:{
             'Content-Type': 'application/json'
@@ -83,4 +107,4 @@ const submitPathCode = (path, code, success, fail) => {
 }
 
 
-export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode };
+export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified };

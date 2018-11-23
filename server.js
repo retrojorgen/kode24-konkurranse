@@ -24,65 +24,78 @@ app.use(bodyParser.json());
 
 app.get('/api/help', (req, res) => {
   res.json(
-    [
-      {type: "regular", content: "!! TOMS DATAMASKIN, HJÆLPEDOKUMENT"},
-      {type: "regular", content: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"},
-      {type: "regular", content: "* DIR - LIST UT INHOLD I MAPPA DU ER I"},
-      {type: "regular", content: "* CD %DIRECTORY% - BYTT TIL EI MAPPE INNI MAPPA"},
-      {type: "regular", content: "* CD.. - FLØTT OPP EI MAPPE"},
-      {type: "regular", content: "* PRINT %FILE% - SKRIV UT EI AV FILANE"},
-      {type: "regular", content: "* HELP - FÅ HJÆLP"}
-    ]
-  )
+        {type: "txt", content: [
+          "!! TOMS DATAMASKIN, HJÆLPEDOKUMENT",
+          "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+          "* DIR - LIST UT INHOLD I MAPPA DU ER I",
+          "* CD %DIRECTORY% - BYTT TIL EI MAPPE INNI MAPPA",
+          "* CD.. - FLØTT OPP EI MAPPE",
+          "* PRINT %FILE% - SKRIV UT EI AV FILANE",
+          "* HELP - FÅ HJÆLP"
+      ]
+    })
+  })
+
+const isLoggedIn = async function (req, res, next) {
+  if(req.cookies.id) {
+    var user = await db.findUserById(req.cookies.id);
+    if(user) {
+      req.user = user;
+      next();
+    } else {
+      res.send("401", "Invalid user");  
+    }
+  } else {
+    res.send("401", "user not logged in");
+  }
+}
+
+app.post('/api/filesystem/', isLoggedIn, async (req, res) => {
+  let pathRequest = req.body.path;
+  let path = db.getFolderFromPath(pathRequest);
+  if(!path) {
+    res.send(404, {type: "error", content: ["Fant ikke mappa"]});
+  } else {
+    let pathFolders = await db.getSubFoldersOfPath(pathRequest);
+    let pathFiles = await db.getFilesInPath(pathRequest);
+    res.send({
+      path: path,
+      folders: pathFolders,
+      files: pathFiles
+    })
+  }
 })
 
-function getPath (path) {
-  if(files[path])
-    return files[path];
-  else
-    return false;  
-}
 
-function getPathCode (path) {
-  if(files[path] && files[path].passphrase) {
-      return files[path].passphrase
-  } else {
-    return false;
-  }
-}
-
-
-function getFile (path, fileName) {
-  if(files[path]) {
-    for(let x = 0; x<=files[path].files.length -1; x++) {
-      if(files[path].files[x].name === fileName.toLowerCase()) {
-        return files[path].files[x];
-      }
-    }
-  }
-  return false;
-}
-
-app.post('/api/filesystem/', (req, res) => {
-  let pathRequest = req.body.path;
-  let pathContent = getPath(pathRequest);
-  if(pathContent) {
-    res.send(pathContent)
+app.post('/api/files/', isLoggedIn, async (req,res) => {
+  let path = req.body.path;
+  let fileName = req.body.fileName;
+  let file = await db.getFileInpath(path, fileName);
+  if(file) {
+    res.send(file);
   } else {
     res.send(404, {});
   }
+  
 })
 
-app.post('/api/code', async (req,res) => {
+app.get('/api/verify', isLoggedIn, async (req, res) => {
+  res.send(req.user);
+})
+
+app.post('/api/code', isLoggedIn, async (req,res) => {
   let path = req.body.path;
   let code = req.body.code;
-  let codeFromFileSystem = getPathCode(path, code);
-  let competitionDate = new Date(getPath(path).availableFrom);
-  let todaysDate = new Date();
 
-  
-    if(code.toLowerCase() === codeFromFileSystem.toLowerCase() && req.cookies.id) {
-        let answer = await db.AddAnswer(path, req.cookies.id, (todaysDate.getDate() === competitionDate.getDate()));
+  let folder = await db.getFolderFromPath(path);
+
+  if(!folder.passphrase) {
+    res.send(404, {type: "error", content: "error"});
+  } else {
+    if(!folder.passphrase.toLowerCase() === code.toLowerCase()) {
+      res.send(404, {type: "error", content: "Feil kode dessverre"});
+    } else {
+      let answer = await db.AddAnswer(path, req.user.email);
 
         if(answer === 1) {
           res.send({
@@ -95,11 +108,10 @@ app.post('/api/code', async (req,res) => {
           });
         }
         if(answer === 3) {
-          res.send(404, { type: "txt", content: [`Riktig! Dessverre kan du kun delta i denne konkurranse-mappa ${competitionDate.getDate()}. desember`] });
+          res.send(404, { type: "txt", content: [`Riktig! Konkurransen for denne dagen, ${competitionDate.getDate()}. desember, er dessverre over. Sjekk dagens konk i mappen `] });
         }
-    } else {
-      res.send(404, {});
     }
+  }   
 })
 
 app.post('/api/user/create', async (req,res) => {
@@ -119,12 +131,6 @@ app.post('/api/user/verify', async (req,res) => {
 })
 
 
-app.post('/api/thefiles', (req,res) => {
-  let path = req.body.path;
-  let fileName = req.body.fileName;
-  let file = getFile(path, fileName);
-  res.send(file);
-})
 
 
 app.get('*', (req, res) => {

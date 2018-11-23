@@ -130,11 +130,11 @@ class Input extends Component {
 
   render () {
     let pathString = this.props.pathString;
-      
+    pathString = `${this.props.type === "editor" ? "C:" + pathString + ">": pathString + ":"}`;  
     return (
       <PolyInputContainer onClick={ () => this.focusInput() }>
         <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`} />
-        <div className="path-view">C:{pathString}>&nbsp;</div>
+        <div className="path-view">{pathString}&nbsp;</div>
         <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
       </PolyInputContainer>
     )
