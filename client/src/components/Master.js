@@ -4,6 +4,7 @@ import Input from './Input';
 import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser } from '../api/FileSystem';
 import FolderListing from './folder';
 import TxtListing from './txt';
+import ChristmasTree from './tree';
 
 const PolyWrapper = styled.div`
   position: absolute;
@@ -99,21 +100,20 @@ class Master extends Component {
   }
 
   componentDidMount () {
-    this.addLines({
-      type: "txt",
-      content: [ 
-          "_____________________________",
-          "║.........VELKOMMEN.........║",
-          "║......TIL PORSGRUNNS.......║",
-          "║.......TREDJE BESTE........║",
-          "║.....INTERNETTHOSTING......║",
-          "║___________________________║",
-          "For HJÆLP SKRIV HELP",
-          "***",
-          "**",
-          "*"
-        ]
-      })
+    this.setState({
+      lines: [
+        { type: "christmas-tree" },
+        {
+          type: "txt",
+          content: [ 
+            "║.......GOD JUL FRA.........║",
+            "║..PORSGRUNNS TREDJE BESTE..║",
+            "║.....INTERNETTHOSTING......║",
+            "For HJÆLP SKRIV HELP",
+          ]
+        }
+      ]
+    })
     this._isVerified();
   }
 
@@ -329,6 +329,9 @@ class Master extends Component {
       <PolyWrapper>
         <PolyLines>
           {lines.map((line, index) => {
+            console.log(line, line.type, line.type === "christmas-tree");
+            if(line.type === "christmas-tree") 
+              return (<ChristmasTree key={index}/>)
             if(line.type === "command") 
               return (<p key={index}>C:{line.path}>&nbsp;{line.content}</p>)
             if(line.type === "error")

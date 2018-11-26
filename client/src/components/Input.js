@@ -12,6 +12,7 @@ const PolyInputContainer = styled.span`
     flex: 1 1 100%;
     background-color: transparent;
     color: #0dff00;
+    text-shadow: 0 0 20px #0eff00;
     font-family: 'VT323', monospace;
     font-size: 20px;
     border: 0;
@@ -77,6 +78,11 @@ const PolyInputContainer = styled.span`
     white-space: nowrap;
   }
 `;
+
+const Username = styled.span`
+  color: #ff2a00;
+  text-shadow: 0 0 20px #ff2a00;
+`; 
 
 class Input extends Component {
   state = {
@@ -145,7 +151,7 @@ class Input extends Component {
       pathString = "Ditt kallenavn:";
     }
     else if(this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified) {
-      pathString =  `[${this.props.user.username}]@C:${pathString}>`;
+      pathString =  `@C:${pathString}>`;
     }
     
     
@@ -153,7 +159,11 @@ class Input extends Component {
     return (
       <PolyInputContainer onClick={ () => this.focusInput() }>
         <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`} />
-        <div className="path-view">{pathString}&nbsp;</div>
+        <div className="path-view">
+          {this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified && 
+          (<Username>{"[" + this.props.user.username + "]"}</Username>)}
+          {pathString}&nbsp;
+        </div>
         <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
       </PolyInputContainer>
     )
