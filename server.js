@@ -52,25 +52,29 @@ const isLoggedIn = async function (req, res, next) {
 
 app.post('/api/filesystem/', isLoggedIn, async (req, res) => {
   let pathRequest = req.body.path;
-  let path = db.getFolderFromPath(pathRequest);
+  let path = await db.getFolderFromPath(pathRequest);
+  console.log(path);
   if(!path) {
     res.send(404, {type: "error", content: ["Fant ikke mappa"]});
   } else {
     let pathFolders = await db.getSubFoldersOfPath(pathRequest);
-    let pathFiles = await db.getFilesInPath(pathRequest);
     res.send({
-      path: path,
-      folders: pathFolders,
-      files: pathFiles
-    })
+      parent: path.parent,
+      name: path.name,
+      fullPath: path.name,
+      answers: path.answers,
+      files: path.files,
+      folders: pathFolders
+    });
   }
 })
 
 
 app.post('/api/files/', isLoggedIn, async (req,res) => {
   let path = req.body.path;
-  let fileName = req.body.fileName;
-  let file = await db.getFileInpath(path, fileName);
+  let fileName = req.body.fileName.toLowerCase();
+  let filePath = await db.getFileInpath(path, fileName);
+  let file = filePath.files.find((file) => file.name.toLowerCase() === fileName);
   if(file) {
     res.send(file);
   } else {
@@ -97,7 +101,7 @@ app.post('/api/code', isLoggedIn, async (req,res) => {
     if(!folder.passphrase.toLowerCase() === code.toLowerCase()) {
       res.send(404, {type: "error", content: "Feil kode dessverre"});
     } else {
-      let answer = await db.AddAnswer(path, req.user.email);
+      let answer = await db.AddAnswer(path, req.user);
 
         if(answer === 1) {
           res.send({
