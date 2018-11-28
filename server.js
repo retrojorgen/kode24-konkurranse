@@ -158,7 +158,7 @@ app.post('/api/code', isLoggedIn, async (req,res) => {
           // vi har kommet gjennom og skal legge inn registrering av riktig passord
           let answer = await db.AddAnswer(path, req.user, folder, today);
           res.send({
-            type: "txt", content: ["Takkær og bukkær! Det var riktig passord vøtt.", "Då erru med i dågens trekning!"]
+            type: "txt", content: ["** Passord korrekt: Server autorisert. **", `(du er med i dagens trekning, ${today.getDate()}. desember)`]
           });
         } 
       }
