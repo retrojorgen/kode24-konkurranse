@@ -13,7 +13,7 @@ const getHelp = (success, fail) => {
 }
 
 const isAuth = (error, callback) => {
-    console.log(error);
+    console.log('fisen min', error);
     callback(error);
 }
 
@@ -25,6 +25,7 @@ fetch('/api/verify/', {
     if (response.ok) {
         return response.json();
     } else {
+        console.log(response);
         throw new Error('401');
     }
   })
@@ -34,6 +35,28 @@ fetch('/api/verify/', {
 .catch(error => isAuth(error, fail));
 }
 
+
+const authByEmail = (email, success, fail) => {
+    fetch('/api/verify/recover', {
+        method: 'post',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email: email})
+        })
+        .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            return fail();
+            throw new Error('404');
+        }
+        })
+    .then(response => {
+        success(response);
+    })
+    .catch(error => isAuth(error, fail));
+}
 
 
 const getListFromDirectory = (path, success, fail) => {
@@ -119,6 +142,7 @@ const submitPathCode = (path, code, success, fail) => {
         if (response.ok) {
           return response.json();
         } else {
+            console.log('respåns', response);
           throw new Error('404');
         }
       })
@@ -129,4 +153,4 @@ const submitPathCode = (path, code, success, fail) => {
 }
 
 
-export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser };
+export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser, authByEmail };

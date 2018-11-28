@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from './Input';
-import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser } from '../api/FileSystem';
+import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser, authByEmail } from '../api/FileSystem';
 import FolderListing from './folder';
 import TxtListing from './txt';
 import ChristmasTree from './tree';
@@ -87,7 +87,6 @@ class Master extends Component {
         }
       })
     }, (error) => {
-      console.log('verified error');
       this.setState({
         user: {
           email: "",
@@ -95,7 +94,6 @@ class Master extends Component {
           verified: false
         }
       })
-      console.log(error);
     })
   }
 
@@ -169,11 +167,15 @@ class Master extends Component {
   
 
   _getContentsOfFile (file) {
-    getContentsOfFile(this.getPathString(), file, (response) => {
-      this.addLines(response);
-    }, () => {
-      this.addErrorLine("Fant ikke fila jeg");
-    })
+    if(file.toLowerCase() === "auth.exe") {
+      this.addErrorLine("Kanke printe ei binærfil. Troru er gærn jeg.");
+    } else {
+      getContentsOfFile(this.getPathString(), file, (response) => {
+        this.addLines(response);
+      }, () => {
+        this.addErrorLine("Fant ikke fila jeg");
+      })
+    }
   }
 
 
@@ -218,17 +220,39 @@ class Master extends Component {
   validateEmail (email) {
     var re = /\S+@\S+\.\S+/;
     if(re.test(email)) {
-      let user = this.state.user;
-      user.email = email;
-      this.setState({
-        user: user
-      })
-      this.addLines({
-        type: "txt",
-        content: [ 
-            `E-postadressen ${email} er godkjent!`,
-          ]
+      authByEmail(email, (user) => {
+        console.log(user);
+        this.addLines({
+          type: "txt",
+          content: [ 
+              `Velkommen tilbake ${user.username}!!`,
+              `Du har foreløpig ${user.points} poeng`,
+            ]
+          })
+
+        this.setState({
+          user: {
+            email: user.email,
+            username: user.username,
+            verified: true
+          }
         })
+      }, () => {
+
+        let user = this.state.user;
+        user.email = email;
+        this.setState({
+          user: user
+        })
+        this.addLines({
+          type: "txt",
+          content: [ 
+              `E-postadressen ${email} er godkjent!`,
+            ]
+          })
+
+      })
+
     } else {
       this.addErrorLine("Ikke en gyldig epostadresse");
     }
@@ -294,13 +318,20 @@ class Master extends Component {
       case "DIR":
         this._getListFromDirectory();
         break;
-      case "JULEKODE":
+      case "AUTH":
         if(lineContent.length > 1) {
           this._submitPathCode(lineContent[1]);  
         } else {
           this.addErrorLine("Mangler kodeord");
         }
         break;
+        case "AUTH.EXE":
+        if(lineContent.length > 1) {
+          this._submitPathCode(lineContent[1]);  
+        } else {
+          this.addErrorLine("Mangler kodeord");
+        }
+        break;        
       case "PRINT":
         if(lineContent.length > 1)
           this._getContentsOfFile(lineContent[1]);
@@ -329,11 +360,12 @@ class Master extends Component {
       <PolyWrapper>
         <PolyLines>
           {lines.map((line, index) => {
-            console.log(line, line.type, line.type === "christmas-tree");
             if(line.type === "christmas-tree") 
               return (<ChristmasTree key={index}/>)
             if(line.type === "command") 
               return (<p key={index}>C:{line.path}>&nbsp;{line.content}</p>)
+            if(line.type === "error")
+              return ( <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>)  
             if(line.type === "error")
               return ( <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>)
             if(line.type === "regular")

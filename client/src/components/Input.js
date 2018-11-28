@@ -33,6 +33,7 @@ const PolyInputContainer = styled.span`
     display: flex;
     justify-content: center;
     align-items: center;
+    pointer-events: none;
     &:before {
         content: "";
         position: absolute;
@@ -62,6 +63,7 @@ const PolyInputContainer = styled.span`
         z-index: 11;
     }
     &.show-info {
+      pointer-events: auto;
       &:before {
         opacity: 1;
         transition: all 1s ease-in-out;
@@ -164,7 +166,7 @@ class Input extends Component {
           (<Username>{"[" + this.props.user.username + "]"}</Username>)}
           {pathString}&nbsp;
         </div>
-        <input name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} />
+        <input type="text" name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} placeholder="Trykk her for å skrive"/>
       </PolyInputContainer>
     )
   }

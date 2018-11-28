@@ -7,9 +7,12 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
+const moment = require("moment")
 const files = require('./files.js')
 const db = require('./db.js');
 const app = express()
+
+console.log(new Date());
 
 
 // Serve static files from the React app
@@ -37,6 +40,7 @@ app.get('/api/help', (req, res) => {
   })
 
 const isLoggedIn = async function (req, res, next) {
+  console.log(new Date());
   if(req.cookies.id) {
     var user = await db.findUserById(req.cookies.id);
     if(user) {
@@ -53,18 +57,30 @@ const isLoggedIn = async function (req, res, next) {
 app.post('/api/filesystem/', isLoggedIn, async (req, res) => {
   let pathRequest = req.body.path;
   let path = await db.getFolderFromPath(pathRequest);
-  console.log(path);
+  console.log('hest');
+
   if(!path) {
-    res.send(404, {type: "error", content: ["Fant ikke mappa"]});
+    let hasAccess = false;
+    if(path.global)
+      hasAccess = true;  
+    if(path.availableFrom && moment(path.availableFrom).isSame(new Date(), 'day'))
+      hasAccess = true
+
+    res.send({type: "error", content: ["Fant ikke mappa"]});
+
   } else {
+
     let pathFolders = await db.getSubFoldersOfPath(pathRequest);
+    let globalFolders = await db.getGlobalSubFoldersOfPath(pathRequest);
+       
     res.send({
       parent: path.parent,
       name: path.name,
       fullPath: path.name,
+      passphrase: path.passphrase ? true: false,
       answers: path.answers,
       files: path.files,
-      folders: pathFolders
+      folders: pathFolders.concat(globalFolders)
     });
   }
 })
@@ -74,9 +90,35 @@ app.post('/api/files/', isLoggedIn, async (req,res) => {
   let path = req.body.path;
   let fileName = req.body.fileName.toLowerCase();
   let filePath = await db.getFileInpath(path, fileName);
-  let file = filePath.files.find((file) => file.name.toLowerCase() === fileName);
-  if(file) {
-    res.send(file);
+  console.log('filær', filePath, fileName, path);
+  if(!filePath) {
+    res.send(404, {type: "error", content: "Fant ikke fila di."});
+  } else {
+    let file = filePath.files.find((file) => file.name.toLowerCase() === fileName);
+    if(file) {
+      res.send(file);
+    } else {
+      res.send(404, {type: "error", content: "Fant ikke fila di."});
+    }
+  }
+  
+
+  
+})
+
+app.post('/api/verify/recover', async (req, res) => {
+  
+  var email = req.body.email;
+  let foundUser = await db.findUserByEmail(email);
+  console.log('fant bruker', foundUser);
+  if(foundUser) {
+    res.cookie('id', foundUser._id, { expires: new Date(Date.now() + 9000000000), httpOnly: true });
+    res.send({
+      verified: true,
+      username: foundUser.username, 
+      email: foundUser.email,
+      points: foundUser.aggregatedAnswerCount || 0
+    });
   } else {
     res.send(404, {});
   }
@@ -90,33 +132,37 @@ app.get('/api/verify', isLoggedIn, async (req, res) => {
 app.post('/api/code', isLoggedIn, async (req,res) => {
   let path = req.body.path;
   let code = req.body.code;
-
-  let folder = await db.getFolderFromPath(path);
-
   let today = new Date();
 
-  if(!folder.passphrase) {
-    res.send(404, {type: "error", content: "error"});
+  let folder = await db.getFolderFromPath(path);
+  
+  // finnes mappa
+  if(!folder) {
+    res.send({
+      type: "error", content: "Fant ikke mappa di"
+    });
   } else {
-    if(!folder.passphrase.toLowerCase() === code.toLowerCase()) {
-      res.send(404, {type: "error", content: "Feil kode dessverre"});
+    // har mappa passord
+    if(!folder.passphrase) {
+      res.send({type: "error", content: "denne mappa har ikke noe passordgreiær"});
     } else {
-      let answer = await db.AddAnswer(path, req.user);
-
-        if(answer === 1) {
+      // har brukeren allerede svart
+      if(req.user.answersInFolders.indexOf(folder._id) > -1) {
+        res.send({type: "error", content: "Jøssameien. Du har allerede svart jo!"});
+      } else {
+        // er passordet riktig?
+        if(folder.passphrase.toLowerCase() !== code.toLowerCase()) {
+          res.send({type: "error", content: "Nå haru koda feil kode trujæ."});
+        } else {
+  
+          // vi har kommet gjennom og skal legge inn registrering av riktig passord
+          let answer = await db.AddAnswer(path, req.user, folder, today);
           res.send({
-            type: "txt", content: ["Riktig! Du er med i dagens trekning!"]
+            type: "txt", content: ["Takkær og bukkær! Det var riktig passord vøtt.", "Då erru med i dågens trekning!"]
           });
         } 
-        if(answer === 2) {
-          res.send({
-            type: "txt", content: ["Du har allerede deltatt i denne dagens konkurranse."]
-          });
-        }
-        if(answer === 3) {
-          res.send({ type: "txt", content: [`Riktig! Du kan dessvere kun delta i dagens konkurranse, men du får poeng for riktig svar fortsatt!`, `Sjekk dagens konk i mappen ${today.getDate()}-DES`] });
-        }
-    }
+      }
+    }      
   }   
 })
 
@@ -124,6 +170,7 @@ app.post('/api/user/create', async (req,res) => {
   let email = req.body.email;
   let username = req.body.username;
   let createdUser = await db.addUser(email, username);
+  console.log(email, username, createdUser, 'hest');
   res.cookie('id', createdUser._id, { expires: new Date(Date.now() + 9000000000), httpOnly: true });
   res.send(createdUser);
 })

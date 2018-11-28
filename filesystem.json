@@ -1,54 +1,63 @@
 {
-  "\\" : {
+  "\\": {
     "availableFrom": "12-01-2018",
     "folders": [
-      {"name": "01-DES", "availableFrom": "12-01-2018"},
-      {"name": "02-DES", "availableFrom": "12-02-2018"},
-      {"name": "03-DES", "availableFrom": "12-03-2018"},
-      {"name": "04-DES", "availableFrom": "12-04-2018"},
-      {"name": "05-DES", "availableFrom": "12-05-2018"},
-      {"name": "06-DES", "availableFrom": "12-06-2018"},
-      {"name": "07_DES", "availableFrom": "12-07-2018"},
-      {"name": "08-DES", "availableFrom": "12-08-2018"},
-      {"name": "09-DES", "availableFrom": "12-09-2018"},
-      {"name": "10-DES", "availableFrom": "12-10-2018"},
-      {"name": "11-DES", "availableFrom": "12-11-2018"},
-      {"name": "12-DES", "availableFrom": "12-12-2018"},
-      {"name": "13-DES", "availableFrom": "12-13-2018"},
-      {"name": "14-DES", "availableFrom": "12-14-2018"},
-      {"name": "15-DES", "availableFrom": "12-15-2018"},
-      {"name": "16-DES", "availableFrom": "12-16-2018"},
-      {"name": "17-DES", "availableFrom": "12-17-2018"},
-      {"name": "18-DES", "availableFrom": "12-18-2018"},
-      {"name": "19-DES", "availableFrom": "12-19-2018"},
-      {"name": "20-DES", "availableFrom": "12-20-2018"},
-      {"name": "21-DES", "availableFrom": "12-21-2018"},
-      {"name": "22-DES", "availableFrom": "12-22-2018"},
-      {"name": "23-DES", "availableFrom": "12-23-2018"},
-      {"name": "24-DES", "availableFrom": "12-24-2018"}
+      { "name": "01-DES", "availableFrom": "12-01-2018" },
+      { "name": "02-DES", "availableFrom": "12-02-2018" },
+      { "name": "03-DES", "availableFrom": "12-03-2018" },
+      { "name": "04-DES", "availableFrom": "12-04-2018" },
+      { "name": "05-DES", "availableFrom": "12-05-2018" },
+      { "name": "06-DES", "availableFrom": "12-06-2018" },
+      { "name": "07_DES", "availableFrom": "12-07-2018" },
+      { "name": "08-DES", "availableFrom": "12-08-2018" },
+      { "name": "09-DES", "availableFrom": "12-09-2018" },
+      { "name": "10-DES", "availableFrom": "12-10-2018" },
+      { "name": "11-DES", "availableFrom": "12-11-2018" },
+      { "name": "12-DES", "availableFrom": "12-12-2018" },
+      { "name": "13-DES", "availableFrom": "12-13-2018" },
+      { "name": "14-DES", "availableFrom": "12-14-2018" },
+      { "name": "15-DES", "availableFrom": "12-15-2018" },
+      { "name": "16-DES", "availableFrom": "12-16-2018" },
+      { "name": "17-DES", "availableFrom": "12-17-2018" },
+      { "name": "18-DES", "availableFrom": "12-18-2018" },
+      { "name": "19-DES", "availableFrom": "12-19-2018" },
+      { "name": "20-DES", "availableFrom": "12-20-2018" },
+      { "name": "21-DES", "availableFrom": "12-21-2018" },
+      { "name": "22-DES", "availableFrom": "12-22-2018" },
+      { "name": "23-DES", "availableFrom": "12-23-2018" },
+      { "name": "24-DES", "availableFrom": "12-24-2018" }
     ]
   },
-  "\\01-DES" : {
+  "\\01-DES": {
     "availableFrom": "12-01-2018",
-    "folders": [
-    ],
+    "folders": [],
     "files": [
-      { "name":"d1quiz.txt", "type":"txt", "size": 1400, "content": 
-        ["Dagens oppgave er litt komplisert.", "fisk fis og fjert"]
+      {
+        "name": "d1quiz.txt",
+        "type": "txt",
+        "size": 1400,
+        "content": ["Dagens oppgave er litt komplisert.", "fisk fis og fjert"]
       },
-      { "name":"hest.png", "type":"photo", "size": 1400, "path": "/images/dsc22.jpg"}
+      {
+        "name": "hest.png",
+        "type": "photo",
+        "size": 1400,
+        "path": "/images/dsc22.jpg"
+      }
     ],
     "passphrase": "fisefjert"
   },
-  "\\02-DES" : {
+  "\\02-DES": {
     "availableFrom": "12-01-2018",
-    "folders": [
-    ],
+    "folders": [],
     "files": [
-      { "name":"d2quiz.txt", "type":"txt", "size": 1400, "content": 
-        ["fiskefjas.", "kameler og kukkær"]
+      {
+        "name": "d2quiz.txt",
+        "type": "txt",
+        "size": 1400,
+        "content": ["fiskefjas.", "kameler og kukkær"]
       },
-      { "name":"fiskefis.png", "type":"photo"}
+      { "name": "fiskefis.png", "type": "photo" }
     ],
     "passphrase": "kamelfjert"
   }
