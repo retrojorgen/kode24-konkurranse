@@ -100,11 +100,6 @@ const ChristmasTree = (props) => {
           <TreeStyler>        <Y/><R/><G/><W/><G/><R/><G/>        </TreeStyler>
           <TreeStyler>        <G/><G/><W/><G/><R/><G/><W/><G/><R/><Y/>        </TreeStyler>
           <TreeStyler>        <Y/><R/><G/><W/><G/><R/><G/><W/><G/><R/><G/><G/>        </TreeStyler>
-          <TreeStyler>        <G/><G/><W/><G/><R/><G/><W/><G/><R/><G/><Y/>        </TreeStyler>
-          <TreeStyler>        <Y/><R/><G/><W/><G/><R/><G/><W/><G/><R/><G/><W/><G/>        </TreeStyler>
-          <TreeStyler>        <G/><G/><W/><G/><R/><G/><W/><G/><R/><G/><W/><G/><R/><Y/>        </TreeStyler>
-          <TreeStyler>        <G/><G/><Y/><R/><G/><W/><G/><R/><G/><W/><G/><R/><G/><W/><G/><R/><G/>        </TreeStyler>
-          <TreeStyler>        <G/><G/><G/><G/><G/><G/><W/><G/><R/><G/><W/><G/><R/><G/><W/><G/><R/><G/><W/><G/><Y/>        </TreeStyler>
         </div>
     )
 }
