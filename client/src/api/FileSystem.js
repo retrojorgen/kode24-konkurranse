@@ -32,7 +32,7 @@ fetch('/api/verify/', {
 .then(response => {
     success(response);
 })
-.catch(error => isAuth(error, fail));
+.catch(error => fail(error));
 }
 
 
@@ -55,7 +55,7 @@ const authByEmail = (email, success, fail) => {
     .then(response => {
         success(response);
     })
-    .catch(error => isAuth(error, fail));
+    .catch(error => fail(error));
 }
 
 
@@ -79,7 +79,7 @@ const getListFromDirectory = (path, success, fail) => {
     .then(response => {
         success(response);
     })
-    .catch(error => isAuth(error, fail));
+    .catch(error => fail(error));
 }
 
 const createUser = (email, username, success, fail) => {
@@ -100,7 +100,7 @@ const createUser = (email, username, success, fail) => {
     .then(response => {
         success(response);
     })
-    .catch(error => isAuth(error, fail));
+    .catch(error => fail(error));
 }
 
 const getContentsOfFile = (path, fileName, success, fail) => {

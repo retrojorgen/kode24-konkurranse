@@ -21,6 +21,12 @@ const PolyInputContainer = styled.span`
     margin: 0;
     padding: 0;
     outline: none;
+    &:focus {
+      &::placeholder {
+        color: transparent;
+        text-shadow: 0 0 20px transparent;
+      }
+    }
   }
   .input-wrapper {
 
@@ -34,6 +40,7 @@ const PolyInputContainer = styled.span`
     justify-content: center;
     align-items: center;
     pointer-events: none;
+
     &:before {
         content: "";
         position: absolute;
@@ -42,7 +49,7 @@ const PolyInputContainer = styled.span`
         width: 100%;
         height: 100%;
         transition: all 1s ease-in-out;
-        background-color: green;
+        background-color: #ff2a00;
         opacity: 0;
         z-index: 10;
       }
@@ -64,6 +71,7 @@ const PolyInputContainer = styled.span`
     }
     &.show-info {
       pointer-events: auto;
+      cursor: pointer;
       &:before {
         opacity: 1;
         transition: all 1s ease-in-out;
