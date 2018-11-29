@@ -96,7 +96,8 @@ const Username = styled.span`
   @media (min-width: 600px) {
     display: inline;
   }
-`; 
+`;
+ 
 
 class Input extends Component {
   state = {
