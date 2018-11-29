@@ -60,7 +60,7 @@ async function addUser(email, username) {
 
 async function findUserByEmail(email) {
 	try {
-		return await User.findOne({email: email.toLowerCase});
+		return await User.findOne({email: email});
 	} catch(error) {
 		return false;
 	}
