@@ -107,7 +107,7 @@ class Master extends Component {
             "║.......GOD JUL FRA.........║",
             "║..PORSGRUNNS TREDJE BESTE..║",
             "║.....INTERNETTHOSTING......║",
-            "║......TOMSHOSTING.NO.......║",
+            "║.......TOMSHOSTING.........║",
             "FOR HJÆLP SKRIV HELP",
           ]
         }
