@@ -106,7 +106,7 @@ app.post('/api/files/', isLoggedIn, async (req,res) => {
 
 app.post('/api/verify/recover', async (req, res) => {
   
-  var email = req.body.email;
+  var email = req.body.email.toLowerCase();
   let foundUser = await db.findUserByEmail(email);
   if(foundUser) {
     res.cookie('id', foundUser._id, { expires: new Date(Date.now() + 9000000000), httpOnly: true });
@@ -124,7 +124,7 @@ app.post('/api/verify/recover', async (req, res) => {
 
 app.post('/api/verify/username', async (req, res) => {
   
-  var username = req.body.username;
+  var username = req.body.username.toLowerCase();
   let foundUser = await db.findUserByUsername(username);
   if(foundUser) {
     res.send({
@@ -184,8 +184,8 @@ app.post('/api/code', isLoggedIn, async (req,res) => {
 })
 
 app.post('/api/user/create', async (req,res) => {
-  let email = req.body.email;
-  let username = req.body.username;
+  let email = req.body.email.toLowerCase();
+  let username = req.body.username.toLowerCase();
   let createdUser = await db.addUser(email, username);
   res.cookie('id', createdUser._id, { expires: new Date(Date.now() + 9000000000), httpOnly: true });
   res.send(createdUser);

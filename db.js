@@ -10,8 +10,8 @@ mongoose.connect(
 
 const UserSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  email: { type: String, unique: true },
-  username: { type: String, unique: true },
+  email: { type: String, unique: true, lowercase: true},
+  username: { type: String, unique: true, lowercase: true },
   aggregatedAnswerCount: { type: Number, default: 0 },
   answersInFolders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Folder" }]
 });
@@ -60,7 +60,7 @@ async function addUser(email, username) {
 
 async function findUserByEmail(email) {
 	try {
-		return await User.findOne({email: email});
+		return await User.findOne({email: email.toLowerCase});
 	} catch(error) {
 		return false;
 	}
