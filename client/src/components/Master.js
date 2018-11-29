@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from './Input';
-import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser, authByEmail } from '../api/FileSystem';
+import { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser, authByEmail, verifyUsername } from '../api/FileSystem';
 import FolderListing from './folder';
 import TxtListing from './txt';
 import ChristmasTree from './tree';
@@ -78,7 +78,18 @@ class Master extends Component {
   }
   
   _isVerified () {
+    
     isVerified((user) => {
+      console.log(user);
+      this.addLines({
+        type: "txt",
+        content: [ 
+            `Velkommen tilbake ${user.username}!!`,
+            `Du har foreløpig ${user.aggregatedAnswerCount} poeng`,
+          ]
+        })
+
+
       this.setState({
         user: {
           email: user.email,
@@ -189,6 +200,8 @@ class Master extends Component {
           lines: [...this.state.lines, response]
         }
       )
+    }, (error) => {
+      this.addLines(error);
     })
   }
 
@@ -245,6 +258,7 @@ class Master extends Component {
         this.setState({
           user: user
         })
+        console.log('hest');
         this.addLines({
           type: "txt",
           content: [ 
@@ -259,38 +273,41 @@ class Master extends Component {
     }
   }
 
-  validateUsername (username) {
+  _validateUsername (username) {
     if(username.length > 20) {
       this.addErrorLine("Brukernavnet må være kortere enn 20 tegn");
     } else {
-      let user = this.state.user;
-      user.username = username;
-      this.setState({
-        user: user
-      });
-      this.addLines({
-        type: "txt",
-        content: [ 
-          `Brukernavnet ${username} er godkjent!`,
-          `Logger deg inn kompis..`,
-        ]
-      })
-      createUser(user.email,user.username, (user) => {
-        this.addLines({
-            type: "txt",
-            content: [`Velkommen ${username}`]
-          })
-        
+      verifyUsername(username, () => {
+        this.addErrorLine("Brukernavnet er allerede i bruk");
+      }, () => {
+        let user = this.state.user;
+        user.username = username;
         this.setState({
-          user: {
-            email: user.email,
-            username: user.username,
-            verified: true
-          }
+          user: user
         });
+        this.addLines({
+          type: "txt",
+          content: [ 
+            `Brukernavnet ${username} er godkjent!`,
+            `Logger deg inn kompis..`,
+          ]
+        })
+        createUser(user.email,user.username, (user) => {
+          this.addLines({
+              type: "txt",
+              content: [`Velkommen ${username}`, "Du har foreløpig 0 poeng."]
+            })
+          
+          this.setState({
+            user: {
+              email: user.email,
+              username: user.username,
+              verified: true
+            }
+          });
+        })
       })
     }
-
   } 
 
   parseLine (line) {
@@ -387,7 +404,7 @@ class Master extends Component {
             user={user} 
             pathString={pathString} 
             sendToEmail={this.validateEmail.bind(this)}
-            sendToUsername={this.validateUsername.bind(this)}
+            sendToUsername={this._validateUsername.bind(this)}
             sendToParse={this.parseLine.bind(this)} 
           />
         </PolyInputWrapper>

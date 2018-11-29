@@ -92,6 +92,18 @@ const PolyInputContainer = styled.span`
 const Username = styled.span`
   color: #ff2a00;
   text-shadow: 0 0 20px #ff2a00;
+  display: none;
+  span {
+    width: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    transform: translateY(4px);
+  }
+  @media (min-width: 600px) {
+    display: inline;
+  }
 `; 
 
 class Input extends Component {
@@ -171,7 +183,7 @@ class Input extends Component {
         <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`} />
         <div className="path-view">
           {this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified && 
-          (<Username>{"[" + this.props.user.username + "]"}</Username>)}
+          (<Username>[<span>{this.props.user.username}</span>]</Username>)}
           {pathString}&nbsp;
         </div>
         <input type="text" name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} placeholder="Trykk her for å skrive"/>

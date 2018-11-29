@@ -33,7 +33,7 @@ const FolderListing = (props) => {
                 console.log(folder, folders, folder.name, 'hest');
                 return (
                     <tr key={key}>
-                        <td>{folder.availableFrom.substring(0,9)}&nbsp;&nbsp;</td>
+                        <td>{folder.availableFrom.substring(0,10)}&nbsp;&nbsp;</td>
                         <td>&lt;dir&gt;&nbsp;&nbsp;</td>
                         <td>{folder.name}</td>
                     </tr>
@@ -42,7 +42,7 @@ const FolderListing = (props) => {
             {files.map((file, key) => {
                 return (
                     <tr key={key} className={`${file.type === "binary" ? "binary": ""}`}>
-                        <td>{availableFrom.substring(0,9)}&nbsp;&nbsp;</td>
+                        <td>{availableFrom.substring(0,10)}&nbsp;&nbsp;</td>
                         <td>{file.size}&nbsp;&nbsp;</td>
                         <td className={`${file.type === "binary" ? "binary": ""}`}>{file.name}</td>
                     </tr>

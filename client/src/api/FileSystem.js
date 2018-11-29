@@ -48,7 +48,27 @@ const authByEmail = (email, success, fail) => {
         if (response.ok) {
             return response.json();
         } else {
-            return fail();
+            throw new Error('404');
+        }
+        })
+    .then(response => {
+        success(response);
+    })
+    .catch(error => fail(error));
+}
+
+const verifyUsername = (username, success, fail) => {
+    fetch('/api/verify/username', {
+        method: 'post',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username: username})
+        })
+        .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
             throw new Error('404');
         }
         })
@@ -60,6 +80,7 @@ const authByEmail = (email, success, fail) => {
 
 
 const getListFromDirectory = (path, success, fail) => {
+    console.log('hest', path, success, fail);
     if(!path)
         path = "\\";
     fetch('/api/filesystem/', {
@@ -70,11 +91,11 @@ const getListFromDirectory = (path, success, fail) => {
         body: JSON.stringify({path: path})
         })
         .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('404');
-        }
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('404');
+            }
         })
     .then(response => {
         success(response);
@@ -153,4 +174,4 @@ const submitPathCode = (path, code, success, fail) => {
 }
 
 
-export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser, authByEmail };
+export { getHelp, getListFromDirectory, getContentsOfFile, submitPathCode, isVerified, createUser, authByEmail, verifyUsername };

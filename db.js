@@ -66,6 +66,14 @@ async function findUserByEmail(email) {
 	}
 }
 
+async function findUserByUsername(username) {
+	try {
+		return await User.findOne({username: username});
+	} catch(error) {
+		return false;
+	}
+}
+
 async function findUserById(userId) {
   try {
     return User.findById(userId);
@@ -97,7 +105,6 @@ async function getSubFoldersOfPath(fullpath) {
 			{ 
 				parent: fullpath,
 				availableFrom: {
-					$gte: today.toDate(),
 					$lt: tomorrow.toDate()
 				}
 			},
@@ -159,7 +166,8 @@ async function AddAnswer(fullpath, user, folder, today) {
 module.exports = {
   AddAnswer: AddAnswer,
 	addUser: addUser,
-	findUserByEmail: findUserByEmail,
+    findUserByEmail: findUserByEmail,
+    findUserByUsername: findUserByUsername,
   findUserById: findUserById,
   getFolderFromPath: getFolderFromPath,
   getSubFoldersOfPath: getSubFoldersOfPath,

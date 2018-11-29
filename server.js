@@ -57,31 +57,29 @@ const isLoggedIn = async function (req, res, next) {
 app.post('/api/filesystem/', isLoggedIn, async (req, res) => {
   let pathRequest = req.body.path;
   let path = await db.getFolderFromPath(pathRequest);
-  console.log('hest');
 
   if(!path) {
-    let hasAccess = false;
-    if(path.global)
-      hasAccess = true;  
-    if(path.availableFrom && moment(path.availableFrom).isSame(new Date(), 'day'))
-      hasAccess = true
-
-    res.send({type: "error", content: ["Fant ikke mappa"]});
+    res.send({type: "error", content: "Fant ikke mappa"});
 
   } else {
 
-    let pathFolders = await db.getSubFoldersOfPath(pathRequest);
-    let globalFolders = await db.getGlobalSubFoldersOfPath(pathRequest);
-       
-    res.send({
-      parent: path.parent,
-      name: path.name,
-      fullPath: path.name,
-      passphrase: path.passphrase ? true: false,
-      answers: path.answers,
-      files: path.files,
-      folders: pathFolders.concat(globalFolders)
-    });
+    if(path.availableFrom && moment(path.availableFrom).diff(new Date(), 'days') > 0) {
+
+      res.send(404, {type: "error", content: "Fant ikke mappa"});
+    } else {
+      let pathFolders = await db.getSubFoldersOfPath(pathRequest);
+      let globalFolders = await db.getGlobalSubFoldersOfPath(pathRequest);
+        
+      res.send({
+        parent: path.parent,
+        name: path.name,
+        fullPath: path.name,
+        passphrase: path.passphrase ? true: false,
+        answers: path.answers,
+        files: path.files,
+        folders: pathFolders.concat(globalFolders)
+      });
+    }
   }
 })
 
@@ -110,7 +108,6 @@ app.post('/api/verify/recover', async (req, res) => {
   
   var email = req.body.email;
   let foundUser = await db.findUserByEmail(email);
-  console.log('fant bruker', foundUser);
   if(foundUser) {
     res.cookie('id', foundUser._id, { expires: new Date(Date.now() + 9000000000), httpOnly: true });
     res.send({
@@ -118,6 +115,20 @@ app.post('/api/verify/recover', async (req, res) => {
       username: foundUser.username, 
       email: foundUser.email,
       points: foundUser.aggregatedAnswerCount || 0
+    });
+  } else {
+    res.send(404, {});
+  }
+  
+})
+
+app.post('/api/verify/username', async (req, res) => {
+  
+  var username = req.body.username;
+  let foundUser = await db.findUserByUsername(username);
+  if(foundUser) {
+    res.send({
+      username: username
     });
   } else {
     res.send(404, {});
@@ -154,12 +165,18 @@ app.post('/api/code', isLoggedIn, async (req,res) => {
         if(folder.passphrase.toLowerCase() !== code.toLowerCase()) {
           res.send({type: "error", content: "Nå haru koda feil kode trujæ."});
         } else {
-  
-          // vi har kommet gjennom og skal legge inn registrering av riktig passord
-          let answer = await db.AddAnswer(path, req.user, folder, today);
-          res.send({
-            type: "txt", content: ["** Passord korrekt: Server autorisert. **", `(du er med i dagens trekning, ${today.getDate()}. desember)`]
-          });
+          if(folder.availableFrom && moment(folder.availableFrom).isSame(new Date(), 'day')) {
+              // vi har kommet gjennom og skal legge inn registrering av riktig passord
+            let answer = await db.AddAnswer(path, req.user, folder, today);
+            res.send({
+              type: "txt", content: ["** Passord korrekt: Server autorisert. **", `(du er med i dagens trekning, ${today.getDate()}. desember)`]
+            });
+          } else {
+            res.send({
+              type: "txt", content: ["** Passord korrekt: Server er allerede autorisert. **", `Trekningen for denne dagen er over. Gå til dagens konkurransemappe, ${today.getDate()}. desember`, `** OBS! Du får kun poeng for å svare på dagens konkurranse.`]
+            });
+          }
+          
         } 
       }
     }      
@@ -170,7 +187,6 @@ app.post('/api/user/create', async (req,res) => {
   let email = req.body.email;
   let username = req.body.username;
   let createdUser = await db.addUser(email, username);
-  console.log(email, username, createdUser, 'hest');
   res.cookie('id', createdUser._id, { expires: new Date(Date.now() + 9000000000), httpOnly: true });
   res.send(createdUser);
 })
