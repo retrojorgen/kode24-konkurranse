@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 const PolyInputContainer = styled.span`
+
   bakground-color: transparent;
   border: 0;
   padding-top: 10px;
@@ -9,6 +10,7 @@ const PolyInputContainer = styled.span`
   display: flex;
   width: 100%;
   .mobile-input {
+
     flex: 1 1 100%;
     background-color: transparent;
     color: #0dff00;
@@ -80,7 +82,7 @@ const PolyInputContainer = styled.span`
         opacity: 1;
         transition: all 1s ease-in-out;
       }
-      
+
     }
   }
 
@@ -97,7 +99,7 @@ const Username = styled.span`
     display: inline;
   }
 `;
- 
+
 
 class Input extends Component {
   state = {
