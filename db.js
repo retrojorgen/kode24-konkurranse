@@ -44,8 +44,8 @@ async function addUser(email, username) {
   try {
     let newUser = new User({
 			"_id": new mongoose.mongo.ObjectId(),
-      email: email,
-			username: username,
+      email: email.toLowerCase(),
+			username: username.toLowerCase(),
 			aggregatedAnswerCount: 0,
 			answersInFolders: []
     });
