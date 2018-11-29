@@ -93,14 +93,6 @@ const Username = styled.span`
   color: #ff2a00;
   text-shadow: 0 0 20px #ff2a00;
   display: none;
-  span {
-    width: 50px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    transform: translateY(4px);
-  }
   @media (min-width: 600px) {
     display: inline;
   }
