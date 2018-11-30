@@ -59,14 +59,16 @@ app.post('/api/filesystem/', isLoggedIn, async (req, res) => {
   let path = await db.getFolderFromPath(pathRequest);
 
   if(!path) {
-    res.send({type: "error", content: "Fant ikke mappa"});
+    res.send(404, {type: "error", content: "Fant ikke mappa"});
 
   } else {
 
-    if(path.availableFrom && moment(path.availableFrom).diff(new Date(), 'days') > 0) {
+
+    if(path.availableFrom && moment().startOf("day").diff(path.availableFrom, 'days') < 0) {
 
       res.send(404, {type: "error", content: "Fant ikke mappa"});
     } else {
+      
       let pathFolders = await db.getSubFoldersOfPath(pathRequest);
       let globalFolders = await db.getGlobalSubFoldersOfPath(pathRequest);
         

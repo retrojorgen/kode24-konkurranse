@@ -167,6 +167,7 @@ class Master extends Component {
   
   changePath (path) {
     getListFromDirectory(path, (response) => {
+      console.log('fikk dette tilbake', response);
       path = path.split("\\");
       this.setState({
         path: path
