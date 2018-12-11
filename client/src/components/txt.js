@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 const TxtListing = (props) => {
     let name = props.content.name;
     let content = props.content.content;

@@ -12,10 +12,6 @@ const getHelp = (success, fail) => {
   });
 }
 
-const isAuth = (error, callback) => {
-    console.log('fisen min', error);
-    callback(error);
-}
 
 const isVerified = (success, fail) => {
 fetch('/api/verify/', {
@@ -25,7 +21,7 @@ fetch('/api/verify/', {
     if (response.ok) {
         return response.json();
     } else {
-        console.log(response);
+        
         throw new Error('401');
     }
   })
@@ -80,7 +76,7 @@ const verifyUsername = (username, success, fail) => {
 
 
 const getListFromDirectory = (path, success, fail) => {
-    console.log('hest', path, success, fail);
+    
     if(!path)
         path = "\\";
     fetch('/api/filesystem/', {
@@ -163,7 +159,7 @@ const submitPathCode = (path, code, success, fail) => {
         if (response.ok) {
           return response.json();
         } else {
-            console.log('respåns', response);
+            
           throw new Error('404');
         }
       })

@@ -80,7 +80,7 @@ class Master extends Component {
   _isVerified () {
     
     isVerified((user) => {
-      console.log(user);
+
       this.addLines({
         type: "txt",
         content: [ 
@@ -167,7 +167,7 @@ class Master extends Component {
   
   changePath (path) {
     getListFromDirectory(path, (response) => {
-      console.log('fikk dette tilbake', response);
+
       path = path.split("\\");
       this.setState({
         path: path
@@ -236,7 +236,7 @@ class Master extends Component {
     var re = /\S+@\S+\.\S+/;
     if(re.test(email)) {
       authByEmail(email, (user) => {
-        console.log(user);
+
         this.addLines({
           type: "txt",
           content: [ 
@@ -259,7 +259,7 @@ class Master extends Component {
         this.setState({
           user: user
         })
-        console.log('hest');
+
         this.addLines({
           type: "txt",
           content: [ 
@@ -395,6 +395,7 @@ class Master extends Component {
               return ( <div key={index} className="photo"><img src={line.path} alt="" /></div>)    
             if(line.type === "folder-list")
               return (<FolderListing key={index} content={line} />)  
+            return (<p></p>)  
           })}
         </PolyLines>
         <PolyInputWrapper>

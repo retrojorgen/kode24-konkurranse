@@ -30,7 +30,6 @@ const FolderListing = (props) => {
             </thead>
             <tbody>
             {folders.map((folder, key) => {
-                console.log(folder, folders, folder.name, 'hest');
                 return (
                     <tr key={key}>
                         <td>{folder.availableFrom.substring(0,10)}&nbsp;&nbsp;</td>
