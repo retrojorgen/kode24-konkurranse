@@ -110,6 +110,7 @@ async function getSubFoldersOfPath(fullpath) {
 			},
       "files files.path files.name files.type files.size files.content availableFrom fullpath name parent"
     )
+      .sort({"name": 1})
       .populate("answers", "username -_id")
       .exec();
   } catch (error) {
