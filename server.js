@@ -7,7 +7,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const moment = require("moment");
-const files = require("./files.js");
 const db = require("./db.js");
 const app = express();
 
@@ -39,6 +38,7 @@ app.get("/api/help", (req, res) => {
 
 const isLoggedIn = async function(req, res, next) {
   console.log(new Date());
+  console.log(req.cookies.id);
   if (req.cookies.id) {
     var user = await db.findUserById(req.cookies.id);
     if (user) {
@@ -126,6 +126,19 @@ app.post("/api/verify/recover", async (req, res) => {
   }
 });
 
+app.post("/api/verify/email", async (req, res) => {
+  var email = req.body.email.toLowerCase();
+  let foundUser = await db.findUserByEmail(email);
+  if (foundUser) {
+    res.send({
+      user: foundUser,
+      verified: true
+    });
+  } else {
+    res.send(404, {});
+  }
+});
+
 app.post("/api/verify/username", async (req, res) => {
   var username = req.body.username.toLowerCase();
   let foundUser = await db.findUserByUsername(username);
@@ -139,6 +152,7 @@ app.post("/api/verify/username", async (req, res) => {
 });
 
 app.get("/api/verify", isLoggedIn, async (req, res) => {
+  console.log("hest");
   res.send(req.user);
 });
 

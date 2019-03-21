@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 const moment = require("moment");
+console.log(
+  "mongodb://" +
+    process.env.DBUSER +
+    ":" +
+    process.env.DBPASSWORD +
+    "@" +
+    process.env.DBURL +
+    "/" +
+    process.env.DBNAME
+);
 mongoose.connect(
   "mongodb://" +
     process.env.DBUSER +
