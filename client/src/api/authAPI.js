@@ -1,102 +1,62 @@
-const isVerified = (success, fail) => {
-  fetch("/api/verify/", {
-    method: "get"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("401");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
+const isVerified = async () => {
+  const response = await tryWebCall("/api/verify", "get", {});
+  return response;
 };
 
-const recoverByEmail = (email, success, fail) => {
-  fetch("/api/verify/recover", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email: email })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
+const recoverByEmail = async email => {
+  const response = await tryWebCall("/api/verify/recover", "post", {
+    email: email
+  });
+  return response;
 };
 
-const verifyEmail = (email, success, fail) => {
-  fetch("/api/verify/email", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email: email })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
+const verifyEmail = async email => {
+  const response = await tryWebCall("/api/verify/email", "post", {
+    email: email
+  });
+  return response;
 };
 
-const verifyUsername = (username, success, fail) => {
-  fetch("/api/verify/username", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ username: username })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
+const verifyUsername = async username => {
+  const response = await tryWebCall("/api/verify/username", "post", {
+    username: username
+  });
+  return response;
 };
 
-const createUser = (email, username, success, fail) => {
-  fetch("/api/user/create", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email: email, username: username })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
+const createUser = async (email, username) => {
+  const response = await tryWebCall("/api/user/create", "post", {
+    email: email,
+    username: username
+  });
+  return response;
+};
+
+const tryWebCall = async (url, method, data) => {
+  try {
+    let response = undefined;
+    if (method === "post") {
+      response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+    } else {
+      response = await fetch(url);
+    }
+
+    if (response.ok) {
+      const json = await response.json();
+      return json;
+    } else {
+      throw new Error("404");
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 export { isVerified, createUser, recoverByEmail, verifyUsername, verifyEmail };

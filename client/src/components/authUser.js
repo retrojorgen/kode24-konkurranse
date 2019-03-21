@@ -27,13 +27,14 @@ class AuthUser extends Component {
           isUsed: false
         }
       },
+      verified: false,
       error: ""
     };
   }
 
   clearUser(user) {
     this.setState({
-      user: {
+      inputs: {
         email: {
           name: "",
           error: "",
@@ -48,69 +49,121 @@ class AuthUser extends Component {
     });
   }
 
-  _isVerified() {
-    isVerified(user => this.setAsVerified(user));
-  }
-
   componentDidMount() {
-    // call to see if user is verified
+    this.isUserLoggedIn();
   }
 
-  _recoverByEmail(email) {
-    recoverByEmail(email, user => this.props.authUser(user));
+  async isUserLoggedIn() {
+    const user = await isVerified();
+    if (user) {
+      let inputsCopy = Object.assign({}, this.state);
+      inputsCopy.inputs.email.name = user.email;
+      inputsCopy.inputs.username.name = user.username;
+      inputsCopy.verified = true;
+      this.setState(inputsCopy);
+    }
   }
 
-  _validateUsername(username) {
-    if (username.length > 20) {
-      this.addErrorLine("Kallenavn må være kortere enn 20 tegn");
+  async checkEmail(event) {
+    let email = event.target.value;
+    let inputsCopy = Object.assign({}, this.state);
+    inputsCopy.inputs.email.name = email;
+    this.setState(inputsCopy);
+    if (email) {
+      const emailResponse = await verifyEmail(email);
+      if (emailResponse) {
+        inputsCopy.inputs.username.name = emailResponse.user.username;
+        inputsCopy.verified = true;
+      } else {
+        inputsCopy.verified = false;
+      }
+      this.setState(inputsCopy);
+      console.log(emailResponse);
+    }
+  }
+
+  async checkUsername(event) {
+    let username = event.target.value;
+    let inputsCopy = Object.assign({}, this.state);
+    inputsCopy.inputs.username.name = username;
+    this.setState(inputsCopy);
+    if (username) {
+      const usernameResponse = await verifyUsername(username);
+      if (usernameResponse) {
+        inputsCopy.inputs.username.isUsed = true;
+        this.setState(inputsCopy);
+      }
+      console.log(usernameResponse);
+    }
+  }
+
+  async registerUser() {
+    let email = this.state.inputs.email.name;
+    let username = this.state.inputs.username.name;
+    const createdResponse = createUser(email, username);
+    if (createdResponse) {
+      return createdResponse;
     } else {
-      verifyUsername(
-        username,
-        () => {
-          this.addErrorLine("Kallenavn er allerede i bruk");
-        },
-        () => {
-          let user = this.state.user;
-          user.username = username;
-          this.setState({
-            user: user
-          });
-          this.addLines({
-            type: "txt",
-            content: [
-              `Kallenavn ${username} er godkjent!`,
-              `Logger deg inn kompis..`
-            ]
-          });
-          createUser(user.email, user.username, user => {
-            this.addLines({
-              type: "txt",
-              content: [`Velkommen ${username}`, "Du har foreløpig 0 poeng."]
-            });
+    }
+  }
 
-            this.setState({
-              user: {
-                email: user.email,
-                username: user.username,
-                verified: true
-              }
-            });
-          });
-        }
-      );
+  async handleFormSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.state.verified) {
+      // user is recovering
+      const response = await recoverByEmail(this.state.inputs.email.name);
+      // call back to master
+      this.props.authUser(response);
+    } else {
+      const response = await this.state.registerUser();
+      this.props.authUser(response);
     }
   }
 
   render() {
-    let user = this.state.user;
+    let inputs = this.state.inputs;
+    let verified = this.state.verified;
     return (
       <AuthWrapper>
-        <form>
-          <input name="e-mail" type="email" />
-          <input name="username" type="text" />
-          {user.verified && <button>Logg inn</button>}
-          {user.verified && <button>Logg inn</button>}
-          {!user.verified && <button>Registrer og logg inn</button>}
+        <form onSubmit={event => this.handleFormSubmit(event)}>
+          {!verified && (
+            <>
+              <div>
+                <input
+                  name="e-mail"
+                  type="email"
+                  value={this.state.inputs.email.name}
+                  onChange={event => this.checkEmail(event)}
+                />
+                <p>{inputs.email.error}</p>
+              </div>
+
+              <div>
+                <input
+                  name="username"
+                  type="text"
+                  value={this.state.inputs.username.name}
+                  onChange={event => this.checkUsername(event)}
+                />
+                <p>{inputs.username.error}</p>
+              </div>
+            </>
+          )}
+
+          {verified && <button>Logg inn som {inputs.username.name}</button>}
+          {!verified && (
+            <button
+              disabled={
+                !inputs.email.name ||
+                !inputs.username.name ||
+                inputs.email.isUsed ||
+                inputs.username.isUsed
+              }
+            >
+              Registrer og logg inn
+            </button>
+          )}
         </form>
       </AuthWrapper>
     );

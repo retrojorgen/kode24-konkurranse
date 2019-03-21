@@ -20,12 +20,16 @@ class Master extends Component {
 
   componentDidMount() {}
 
+  authUser(user) {
+    console.log("fikk bruker", user);
+  }
+
   render() {
     let user = this.state.user;
     if (user.verified) {
       return <FileSystemBrowser />;
     } else {
-      return <AuthUser />;
+      return <AuthUser authUser={this.authUser} />;
     }
   }
 }
