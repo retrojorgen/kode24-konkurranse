@@ -18,6 +18,9 @@ injectGlobal`
     color: #0dff00;
     text-shadow: 0 0 20px #1d6119;
     background-color: #262822;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   * {

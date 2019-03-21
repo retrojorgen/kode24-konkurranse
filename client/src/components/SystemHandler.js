@@ -3,6 +3,8 @@ import styled from "styled-components";
 import AuthUser from "./authUser";
 import FileSystemBrowser from "./FileSystemBrowser";
 
+const PageWrapper = styled.div``;
+
 class Master extends Component {
   constructor(props) {
     super(props);
@@ -11,8 +13,7 @@ class Master extends Component {
       userFolder: {},
       user: {
         email: "",
-        username: "",
-        verified: false
+        username: ""
       },
       fileSystemUser: {}
     };
@@ -26,11 +27,12 @@ class Master extends Component {
 
   render() {
     let user = this.state.user;
-    if (user.verified) {
-      return <FileSystemBrowser />;
-    } else {
-      return <AuthUser authUser={this.authUser} />;
-    }
+    return (
+      <PageWrapper>
+        {!user.email && !user.username && <AuthUser authUser={this.authUser} />}
+        {user.email && user.username && <FileSystemBrowser />}
+      </PageWrapper>
+    );
   }
 }
 
