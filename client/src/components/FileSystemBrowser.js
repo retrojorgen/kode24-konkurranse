@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Input from "./Input";
-import {
-  getHelp,
-  getListFromDirectory,
-  getContentsOfFile,
-  submitPathCode
-} from "../api/FileSystem";
+import { getHelp, getFiles, submitCode } from "../api/FileSystem";
 import FolderListing from "./folder";
 import TxtListing from "./txt";
 import ChristmasTree from "./tree";
@@ -80,7 +75,9 @@ class Master extends Component {
     this.state = {
       lines: [],
       userFolder: {},
-      user: {}
+      user: {},
+      hasAnswered: false,
+      files: []
     };
   }
 
@@ -127,56 +124,37 @@ class Master extends Component {
     });
   }
 
-  changePath(path) {
-    getListFromDirectory(
-      path,
-      response => {
-        path = path.split("\\");
-        this.setState({
-          path: path
-        });
-      },
-      error => {
-        this.addErrorLine("Den derre mappa der fins ikke");
-      }
-    );
+  async componentDidMount() {
+    let folderInfo = await getFiles();
+    console.log("got files", folderInfo);
+
+    if (folderInfo.files.length) {
+      this.setState({ files: folderInfo.files });
+      this.addLines({ type: "files", content: folderInfo.files });
+    }
   }
 
-  _getContentsOfFile(file) {
-    getContentsOfFile(
-      this.getPathString(),
-      file,
-      response => {
-        this.addLines(response);
-      },
-      () => {
-        this.addErrorLine("Fant ikke fila jeg");
-      }
-    );
+  _getContentsOfFile(fileName) {
+    fileName = fileName.toLowerCase();
+    let files = this.state.files.filter(file => file.name === fileName);
+    console.log(fileName, this.state.files);
+    if (files.length) {
+      console.log("fant fila", files);
+      this.addLines({ type: "txt", content: files[0].content });
+    }
   }
 
   _getListFromDirectory() {
-    // replaced with list from folderObject
+    this.addLines({ type: "files", content: this.state.files });
   }
 
   _submitPathCode(code) {
     // used to lock user directory
-    submitPathCode(
-      this.getPathString(),
-      code,
-      response => {
-        this.addLines(response);
-      },
-      () => {
-        this.addErrorLine("Ser ikke ut som passordet stemte gitt");
-      }
-    );
   }
 
   parseLine(line) {
     this.addLines({
       type: "command",
-      path: this.getPathString(),
       content: line
     });
 
@@ -187,9 +165,6 @@ class Master extends Component {
     }
 
     switch (lineContent[0]) {
-      case "CD..":
-        this._parsePathRequest("..");
-        break;
       case "HELP":
         this._getHelp();
         break;
@@ -199,13 +174,6 @@ class Master extends Component {
       case "DIR":
         this._getListFromDirectory();
         break;
-      case "AUTH":
-        if (lineContent.length > 1) {
-          this._submitPathCode(lineContent[1]);
-        } else {
-          this.addErrorLine("Mangler kodeord");
-        }
-        break;
       case "AUTH.EXE":
         if (lineContent.length > 1) {
           this._submitPathCode(lineContent[1]);
@@ -213,16 +181,15 @@ class Master extends Component {
           this.addErrorLine("Mangler kodeord");
         }
         break;
+      case "LOGOUT":
+        console.log("hest");
+        this.props.logout();
+        break;
       case "PRINT":
+        console.log("hest2");
         if (lineContent.length > 1) this._getContentsOfFile(lineContent[1]);
         else {
           this.addErrorLine("Må ha noe å printe også eller?");
-        }
-        break;
-      case "CD":
-        if (lineContent.length > 1) this._parsePathRequest(lineContent[1]);
-        else {
-          this.addErrorLine("Cd som i compact disc da eller?");
         }
         break;
       default:
@@ -233,8 +200,8 @@ class Master extends Component {
 
   render() {
     let lines = this.state.lines;
-    let pathString = this.getPathString();
-    let user = this.state.user;
+    let user = this.props.user;
+    let fileSystemUser = this.props.filesystemuser;
     return (
       <PolyWrapper>
         <PolyLines>
@@ -249,20 +216,18 @@ class Master extends Component {
               );
             if (line.type === "error")
               return <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>;
-            if (line.type === "error")
-              return <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>;
             if (line.type === "regular")
               return <p key={index}>{line.content}</p>;
             if (line.type === "txt")
-              return <TxtListing key={index} content={line} />;
+              return <TxtListing key={index} filecontent={line.content} />;
             if (line.type === "photo")
               return (
                 <div key={index} className="photo">
                   <img src={line.path} alt="" />
                 </div>
               );
-            if (line.type === "folder-list")
-              return <FolderListing key={index} content={line} />;
+            if (line.type === "files")
+              return <FolderListing key={index} files={line.content} />;
             return <p />;
           })}
         </PolyLines>
@@ -270,9 +235,7 @@ class Master extends Component {
           {!user}
           <Input
             user={user}
-            pathString={pathString}
-            sendToEmail={this.validateEmail.bind(this)}
-            sendToUsername={this._validateUsername.bind(this)}
+            pathString={fileSystemUser.username}
             sendToParse={this.parseLine.bind(this)}
           />
         </PolyInputWrapper>

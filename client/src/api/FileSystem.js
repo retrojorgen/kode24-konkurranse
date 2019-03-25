@@ -1,195 +1,43 @@
-const getHelp = (success, fail) => {
-  fetch("/api/help", {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json"
+const getFiles = async email => {
+  const response = await tryWebCall("/api/files", "post", {});
+  return response;
+};
+
+const getHelp = async email => {
+  const response = await tryWebCall("/api/help", "get");
+  return response;
+};
+
+const submitCode = async email => {
+  const response = await tryWebCall("/api/files/code", "get");
+  return response;
+};
+
+const tryWebCall = async (url, method, data) => {
+  try {
+    let response = undefined;
+    if (method === "post") {
+      response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+    } else {
+      response = await fetch(url);
     }
-  })
-    .then(res => res.json())
-    .then(response => {
-      success(response);
-    });
+
+    if (response.ok) {
+      const json = await response.json();
+      return json;
+    } else {
+      throw new Error("404");
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
-const isVerified = (success, fail) => {
-  fetch("/api/verify/", {
-    method: "get"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("401");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-const recoverByEmail = (email, success, fail) => {
-  fetch("/api/verify/recover", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email: email })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-const verifyEmail = (email, success, fail) => {
-  fetch("/api/verify/email", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email: email })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-const verifyUsername = (username, success, fail) => {
-  fetch("/api/verify/username", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ username: username })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-const getListFromDirectory = (path, success, fail) => {
-  if (!path) path = "\\";
-  fetch("/api/filesystem/", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ path: path })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-const createUser = (email, username, success, fail) => {
-  fetch("/api/user/create", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email: email, username: username })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-const getContentsOfFile = (path, fileName, success, fail) => {
-  fetch("/api/files", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      path: path,
-      fileName: fileName
-    })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-const submitPathCode = (path, code, success, fail) => {
-  fetch("/api/code", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      path: path,
-      code: code
-    })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("404");
-      }
-    })
-    .then(response => {
-      success(response);
-    })
-    .catch(error => fail(error));
-};
-
-export {
-  getHelp,
-  getListFromDirectory,
-  getContentsOfFile,
-  submitPathCode,
-  isVerified,
-  createUser,
-  recoverByEmail,
-  verifyUsername,
-  verifyEmail
-};
+export { getFiles, getHelp, submitCode };

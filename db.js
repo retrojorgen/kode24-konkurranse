@@ -1,15 +1,6 @@
 const mongoose = require("mongoose");
 const moment = require("moment");
-console.log(
-  "mongodb://" +
-    process.env.DBUSER +
-    ":" +
-    process.env.DBPASSWORD +
-    "@" +
-    process.env.DBURL +
-    "/" +
-    process.env.DBNAME
-);
+
 mongoose.connect(
   "mongodb://" +
     process.env.DBUSER +
@@ -141,10 +132,6 @@ module.exports = {
   findUserByEmail: findUserByEmail,
   findUserByUsername: findUserByUsername,
   findUserById: findUserById,
-  getFolderFromPath: getFolderFromPath,
-  getSubFoldersOfPath: getSubFoldersOfPath,
-  getFileInpath: getFileInpath,
-  getGlobalSubFoldersOfPath: getGlobalSubFoldersOfPath,
   findFileSystemUserByUsernameAndPassword: findFileSystemUserByUsernameAndPassword,
   findFileSystemUserById: findFileSystemUserById,
   findFilesByFileSystemUserId: findFilesByFileSystemUserId

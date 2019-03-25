@@ -3,6 +3,12 @@ import styled from "styled-components";
 import AuthUser from "./authUser";
 import FileSystemBrowser from "./FileSystemBrowser";
 import AuthFileSystemUser from "./authFileSystemUser";
+import {
+  ProxyFrame,
+  AuthContainer,
+  AuthWrapper,
+  Content
+} from "./styleComponents";
 
 const PageWrapper = styled.div``;
 
@@ -24,6 +30,7 @@ class Master extends Component {
 
     this.authUser = this.authUser.bind(this);
     this.authFileSystemUser = this.authFileSystemUser.bind(this);
+    this.logoutFileSystemUser = this.logoutFileSystemUser.bind(this);
   }
 
   componentDidMount() {}
@@ -35,26 +42,56 @@ class Master extends Component {
 
   authFileSystemUser(user) {
     this.setState({ fileSystemUser: user });
+    console.log(this);
+  }
+
+  logoutFileSystemUser() {
+    this.setState({
+      fileSystemUser: {
+        username: "",
+        password: ""
+      }
+    });
   }
 
   render() {
     let user = this.state.user;
     let fileSystemUser = this.state.fileSystemUser;
+    console.log("hest", fileSystemUser);
     return (
       <PageWrapper>
-        {!user.email && !user.username && <AuthUser authUser={this.authUser} />}
-        {user.email &&
-          user.username &&
-          !fileSystemUser.username &&
-          !fileSystemUser.password && (
-            <AuthFileSystemUser authFileSystemUser={this.authFileSystemUser} />
-          )}
-        {user.email &&
-          user.username &&
-          fileSystemUser.username &&
-          fileSystemUser.password && (
-            <FileSystemBrowser user={user} filesystemuser={fileSystemUser} />
-          )}
+        <AuthWrapper>
+          <AuthContainer>
+            <ProxyFrame />
+            {!user.email && !user.username && (
+              <Content className="center big-padded">
+                <AuthUser authUser={this.authUser} />
+              </Content>
+            )}
+            {user.email &&
+              user.username &&
+              !fileSystemUser.username &&
+              !fileSystemUser.password && (
+                <Content className="center big-padded dark-mode">
+                  <AuthFileSystemUser
+                    authFileSystemUser={this.authFileSystemUser}
+                  />
+                </Content>
+              )}
+            {user.email &&
+              user.username &&
+              fileSystemUser.username &&
+              fileSystemUser.password && (
+                <Content className="center big-padded dark-mode">
+                  <FileSystemBrowser
+                    user={user}
+                    filesystemuser={fileSystemUser}
+                    logout={this.logoutFileSystemUser}
+                  />
+                </Content>
+              )}
+          </AuthContainer>
+        </AuthWrapper>
       </PageWrapper>
     );
   }

@@ -1,6 +1,6 @@
 import React from "react";
 const TxtListing = props => {
-  let content = props.content.content;
+  let content = props.filecontent;
 
   return (
     <div>

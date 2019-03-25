@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import React, { Component } from "react";
+import styled from "styled-components";
 
 const PolyInputContainer = styled.span`
-
   bakground-color: transparent;
   border: 0;
   padding-top: 10px;
@@ -10,12 +9,11 @@ const PolyInputContainer = styled.span`
   display: flex;
   width: 100%;
   .mobile-input {
-
     flex: 1 1 100%;
     background-color: transparent;
     color: #0dff00;
     text-shadow: 0 0 20px #0eff00;
-    font-family: 'VT323', monospace;
+    font-family: "VT323", monospace;
     font-size: 20px;
     border: 0;
     text-transform: uppercase;
@@ -31,7 +29,6 @@ const PolyInputContainer = styled.span`
     }
   }
   .input-wrapper {
-
     position: absolute;
     left: 0;
     top: 0;
@@ -44,32 +41,16 @@ const PolyInputContainer = styled.span`
     pointer-events: none;
 
     &:before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        transition: all 1s ease-in-out;
-        background-color: #ff2a00;
-        opacity: 0;
-        z-index: 10;
-      }
-      &:after {
-        content: "Logg inn på Toms maskin";
-        max-width: 100px;
-        text-align: center;
-        border-bottom: 1px solid rgba(255,255,255,1);
-        background-color: black;
-        color: white;
-        font-size: 1.4em;
-        display: inline-block;
-        padding: 10px 20px;
-        border-radius: 4px;
-        transition: all 1s ease-in-out;
-        opacity: 0;
-        position: relative;
-        z-index: 11;
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      transition: all 1s ease-in-out;
+      background-color: #ff2a00;
+      opacity: 0;
+      z-index: 10;
     }
     &.show-info {
       pointer-events: auto;
@@ -82,7 +63,6 @@ const PolyInputContainer = styled.span`
         opacity: 1;
         transition: all 1s ease-in-out;
       }
-
     }
   }
 
@@ -100,7 +80,6 @@ const Username = styled.span`
   }
 `;
 
-
 class Input extends Component {
   state = {
     characters: "",
@@ -110,7 +89,7 @@ class Input extends Component {
 
   inputRef = React.createRef();
 
-  focusInput () {
+  focusInput() {
     this.inputRef.current.focus();
     this.setState({
       hasFocus: true
@@ -120,70 +99,55 @@ class Input extends Component {
   // Sends command typed by user to parsing
   // dumps command in array for later use
   // perhaps implement up on keyboard for repeat?
-  sendToParse () {
+  sendToParse() {
     let characters = this.state.characters;
-    if(this.props.user && !this.props.user.email) {
-      this.props.sendToEmail(this.state.characters);
-    } else if (this.props.user && this.props.user.email && !this.props.user.username) {
-      this.props.sendToUsername(this.state.characters);
-    }
-    else if(this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified) {
-      this.props.sendToParse(this.state.characters);
-    }
-    
+    this.props.sendToParse(this.state.characters);
+
     let previousInputs = this.state.previousInputs;
     previousInputs.push(characters);
-    this.setState(
-      {
-        characters: "",
-        previousInputs: previousInputs
-      }
-    )
+    this.setState({
+      characters: "",
+      previousInputs: previousInputs
+    });
   }
-  
+
   // when input field changes update value in state
-  updateInput (value) {
+  updateInput(value) {
     this.setState({
       characters: value
     });
   }
-  
 
-  handleKeyDown = (event) => {
+  handleKeyDown = event => {
     const keyCode = event.keyCode;
-    if(keyCode === 13)
-      this.sendToParse();
-  }
+    if (keyCode === 13) this.sendToParse();
+  };
 
-  componentWillMount () {
+  componentWillMount() {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
-  render () {
+  componentDidMount() {
+    this.inputRef.current.focus();
+  }
 
+  render() {
     let pathString = this.props.pathString;
-    if(this.props.user && !this.props.user.email) {
-      pathString = "Din e-postadresse:";
-    } else if (this.props.user && this.props.user.email && !this.props.user.username) {
-      pathString = "Ditt kallenavn:";
-    }
-    else if(this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified) {
-      pathString =  `@C:${pathString}>`;
-    }
-    
-    
-    
+
     return (
-      <PolyInputContainer onClick={ () => this.focusInput() }>
-        <div className={`input-wrapper ${this.state.hasFocus ? '': 'show-info'}`} />
-        <div className="path-view">
-          {this.props.user && this.props.user.email && this.props.user.username && this.props.user.verified && 
-          (<Username>[<span>{this.props.user.username}</span>]</Username>)}
-          {pathString}&nbsp;
-        </div>
-        <input type="text" name="mobile-input" value={this.state.characters} className="mobile-input" ref={this.inputRef} onChange={(event) => this.updateInput(event.target.value)} placeholder="Trykk her for å skrive"/>
+      <PolyInputContainer onClick={() => this.focusInput()}>
+        <div className="path-view">~{pathString}/&nbsp;</div>
+        <input
+          type="text"
+          name="mobile-input"
+          value={this.state.characters}
+          className="mobile-input"
+          ref={this.inputRef}
+          onChange={event => this.updateInput(event.target.value)}
+          placeholder="Trykk her for å skrive"
+        />
       </PolyInputContainer>
-    )
+    );
   }
 }
 

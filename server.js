@@ -71,13 +71,14 @@ app.post("/api/command/", isLoggedIn, async (req, res) => {
   // attempt to store commands from users anonymously
 });
 
-app.post("/api/login/filesystemuser", async (req, res) => {
+app.post("/api/login/filesystemuser", isLoggedIn, async (req, res) => {
   var username = req.body.username.toLowerCase();
   var password = req.body.password.toLowerCase();
   let foundUser = await db.findFileSystemUserByUsernameAndPassword(
     username,
     password
   );
+  console.log("fant bruker", foundUser, username, password);
   if (foundUser) {
     res.cookie("filesystemid", foundUser._id, {
       expires: new Date(Date.now() + 9000000000),
@@ -101,8 +102,8 @@ app.post(
     let foundFiles = await db.findFilesByFileSystemUserId(userId);
     if (foundFiles) {
       res.send({
-        user: foundUser,
-        verified: true
+        files: foundFiles.files,
+        hasAnswered: foundFiles.answers.indexOf(userId) > -1 ? true : false
       });
     } else {
       res.send(404, {});
@@ -157,6 +158,14 @@ app.post("/api/verify/username", async (req, res) => {
 app.get("/api/verify", isLoggedIn, async (req, res) => {
   res.send(req.user);
 });
+
+app.get(
+  "/api/verify/filesystem",
+  isLoggedInAsFileSystemUser,
+  async (req, res) => {
+    res.send(req.fileSystemUser);
+  }
+);
 
 app.post("/api/user/create", async (req, res) => {
   let email = req.body.email.toLowerCase();

@@ -3,6 +3,11 @@ const isVerified = async () => {
   return response;
 };
 
+const isVerifiedFileSystem = async () => {
+  const response = await tryWebCall("/api/verify/filesystem", "get", {});
+  return response;
+};
+
 const recoverByEmail = async email => {
   const response = await tryWebCall("/api/verify/recover", "post", {
     email: email
@@ -69,6 +74,7 @@ const tryWebCall = async (url, method, data) => {
 
 export {
   isVerified,
+  isVerifiedFileSystem,
   createUser,
   recoverByEmail,
   verifyUsername,
