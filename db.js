@@ -29,10 +29,15 @@ const UserSchema = new mongoose.Schema({
   answersInFolders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Folder" }]
 });
 
+const FileSystemUserSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  username: { type: String, unique: true, lowercase: true },
+  password: { type: String }
+});
+
 const FolderSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  userName: { type: String, unique: true },
-  password: { type: String },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "FileSystemUser" },
   answers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   files: [
     {
@@ -47,6 +52,7 @@ const FolderSchema = new mongoose.Schema({
 
 const Folder = mongoose.model("Folder", FolderSchema);
 const User = mongoose.model("User", UserSchema);
+const FileSystemUser = mongoose.model("FileSystemUser", FileSystemUserSchema);
 
 async function addUser(email, username) {
   try {
@@ -62,6 +68,17 @@ async function addUser(email, username) {
     return newUser;
   } catch (error) {
     console.log("dataerror", error);
+    return false;
+  }
+}
+
+async function findFileSystemUserByUsernameAndPassword(username, password) {
+  try {
+    return await FileSystemUser.findOne({
+      username: username,
+      password: password
+    });
+  } catch (error) {
     return false;
   }
 }
@@ -90,70 +107,17 @@ async function findUserById(userId) {
   }
 }
 
-async function getFileInpath(fullpath, fileName) {
+async function findFileSystemUserById(userId) {
   try {
-    return await Folder.findOne(
-      { fullpath: fullpath, "files.name": fileName.toLowerCase() },
-      "files files.path files.name files.type files.size files.content availableFrom fullpath name parent"
-    )
-      .populate("answers", "username -_id")
-      .exec();
+    return FileSystemUser.findById(userId);
   } catch (error) {
     return false;
   }
 }
 
-async function getSubFoldersOfPath(fullpath) {
-  var today = moment().startOf("day");
-  var tomorrow = moment(today).endOf("day");
-
+async function findFilesByFileSystemUserId(userId) {
   try {
-    return await Folder.find(
-      {
-        parent: fullpath,
-        availableFrom: {
-          $lt: tomorrow.toDate()
-        }
-      },
-      "files files.path files.name files.type files.size files.content availableFrom fullpath name parent"
-    )
-      .sort({ name: 1 })
-      .populate("answers", "username -_id")
-      .exec();
-  } catch (error) {
-    return false;
-  }
-}
-
-async function getGlobalSubFoldersOfPath(fullpath) {
-  try {
-    return await Folder.find(
-      {
-        parent: fullpath,
-        global: true
-      },
-      "files files.path files.name files.type files.size files.content availableFrom fullpath name parent"
-    )
-      .populate("answers", "username -_id")
-      .exec();
-  } catch (error) {
-    return false;
-  }
-}
-
-async function getFolderFromPath(fullpath) {
-  var today = moment().startOf("day");
-  var tomorrow = moment(today).endOf("day");
-
-  try {
-    return await Folder.findOne(
-      {
-        fullpath: fullpath
-      },
-      "files files.path files.name files.type files.size files.content availableFrom fullpath name parent passphrase global points"
-    )
-      .populate("answers", "username -_id")
-      .exec();
+    return Folder.findOne({ userId: userId });
   } catch (error) {
     return false;
   }
@@ -180,5 +144,8 @@ module.exports = {
   getFolderFromPath: getFolderFromPath,
   getSubFoldersOfPath: getSubFoldersOfPath,
   getFileInpath: getFileInpath,
-  getGlobalSubFoldersOfPath: getGlobalSubFoldersOfPath
+  getGlobalSubFoldersOfPath: getGlobalSubFoldersOfPath,
+  findFileSystemUserByUsernameAndPassword: findFileSystemUserByUsernameAndPassword,
+  findFileSystemUserById: findFileSystemUserById,
+  findFilesByFileSystemUserId: findFilesByFileSystemUserId
 };

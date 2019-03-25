@@ -24,6 +24,14 @@ const verifyUsername = async username => {
   return response;
 };
 
+const loginFileSystemUser = async (username, password) => {
+  const response = await tryWebCall("/api/login/filesystemuser", "post", {
+    username: username,
+    password: password
+  });
+  return response;
+};
+
 const createUser = async (email, username) => {
   const response = await tryWebCall("/api/user/create", "post", {
     email: email,
@@ -59,4 +67,11 @@ const tryWebCall = async (url, method, data) => {
   }
 };
 
-export { isVerified, createUser, recoverByEmail, verifyUsername, verifyEmail };
+export {
+  isVerified,
+  createUser,
+  recoverByEmail,
+  verifyUsername,
+  verifyEmail,
+  loginFileSystemUser
+};

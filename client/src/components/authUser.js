@@ -3,7 +3,6 @@ import styled from "styled-components";
 import {
   isVerified,
   createUser,
-  recoverByEmail,
   verifyEmail,
   verifyUsername
 } from "../api/authAPI";
@@ -128,7 +127,9 @@ const ButtonWrapper = styled.div`
     height: 60px;
     min-width: 200px;
     margin: 10px;
-
+    &:disabled {
+      color: rgba(255, 255, 255, 0.4);
+    }
     &:hover {
       span {
         transform: translateX(-2px) translateY(-2px);
@@ -170,12 +171,12 @@ class AuthUser extends Component {
         email: {
           name: "",
           error: "",
-          isUsed: false
+          status: 0
         },
         username: {
           name: "",
           error: "",
-          isUsed: false
+          status: 0
         }
       },
       verified: false,
@@ -185,7 +186,8 @@ class AuthUser extends Component {
         email: "",
         username: "",
         points: ""
-      }
+      },
+      typeHandlers: {}
     };
   }
 
@@ -195,34 +197,32 @@ class AuthUser extends Component {
         email: {
           name: "",
           error: "",
-          isUsed: false,
-          hasBeenEdited: false
+          status: 0
         },
         username: {
           name: "",
           error: "",
-          isUsed: false,
-          hasBeenEdited: false
+          status: 0
         }
       },
+
+      verified: false,
+      error: "",
+      userstate: "loginMenu",
       user: {
         email: "",
         username: "",
         points: ""
       },
-
-      verified: false,
-      error: "",
-      userstate: "loginMenu"
+      typeHandlers: {}
     });
   }
 
   gotoMenu(state) {
-    if (state == "newLogin") this.clearUser();
+    if (state === "newLogin") this.clearUser();
     this.setState({
       userstate: state
     });
-    console.log(this.state);
   }
 
   componentDidMount() {
@@ -236,42 +236,65 @@ class AuthUser extends Component {
     }
   }
 
-  async checkEmail(event) {
-    let email = event.target.value;
+  async updateInputField(field, value) {
     let inputsCopy = Object.assign({}, this.state);
-    inputsCopy.inputs.email.name = email;
+    inputsCopy.inputs[field].name = value;
+    this.setState(inputsCopy);
+  }
+
+  async typeHandler(typeName, event, callback) {
+    let email = event.target.value;
+    this.updateInputField(typeName, email);
+
+    let typeHandlers = this.state.typeHandlers;
+    if (typeHandlers.typeName) clearTimeout(typeHandlers.typeName);
+    typeHandlers.typeName = setTimeout(() => {
+      this[callback](email);
+    }, 500);
+  }
+
+  async checkEmail(email) {
+    let inputsCopy = Object.assign({}, this.state);
     this.setState(inputsCopy);
     if (email) {
       const emailResponse = await verifyEmail(email);
       if (emailResponse) {
-        inputsCopy.inputs.email.isUsed = true;
+        inputsCopy.inputs.email.status = 1;
         inputsCopy.user = emailResponse.user;
       } else {
-        inputsCopy.inputs.email.isUsed = false;
+        inputsCopy.inputs.email.status = 2;
         inputsCopy.user = {
           email: "",
           username: "",
           points: ""
         };
       }
-      this.setState(inputsCopy);
+    } else {
+      inputsCopy.inputs.email.status = 0;
+      inputsCopy.user = {
+        email: "",
+        username: "",
+        points: ""
+      };
     }
+    this.setState(inputsCopy);
   }
 
-  async checkUsername(event) {
-    let username = event.target.value;
+  async checkUsername(username) {
     let inputsCopy = Object.assign({}, this.state);
     inputsCopy.inputs.username.name = username;
     this.setState(inputsCopy);
     if (username) {
       const usernameResponse = await verifyUsername(username);
       if (usernameResponse) {
-        inputsCopy.inputs.username.isUsed = true;
+        inputsCopy.inputs.username.status = 1;
       } else {
-        inputsCopy.inputs.username.isUsed = false;
+        inputsCopy.inputs.username.status = 2;
       }
-      this.setState(inputsCopy);
+    } else {
+      inputsCopy.inputs.username.status = 0;
     }
+    this.setState(inputsCopy);
   }
 
   async registerUser(event) {
@@ -279,9 +302,10 @@ class AuthUser extends Component {
     event.stopPropagation();
     let email = this.state.inputs.email.name;
     let username = this.state.inputs.username.name;
-    const createdResponse = createUser(email, username);
+    const createdResponse = await createUser(email, username);
     if (createdResponse) {
-      return createdResponse;
+      console.log("created user", createdResponse);
+      this.props.authUser(createdResponse);
     } else {
     }
   }
@@ -296,20 +320,26 @@ class AuthUser extends Component {
 
   render() {
     let inputs = this.state.inputs;
-    let verified = this.state.verified;
     let userstate = this.state.userstate;
     let user = this.state.user;
-    console.log(user);
 
     return (
       <AuthWrapper>
         <AuthContainer>
           <AccentureLogo>
-            <img src={accentureIcon} class="accenture-icon" />
-            <img src={accentureLogo} class="accenture-logo" />
+            <img
+              src={accentureIcon}
+              alt="accenture ikon"
+              className="accenture-icon"
+            />
+            <img
+              src={accentureLogo}
+              alt="accenture logo"
+              className="accenture-logo"
+            />
           </AccentureLogo>
           <h2>Proxy</h2>
-          {userstate == "loginMenu" && (
+          {userstate === "loginMenu" && (
             <ButtonWrapper>
               {user.username && user.email && (
                 <button onClick={() => this.loginWithUser()}>
@@ -326,7 +356,7 @@ class AuthUser extends Component {
               </button>
             </ButtonWrapper>
           )}
-          {userstate == "loginWithUser" && (
+          {userstate === "loginWithUser" && (
             <>
               <form onSubmit={event => this.loginWithUser(event)}>
                 <div>
@@ -334,25 +364,37 @@ class AuthUser extends Component {
                     name="e-mail"
                     type="email"
                     value={this.state.inputs.email.name}
-                    onChange={event => this.checkEmail(event)}
+                    onChange={event =>
+                      this.typeHandler("email", event, "checkEmail")
+                    }
                     placeholder="E-postadresse"
                   />
-                  {inputs.email && !inputs.email.isUsed && (
-                    <p>Fant ingen bruker som heter det</p>
+                  {inputs.email.name && !inputs.email.status === 1 && (
+                    <p>Fant ingen bruker som heter det {inputs.email.name}</p>
                   )}
                 </div>
                 <ButtonWrapper>
-                  <button disabled={!user.email || !user.username}>
+                  <button
+                    disabled={
+                      !user.email ||
+                      !user.username ||
+                      inputs.email.status === 0 ||
+                      inputs.email.status === 2
+                    }
+                  >
                     <span>
                       {user.username && <>Logg inn som {user.username}</>}
                       {!user.username && <>Logg inn</>}
                     </span>
                   </button>
+                  <button onClick={() => this.gotoMenu("loginMenu")}>
+                    <span>tilbake</span>
+                  </button>
                 </ButtonWrapper>
               </form>
             </>
           )}
-          {userstate == "newLogin" && (
+          {userstate === "newLogin" && (
             <>
               <form onSubmit={event => this.registerUser(event)}>
                 <div>
@@ -361,13 +403,15 @@ class AuthUser extends Component {
                     type="email"
                     value={this.state.inputs.email.name}
                     placeholder="E-postadresse"
-                    onChange={event => this.checkEmail(event)}
+                    onChange={event =>
+                      this.typeHandler("email", event, "checkEmail")
+                    }
                   />
 
-                  {inputs.email.isUsed && (
+                  {inputs.email.status === 1 && (
                     <p>
                       Denne e-postadressen er allerede i bruk. Er det deg? Gå
-                      tilbake til login.
+                      tilbake for å logge inn så fall.
                     </p>
                   )}
                 </div>
@@ -377,15 +421,22 @@ class AuthUser extends Component {
                     type="text"
                     value={this.state.inputs.username.name}
                     placeholder="Brukernavn"
-                    onChange={event => this.checkUsername(event)}
+                    onChange={event =>
+                      this.typeHandler("username", event, "checkUsername")
+                    }
                   />
-                  {inputs.username.isUsed && (
+                  {inputs.username.status === 1 && (
                     <p>Dette brukernavnet er allerede i bruk.</p>
                   )}
                 </div>
                 <ButtonWrapper>
                   <button
-                    disabled={inputs.email.isUsed || inputs.username.isUsed}
+                    disabled={
+                      inputs.email.status === 1 ||
+                      inputs.username.status === 1 ||
+                      inputs.email.status === 0 ||
+                      inputs.username.status === 0
+                    }
                   >
                     <span>Opprett bruker</span>
                   </button>

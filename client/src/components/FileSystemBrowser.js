@@ -10,7 +10,6 @@ import {
 import FolderListing from "./folder";
 import TxtListing from "./txt";
 import ChristmasTree from "./tree";
-import AuthUser from "./authUser";
 
 const PolyWrapper = styled.div`
   position: absolute;
