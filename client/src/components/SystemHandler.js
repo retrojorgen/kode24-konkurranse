@@ -9,6 +9,7 @@ import {
   AuthWrapper,
   Content
 } from "./styleComponents";
+import LoadingFlicker from "./loadingFlicker";
 
 const PageWrapper = styled.div``;
 
@@ -25,24 +26,24 @@ class Master extends Component {
       fileSystemUser: {
         username: "",
         password: ""
-      }
+      },
+      loading: false,
     };
 
     this.authUser = this.authUser.bind(this);
     this.authFileSystemUser = this.authFileSystemUser.bind(this);
     this.logoutFileSystemUser = this.logoutFileSystemUser.bind(this);
+    this.toggleLoading = this.toggleLoading.bind(this);
   }
 
   componentDidMount() {}
 
   authUser(user) {
-    console.log(this);
     this.setState({ user: user });
   }
 
   authFileSystemUser(user) {
     this.setState({ fileSystemUser: user });
-    console.log(this);
   }
 
   logoutFileSystemUser() {
@@ -54,10 +55,14 @@ class Master extends Component {
     });
   }
 
+  toggleLoading(toggle) {
+    this.setState({loading: toggle});
+  }
+
   render() {
     let user = this.state.user;
     let fileSystemUser = this.state.fileSystemUser;
-    console.log("hest", fileSystemUser);
+    let loading = this.state.loading;
     return (
       <PageWrapper>
         <AuthWrapper>
@@ -65,9 +70,10 @@ class Master extends Component {
             <ProxyFrame />
             {!user.email && !user.username && (
               <Content className="center big-padded">
-                <AuthUser authUser={this.authUser} />
+                <AuthUser authUser={this.authUser} loading={this.toggleLoading}/>
               </Content>
             )}
+            
             {user.email &&
               user.username &&
               !fileSystemUser.username &&
@@ -75,6 +81,7 @@ class Master extends Component {
                 <Content className="center big-padded dark-mode">
                   <AuthFileSystemUser
                     authFileSystemUser={this.authFileSystemUser}
+                    loading={this.toggleLoading}
                   />
                 </Content>
               )}
@@ -87,9 +94,13 @@ class Master extends Component {
                     user={user}
                     filesystemuser={fileSystemUser}
                     logout={this.logoutFileSystemUser}
+                    loading={this.toggleLoading}
                   />
                 </Content>
               )}
+              <div style={{opacity: loading ? "1": "0", "pointer-events": "none", "position": loading ? "absolute": "fixed", "left": 0, "top": 0, "width": "100%", "height": "100%"}}>
+                <LoadingFlicker ></LoadingFlicker>
+              </div>
           </AuthContainer>
         </AuthWrapper>
       </PageWrapper>

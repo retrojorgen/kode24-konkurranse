@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Input from "./Input";
-import { getHelp, getFiles, submitCode } from "../api/FileSystem";
+import { getHelp, getFiles, trollFiles } from "../api/FileSystem";
 import FolderListing from "./folder";
 import TxtListing from "./txt";
-import ChristmasTree from "./tree";
 
 const PolyWrapper = styled.div`
+  color: #ff67fa;
   position: absolute;
   left: 0;
   top: 0;
@@ -14,12 +14,20 @@ const PolyWrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding: 20px;
   font-size: 20px;
-  text-shadow: 0 0 20px #0eff00;
-  overflow: hidden;
+  text-shadow: 0 0 20px #ff67fa;
+  overflow: auto;
   text-transform: uppercase;
+  text-align: left;
+
+  pre {
+    font-family: inherit;
+  }
+  input {
+    text-align: center;
+  }
   @media (min-width: 1025px) {
     padding: 40px;
   }
@@ -37,32 +45,6 @@ const PolyWrapper = styled.div`
     margin: 0;
     text-transform: uppercase;
   }
-  &:before {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    box-shadow: 0 0 60px black inset;
-  }
-  &:after {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-      #00000000,
-      #0000003b 2px,
-      #0000005e 2px,
-      #00000000 4px
-    );
-    z-index: 20;
-  }
 `;
 
 const PolyLines = styled.div``;
@@ -79,24 +61,8 @@ class Master extends Component {
       hasAnswered: false,
       files: []
     };
-  }
 
-  componentDidMount() {
-    this.setState({
-      lines: [
-        { type: "christmas-tree" },
-        {
-          type: "txt",
-          content: [
-            "║.......GOD JUL FRA.........║",
-            "║..PORSGRUNNS TREDJE BESTE..║",
-            "║.....INTERNETTHOSTING......║",
-            "║......TOMSHOSTING.NO.......║",
-            "FOR HJÆLP SKRIV HELP"
-          ]
-        }
-      ]
-    });
+    this.bottomRef = React.createRef();
   }
 
   addLines(newLines) {
@@ -111,10 +77,32 @@ class Master extends Component {
     });
   }
 
-  _getHelp() {
-    getHelp(response => {
-      this.addLines(response);
-    });
+  async doTroll() {
+    if (this.state.hasAnswered) {
+      this.addErrorLine("Du har trolla denne kontoen grundig allerede du!");
+    } else {
+      let hasTrolled = await trollFiles();
+      console.log(hasTrolled);
+      this.setState({ hasAnswered: true });
+      this.addLines({
+        type: "giphy",
+        content:
+          "https://media3.giphy.com/media/l4KhYOegtiwcmNpdu/giphy.gif?cid=3640f6095c99dd047330784d77107c80"
+      });
+      this.addLines({
+        type: "ascii",
+        content: `
+     ...SHIT! TROLLA!! ....
+    `
+      });
+    }
+  }
+
+  async _getHelp() {
+    let helpResponse = await getHelp();
+    if (helpResponse) {
+      this.addLines(helpResponse);
+    }
   }
 
   addErrorLine(errorMessage) {
@@ -125,12 +113,37 @@ class Master extends Component {
   }
 
   async componentDidMount() {
+    this.setState({
+      lines: [
+        {
+          type: "ascii",
+
+          content: `
+             _ _.-''-._ _
+            ;.'________'.;
+ _________n.[____________].n_________
+|""_""_""_""||==||==||==||""_""_""_""]
+|"""""""""""||..||..||..||"""""""""""|
+|LI LI LI LI||LI||LI||LI||LI LI LI LI|
+|.. .. .. ..||..||..||..||.. .. .. ..|
+|LI LI LI LI||LI||LI||LI||LI LI LI LI|
+;;,;;;,;;;,;;;,;;;,;;;,;;;,;;,;;;,;;;;
+
+----= PORSGRUN RÅDHUS FILSERVER =-----
+[Logget inn som: ${this.props.filesystemuser.username}]
+            `
+        }
+      ]
+    });
+
     let folderInfo = await getFiles();
     console.log("got files", folderInfo);
 
-    if (folderInfo.files.length) {
+    if (folderInfo && folderInfo.files.length) {
       this.setState({ files: folderInfo.files });
-      this.addLines({ type: "files", content: folderInfo.files });
+      if (folderInfo.hasAnswered) {
+        this.setState({ hasAnswered: true });
+      }
     }
   }
 
@@ -152,6 +165,15 @@ class Master extends Component {
     // used to lock user directory
   }
 
+  scrollToBottom = () => {
+    console.log(this.bottomRef, this.bottomRef.current);
+    this.bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
   parseLine(line) {
     this.addLines({
       type: "command",
@@ -170,6 +192,9 @@ class Master extends Component {
         break;
       case "CLEAR":
         this.clearLines();
+        break;
+      case "TROLL":
+        this.doTroll();
         break;
       case "DIR":
         this._getListFromDirectory();
@@ -202,16 +227,24 @@ class Master extends Component {
     let lines = this.state.lines;
     let user = this.props.user;
     let fileSystemUser = this.props.filesystemuser;
+    let hasAnswered = this.state.hasAnswered;
     return (
       <PolyWrapper>
         <PolyLines>
           {lines.map((line, index) => {
-            if (line.type === "christmas-tree")
-              return <ChristmasTree key={index} />;
+            if (line.type === "ascii")
+              return <pre key={index}>{line.content}</pre>;
+            if (line.type === "giphy")
+              return (
+                <div>
+                  <img alt="gif" src={line.content} />
+                </div>
+              );
             if (line.type === "command")
               return (
                 <p key={index}>
-                  C:{line.path}>&nbsp;{line.content}
+                  {hasAnswered && <>💀</>}~{fileSystemUser.username}$&nbsp;
+                  {line.content}
                 </p>
               );
             if (line.type === "error")
@@ -227,16 +260,23 @@ class Master extends Component {
                 </div>
               );
             if (line.type === "files")
-              return <FolderListing key={index} files={line.content} />;
+              return (
+                <FolderListing
+                  key={index}
+                  files={line.content}
+                  hasAnswered={hasAnswered}
+                />
+              );
             return <p />;
           })}
         </PolyLines>
-        <PolyInputWrapper>
+        <PolyInputWrapper innerRef={this.bottomRef}>
           {!user}
           <Input
             user={user}
             pathString={fileSystemUser.username}
             sendToParse={this.parseLine.bind(this)}
+            hasAnswered={hasAnswered}
           />
         </PolyInputWrapper>
       </PolyWrapper>

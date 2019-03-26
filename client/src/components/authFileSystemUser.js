@@ -1,9 +1,34 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import { loginFileSystemUser, isVerifiedFileSystem } from "../api/authAPI";
-import accentureLogo from "../images/accenture-logo.png";
-import accentureIcon from "../images/accenture-icon.png";
 import { ButtonWrapper } from "./styleComponents";
+import RadhusLogo from "../images/radhus-ascii-logo.png";
+import styled from "styled-components";
+
+const RadHusFormWrapper = styled.div`
+  color: #ff67fa;
+  text-shadow: 0 0 20px #ff67fa;
+  h2 {
+    color: #ff67fa;
+  }
+  input {
+    color: #ff67fa;
+    border: 0;
+    border-bottom: 2px solid #ff67fa;
+    background: transparent;
+  }
+`;
+
+const RadHusButton = styled(ButtonWrapper)`
+  button {
+    color: white;
+    span {
+      background-color: #ff67fa;
+    }
+    &:before {
+      background-color: white;
+    }
+  }
+`;
 
 class AuthFileSystemUser extends Component {
   constructor(props) {
@@ -17,16 +42,34 @@ class AuthFileSystemUser extends Component {
     };
   }
 
+    authUser(user) {
+    this.props.loading(true);
+    setTimeout(() => {
+      this.props.authUser(user);
+      this.props.loading(false);
+    }, 1000)
+    
+  }
+
+  loginWithUser() {
+    this.authUser(this.state.user);
+  }
+
   async authUser(event) {
     event.preventDefault();
     event.stopPropagation();
     let { username, password } = this.state.inputs;
     let loggedInUser = await loginFileSystemUser(username, password);
-    if (loggedInUser) {
-      this.props.authFileSystemUser(loggedInUser.user);
-    } else {
-      this.setState({ error: "fant ikke brukeren dessverre.." });
-    }
+    this.props.loading(true);
+
+    setTimeout(() => {
+      if (loggedInUser) {
+        this.props.authFileSystemUser(loggedInUser.user);
+      } else {
+        this.setState({ error: "fant ikke brukeren dessverre.." });
+      }      
+      this.props.loading(false);
+    }, 1000)    
   }
 
   async componentDidMount() {
@@ -56,9 +99,11 @@ class AuthFileSystemUser extends Component {
   render() {
     let inputs = this.state.inputs;
     let error = this.state.error;
-
     return (
-      <>
+      <RadHusFormWrapper>
+        <div style={{ maxWidth: "100%", marginTop: "20px" }}>
+          <img src={RadhusLogo} style={{ maxWidth: "80%" }} />
+        </div>
         <h2>Rådhuset login</h2>
         <form
           onSubmit={event => this.authUser(event)}
@@ -90,13 +135,14 @@ class AuthFileSystemUser extends Component {
               }
             />
           </div>
-          <ButtonWrapper>
+          {error && (<p>{error}</p>)}
+          <RadHusButton>
             <button disabled={!inputs.username || !inputs.password}>
               <span>logg inn</span>
             </button>
-          </ButtonWrapper>
+          </RadHusButton>
         </form>
-      </>
+      </RadHusFormWrapper>
     );
   }
 }

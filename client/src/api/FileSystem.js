@@ -8,8 +8,8 @@ const getHelp = async email => {
   return response;
 };
 
-const submitCode = async email => {
-  const response = await tryWebCall("/api/files/code", "get");
+const trollFiles = async () => {
+  const response = await tryWebCall("/api/troll", "get");
   return response;
 };
 
@@ -40,4 +40,4 @@ const tryWebCall = async (url, method, data) => {
   }
 };
 
-export { getFiles, getHelp, submitCode };
+export { getFiles, getHelp, trollFiles };

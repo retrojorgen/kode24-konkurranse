@@ -5,6 +5,28 @@ import { injectGlobal } from "styled-components";
 injectGlobal`
   @import url('https://fonts.googleapis.com/css?family=VT323');
 
+  ::-webkit-scrollbar {
+    width: 10px;
+    background: #ff00ff;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #4f4e4e;
+    border-radius: 0;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #ff00ff;
+    border-radius: 0;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #f76df7;
+  }
+
   html {
     height: 100%;
     width: 100%;
@@ -15,8 +37,8 @@ injectGlobal`
     font-family: 'VT323', monospace;
     height: 100%;
     width: 100%;
-    color: #0dff00;
-    text-shadow: 0 0 20px #1d6119;
+    color: #ff67fa;
+    text-shadow: 0 0 20px #ff67fa;
     background-color: #262822;
     display: flex;
     align-items: center;
@@ -31,9 +53,9 @@ injectGlobal`
       height: 100%;
       background: repeating-linear-gradient(
         #00000000,
-        #0000003b 2px,
-        #0000005e 2px,
-        #00000000 4px
+        #0000003b 1px,
+        #0000005e 1px,
+        #00000000 2px
       );
       z-index: 20;
     }

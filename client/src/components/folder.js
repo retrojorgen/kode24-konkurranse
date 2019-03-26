@@ -6,11 +6,17 @@ const Table = styled.table`
     color: #e2ef13;
     text-shadow: 0 0 20px #e2ef13;
   }
+  margin-top: 10px;
+  margin-bottom: 10px;
+  tr {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const FolderListing = props => {
   let files = props.files || [];
-
+  let hasAnswered = props.hasAnswered;
   return (
     <Table>
       <thead>
@@ -23,7 +29,10 @@ const FolderListing = props => {
         {files.map((file, key) => {
           return (
             <tr key={key}>
-              <td>{file.size}&nbsp;&nbsp;</td>
+              <td>
+                {hasAnswered && <>💀</>}
+                {file.size}&nbsp;&nbsp;
+              </td>
               <td>{file.name}</td>
             </tr>
           );

@@ -109,6 +109,7 @@ const AuthContainer = styled.div`
   box-shadow: 20px 26px 0px black;
   padding: 40px;
   position: relative;
+  overflow: hidden;
 `;
 
 const ButtonWrapper = styled.div`

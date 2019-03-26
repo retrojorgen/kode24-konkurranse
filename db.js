@@ -63,6 +63,19 @@ async function addUser(email, username) {
   }
 }
 
+async function trollFiles(userId, FileSystemUserId) {
+  try {
+    console.log("bruker", userId);
+    return Folder.updateOne(
+      { userId: FileSystemUserId },
+      { $push: { answers: userId } }
+    );
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
 async function findFileSystemUserByUsernameAndPassword(username, password) {
   try {
     return await FileSystemUser.findOne({
@@ -134,5 +147,6 @@ module.exports = {
   findUserById: findUserById,
   findFileSystemUserByUsernameAndPassword: findFileSystemUserByUsernameAndPassword,
   findFileSystemUserById: findFileSystemUserById,
-  findFilesByFileSystemUserId: findFilesByFileSystemUserId
+  findFilesByFileSystemUserId: findFilesByFileSystemUserId,
+  trollFiles: trollFiles
 };

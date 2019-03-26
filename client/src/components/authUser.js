@@ -10,6 +10,7 @@ import accentureLogo from "../images/accenture-logo.png";
 import accentureIcon from "../images/accenture-icon.png";
 import { ButtonWrapper } from "./styleComponents";
 
+
 const AccentureLogo = styled.div`
   text-align: center;
   display: flex;
@@ -23,6 +24,20 @@ const AccentureLogo = styled.div`
     width: 40px;
     margin-left: 40px;
   }
+`;
+
+const AccentureLoginWrap = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  background: #d2d2d2;
+
 `;
 
 class AuthUser extends Component {
@@ -77,7 +92,8 @@ class AuthUser extends Component {
         username: "",
         points: ""
       },
-      typeHandlers: {}
+      typeHandlers: {},
+      loading: false,
     });
   }
 
@@ -168,7 +184,8 @@ class AuthUser extends Component {
     const createdResponse = await createUser(email, username);
     if (createdResponse) {
       console.log("created user", createdResponse);
-      this.props.authUser(createdResponse);
+
+      this.authUser(createdResponse)
     } else {
     }
   }
@@ -177,17 +194,26 @@ class AuthUser extends Component {
     this.clearUser();
   }
 
+  authUser(user) {
+    this.props.loading(true);
+    setTimeout(() => {
+      this.props.authUser(user);
+      this.props.loading(false);
+    }, 1000)
+    
+  }
+
   loginWithUser() {
-    this.props.authUser(this.state.user);
+    this.authUser(this.state.user);
   }
 
   render() {
     let inputs = this.state.inputs;
     let userstate = this.state.userstate;
     let user = this.state.user;
-
+    let loading= this.state.loading;
     return (
-      <>
+      <AccentureLoginWrap>
         <AccentureLogo>
           <img
             src={accentureIcon}
@@ -309,7 +335,7 @@ class AuthUser extends Component {
             </form>
           </>
         )}
-      </>
+      </AccentureLoginWrap>
     );
   }
 }

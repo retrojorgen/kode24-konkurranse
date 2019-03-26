@@ -11,7 +11,7 @@ const PolyInputContainer = styled.span`
   .mobile-input {
     flex: 1 1 100%;
     background-color: transparent;
-    color: #0dff00;
+    color: #ff67fa;
     text-shadow: 0 0 20px #0eff00;
     font-family: "VT323", monospace;
     font-size: 20px;
@@ -21,6 +21,7 @@ const PolyInputContainer = styled.span`
     margin: 0;
     padding: 0;
     outline: none;
+    text-align: left;
     &:focus {
       &::placeholder {
         color: transparent;
@@ -68,15 +69,6 @@ const PolyInputContainer = styled.span`
 
   .path-view {
     white-space: nowrap;
-  }
-`;
-
-const Username = styled.span`
-  color: #ff2a00;
-  text-shadow: 0 0 20px #ff2a00;
-  display: none;
-  @media (min-width: 600px) {
-    display: inline;
   }
 `;
 
@@ -133,10 +125,12 @@ class Input extends Component {
 
   render() {
     let pathString = this.props.pathString;
-
+    let hasAnswered = this.props.hasAnswered;
     return (
       <PolyInputContainer onClick={() => this.focusInput()}>
-        <div className="path-view">~{pathString}/&nbsp;</div>
+        <div className="path-view">
+          {hasAnswered && <>💀</>}~{pathString}$&nbsp;
+        </div>
         <input
           type="text"
           name="mobile-input"

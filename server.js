@@ -24,15 +24,15 @@ app.use(bodyParser.json());
 
 app.get("/api/help", (req, res) => {
   res.json({
-    type: "txt",
-    content: [
+    type: "ascii",
+    content: `
       "PORSGRUNN RÅDHUS - DOKUMENTSERVER",
       "****************************",
       "* DIR - LIST UT FILANE DINE",
       "* PRINT %FILE% - SKRIV UT EI AV FILANE",
       "* LOGOUT - BYTT BRUKÆR",
       "* HELP - FÅ HJÆLP"
-    ]
+    `
   });
 });
 
@@ -98,13 +98,30 @@ app.post(
   isLoggedIn,
   isLoggedInAsFileSystemUser,
   async (req, res) => {
-    let userId = req.fileSystemUser._id;
-    let foundFiles = await db.findFilesByFileSystemUserId(userId);
+    let userId = req.user._id;
+    let fileSystemUserId = req.fileSystemUser._id;
+    let foundFiles = await db.findFilesByFileSystemUserId(fileSystemUserId);
     if (foundFiles) {
       res.send({
         files: foundFiles.files,
         hasAnswered: foundFiles.answers.indexOf(userId) > -1 ? true : false
       });
+    } else {
+      res.send(404, {});
+    }
+  }
+);
+
+app.get(
+  "/api/troll/",
+  isLoggedIn,
+  isLoggedInAsFileSystemUser,
+  async (req, res) => {
+    let userId = req.user._id;
+    let fileSystemUserId = req.fileSystemUser._id;
+    let isTrolled = await db.trollFiles(userId, fileSystemUserId);
+    if (isTrolled) {
+      res.send({});
     } else {
       res.send(404, {});
     }
