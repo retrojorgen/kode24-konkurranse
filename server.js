@@ -7,8 +7,19 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const moment = require("moment");
+const cors = require("cors");
+
+const corsOptions = {
+  credentials: true,
+  origin: "http://localhost:3000",
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
 const db = require("./db.js");
 const app = express();
+var http = require("http").Server(app);
+var io = require("socket.io")(http);
+let socketConnection = [];
 
 console.log(new Date());
 
@@ -18,6 +29,8 @@ app.use(express.static(path.join(__dirname, "client/build")));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cookieParser());
+
+app.use(cors(corsOptions));
 
 // parse application/json
 app.use(bodyParser.json());
@@ -195,15 +208,17 @@ app.post("/api/user/create", async (req, res) => {
   res.send(createdUser);
 });
 
+io.on("connection", socket => {
+  socket.on("typed command", command => console.log("Command", command));
+  socket.on("typed filesystem username password", command =>
+    console.log("Command", command)
+  );
+  socket.on("disconnect", () => console.log("Client disconnected"));
+});
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
 
 const port = process.env.PORT || 5000;
-app.listen(port);
-
-let http = require("http");
-
-setInterval(function() {
-  http.get("http://kode24-signup.herokuapp.com/");
-}, 300000); // every 5 minutes (300000)
+http.listen(port);

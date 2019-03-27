@@ -4,6 +4,7 @@ import Input from "./Input";
 import { getHelp, getFiles, trollFiles } from "../api/FileSystem";
 import FolderListing from "./folder";
 import TxtListing from "./txt";
+import { submitCommand } from "./socketConnection";
 
 const PolyWrapper = styled.div`
   color: #ff67fa;
@@ -175,6 +176,7 @@ class Master extends Component {
   }
 
   parseLine(line) {
+    submitCommand(line);
     this.addLines({
       type: "command",
       content: line

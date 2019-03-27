@@ -27,7 +27,7 @@ class Master extends Component {
         username: "",
         password: ""
       },
-      loading: false,
+      loading: false
     };
 
     this.authUser = this.authUser.bind(this);
@@ -56,7 +56,7 @@ class Master extends Component {
   }
 
   toggleLoading(toggle) {
-    this.setState({loading: toggle});
+    this.setState({ loading: toggle });
   }
 
   render() {
@@ -70,10 +70,13 @@ class Master extends Component {
             <ProxyFrame />
             {!user.email && !user.username && (
               <Content className="center big-padded">
-                <AuthUser authUser={this.authUser} loading={this.toggleLoading}/>
+                <AuthUser
+                  authUser={this.authUser}
+                  loading={this.toggleLoading}
+                />
               </Content>
             )}
-            
+
             {user.email &&
               user.username &&
               !fileSystemUser.username &&
@@ -98,9 +101,19 @@ class Master extends Component {
                   />
                 </Content>
               )}
-              <div style={{opacity: loading ? "1": "0", "pointer-events": "none", "position": loading ? "absolute": "fixed", "left": 0, "top": 0, "width": "100%", "height": "100%"}}>
-                <LoadingFlicker ></LoadingFlicker>
-              </div>
+            <div
+              style={{
+                opacity: loading ? "1" : "0",
+                "pointer-events": "none",
+                position: loading ? "absolute" : "fixed",
+                left: 0,
+                top: 0,
+                width: "100%",
+                height: "100%"
+              }}
+            >
+              <LoadingFlicker />
+            </div>
           </AuthContainer>
         </AuthWrapper>
       </PageWrapper>
