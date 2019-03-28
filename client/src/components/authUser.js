@@ -184,7 +184,6 @@ class AuthUser extends Component {
     const createdResponse = await createUser(email, username);
     if (createdResponse) {
       console.log("created user", createdResponse);
-
       this.authUser(createdResponse);
     } else {
     }
@@ -194,14 +193,16 @@ class AuthUser extends Component {
     this.clearUser();
   }
 
-  async recoverUserByEmail() {
-    let email = this.inputs.email.name;
-    const recoveredUser = recoverByEmail(email);
+  async recoverUserByEmail(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    let email = this.state.inputs.email.name;
+    const recoveredUser = await recoverByEmail(email);
     if (recoveredUser) {
       this.authUser(recoveredUser);
     } else {
       let inputsCopy = Object.assign({}, this.state);
-      inputsCopy.inputs.email.status = 2;
+      inputsCopy.inputs.email.status = 1;
       inputsCopy.inputs.email.error = "Fant ikke brukeren";
       this.setState(inputsCopy);
     }
@@ -261,7 +262,7 @@ class AuthUser extends Component {
         )}
         {userstate === "loginWithUser" && (
           <>
-            <form onSubmit={event => this.loginWithUser(event)}>
+            <form onSubmit={event => this.recoverUserByEmail(event)}>
               <div>
                 <input
                   name="e-mail"
@@ -273,7 +274,7 @@ class AuthUser extends Component {
                   placeholder="E-postadresse"
                 />
                 {inputs.email.name && !inputs.email.status === 1 && (
-                  <p>Fant ingen bruker som heter det {inputs.email.name}</p>
+                  <p>Fant ingen med e-postadresse {inputs.email.name}</p>
                 )}
               </div>
               <ButtonWrapper>
