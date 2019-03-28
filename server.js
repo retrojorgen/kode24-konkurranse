@@ -24,8 +24,6 @@ const handShakeCode = process.env.ADMINHASH;
 let socketConnections = [];
 let adminConnections = [];
 
-console.log(new Date());
-
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
 app.use("/files/admin", express.static(path.join(__dirname, "admin/build")));
@@ -54,8 +52,6 @@ app.get("/api/help", (req, res) => {
 });
 
 const isLoggedIn = async function(req, res, next) {
-  console.log(new Date());
-  console.log(req.cookies.id);
   if (req.cookies.id) {
     var user = await db.findUserById(req.cookies.id);
     if (user) {
@@ -70,7 +66,6 @@ const isLoggedIn = async function(req, res, next) {
 };
 
 const isLoggedInAsFileSystemUser = async function(req, res, next) {
-  console.log(new Date());
   if (req.cookies.filesystemid) {
     var user = await db.findFileSystemUserById(req.cookies.filesystemid);
     if (user) {
@@ -95,7 +90,7 @@ app.post("/api/login/filesystemuser", isLoggedIn, async (req, res) => {
     username,
     password
   );
-  console.log("fant bruker", foundUser, username, password);
+
   if (foundUser) {
     res.cookie("filesystemid", foundUser._id, {
       expires: new Date(Date.now() + 9000000000),
@@ -221,7 +216,6 @@ io.on("connection", socket => {
 
   socket.on("admin handshake", async handshake => {
     if (handshake === handShakeCode) {
-      console.log("handshaked admin");
       adminConnections.push(socket);
       const events = await db.getEvents();
       pushToAdmins("admin events", events);
@@ -246,7 +240,6 @@ io.on("connection", socket => {
   });
 
   function pushToAdmins(command, data) {
-    console.log("pushing", command, data);
     adminConnections.forEach(connection => {
       io.to(`${connection.id}`).emit(command, data);
     });

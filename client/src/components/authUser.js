@@ -4,7 +4,8 @@ import {
   isVerified,
   createUser,
   verifyEmail,
-  verifyUsername
+  verifyUsername,
+  recoverByEmail
 } from "../api/authAPI";
 import accentureLogo from "../images/accenture-logo.png";
 import accentureIcon from "../images/accenture-icon.png";
@@ -191,6 +192,19 @@ class AuthUser extends Component {
 
   async changeUser() {
     this.clearUser();
+  }
+
+  async recoverUserByEmail() {
+    let email = this.inputs.email.name;
+    const recoveredUser = recoverByEmail(email);
+    if (recoveredUser) {
+      this.authUser(recoveredUser);
+    } else {
+      let inputsCopy = Object.assign({}, this.state);
+      inputsCopy.inputs.email.status = 2;
+      inputsCopy.inputs.email.error = "Fant ikke brukeren";
+      this.setState(inputsCopy);
+    }
   }
 
   authUser(user) {
