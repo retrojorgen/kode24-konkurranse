@@ -1,5 +1,5 @@
 import socketIOClient from "socket.io-client";
-const socket = socketIOClient("http://localhost:5000");
+const socket = socketIOClient("https://kode24-2019-paaske.herokuapp.com");
 function adminHandshake(authCode) {
   //socket.on("timer", timestamp => cb(null, timestamp));
   socket.emit("admin handshake", authCode);

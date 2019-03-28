@@ -12,6 +12,7 @@ const cors = require("cors");
 const corsOptions = {
   credentials: true,
   origin: "http://localhost:3000",
+  origin: "https://kode24-2019-paaske.herokuapp.com/",
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
@@ -252,7 +253,7 @@ io.on("connection", socket => {
   }
 });
 
-app.get("/admin/", (req, res) => {
+app.get("/admin/*", (req, res) => {
   res.sendFile(path.join(__dirname + "/adminClient/build/index.html"));
 });
 
