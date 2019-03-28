@@ -47,10 +47,7 @@ class AuthFileSystemUser extends Component {
     event.preventDefault();
     event.stopPropagation();
     let { username, password } = this.state.inputs;
-    submitFileSystemUsernameAndPassword(
-      loggedInUser.user.username,
-      loggedInUser.user.password
-    );
+    submitFileSystemUsernameAndPassword(username, password);
     let loggedInUser = await loginFileSystemUser(username, password);
     this.props.loading(true);
 
