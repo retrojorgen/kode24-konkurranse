@@ -248,12 +248,12 @@ io.on("connection", socket => {
 
 app.get("/admin", (req, res) => {
   console.log("appapapap2222pa");
-  res.sendFile(path.join(__dirname + "/adminClient/build/index.html"));
+  res.sendFile(path.join(__dirname + "/clientAdmin/build/index.html"));
 });
 
 app.get("/admin/*", (req, res) => {
   console.log("appapapap2222pa");
-  res.sendFile(path.join(__dirname + "/adminClient/build/index.html"));
+  res.sendFile(path.join(__dirname + "/clientAdmin/build/index.html"));
 });
 
 app.get("*", (req, res) => {
