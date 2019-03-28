@@ -13,6 +13,9 @@ const corsOptions = {
   credentials: true,
   origin: "http://localhost:3000",
   origin: "https://kode24-2019-paaske.herokuapp.com/",
+  origin: "https://paaske2019.kode24.no/",
+  origin: "https://paaske2019.kode24.no/admin",
+  origin: "https://kode24.no",
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
