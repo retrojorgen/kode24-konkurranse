@@ -201,7 +201,11 @@ class AuthUser extends Component {
     }, 1000);
   }
 
-  loginWithUser() {
+  loginWithUser(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.authUser(this.state.user);
   }
 
