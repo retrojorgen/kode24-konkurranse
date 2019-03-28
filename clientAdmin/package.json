@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:5000",
+  "homepage": "https://localhost:5000/admin/",
   "dependencies": {
     "@aller/eslint-config-aller": "0.5.2",
     "pixi.js": "^4.8.0",
