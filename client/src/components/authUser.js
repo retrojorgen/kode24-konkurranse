@@ -10,7 +10,6 @@ import accentureLogo from "../images/accenture-logo.png";
 import accentureIcon from "../images/accenture-icon.png";
 import { ButtonWrapper } from "./styleComponents";
 
-
 const AccentureLogo = styled.div`
   text-align: center;
   display: flex;
@@ -37,7 +36,6 @@ const AccentureLoginWrap = styled.div`
   justify-content: center;
   padding: 20px;
   background: #d2d2d2;
-
 `;
 
 class AuthUser extends Component {
@@ -92,8 +90,7 @@ class AuthUser extends Component {
         username: "",
         points: ""
       },
-      typeHandlers: {},
-      loading: false,
+      typeHandlers: {}
     });
   }
 
@@ -185,7 +182,7 @@ class AuthUser extends Component {
     if (createdResponse) {
       console.log("created user", createdResponse);
 
-      this.authUser(createdResponse)
+      this.authUser(createdResponse);
     } else {
     }
   }
@@ -199,8 +196,7 @@ class AuthUser extends Component {
     setTimeout(() => {
       this.props.authUser(user);
       this.props.loading(false);
-    }, 1000)
-    
+    }, 1000);
   }
 
   loginWithUser() {
@@ -211,7 +207,6 @@ class AuthUser extends Component {
     let inputs = this.state.inputs;
     let userstate = this.state.userstate;
     let user = this.state.user;
-    let loading= this.state.loading;
     return (
       <AccentureLoginWrap>
         <AccentureLogo>

@@ -20,6 +20,13 @@ const UserSchema = new mongoose.Schema({
   answersInFolders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Folder" }]
 });
 
+const EventsSchema = new mongoose.Schema({
+  type: { type: String },
+  command: { type: String },
+  added: { type: Date, default: Date.now },
+  data: {}
+});
+
 const FileSystemUserSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   username: { type: String, unique: true, lowercase: true },
@@ -44,6 +51,7 @@ const FolderSchema = new mongoose.Schema({
 const Folder = mongoose.model("Folder", FolderSchema);
 const User = mongoose.model("User", UserSchema);
 const FileSystemUser = mongoose.model("FileSystemUser", FileSystemUserSchema);
+const Event = mongoose.model("Events", EventsSchema);
 
 async function addUser(email, username) {
   try {
@@ -66,12 +74,37 @@ async function addUser(email, username) {
 async function trollFiles(userId, FileSystemUserId) {
   try {
     console.log("bruker", userId);
-    return Folder.updateOne(
+    return await Folder.updateOne(
       { userId: FileSystemUserId },
       { $push: { answers: userId } }
     );
   } catch (error) {
     console.log(error);
+    return false;
+  }
+}
+
+async function addEvents(eventType, command, data) {
+  try {
+    console.log("legger til event", command, data);
+    let newEvent = new Event({
+      type: eventType,
+      command: command,
+      added: new Date(),
+      data: data
+    });
+    await newEvent.save();
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function getEvents() {
+  try {
+    return await Event.find({});
+  } catch (error) {
     return false;
   }
 }
@@ -148,5 +181,7 @@ module.exports = {
   findFileSystemUserByUsernameAndPassword: findFileSystemUserByUsernameAndPassword,
   findFileSystemUserById: findFileSystemUserById,
   findFilesByFileSystemUserId: findFilesByFileSystemUserId,
-  trollFiles: trollFiles
+  trollFiles: trollFiles,
+  addEvents: addEvents,
+  getEvents: getEvents
 };

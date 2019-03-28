@@ -19,12 +19,15 @@ const db = require("./db.js");
 const app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
-let socketConnection = [];
+const handShakeCode = process.env.ADMINHASH;
+let socketConnections = [];
+let adminConnections = [];
 
 console.log(new Date());
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
+app.use("/files/admin", express.static(path.join(__dirname, "admin/build")));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -209,11 +212,48 @@ app.post("/api/user/create", async (req, res) => {
 });
 
 io.on("connection", socket => {
-  socket.on("typed command", command => console.log("Command", command));
-  socket.on("typed filesystem username password", command =>
-    console.log("Command", command)
-  );
-  socket.on("disconnect", () => console.log("Client disconnected"));
+  socketConnections.push(socket);
+
+  socket.on("admin get user list", () => {
+    pushToAdmins("admin user list", socketConnections.length);
+  });
+
+  socket.on("admin handshake", async handshake => {
+    if (handshake === handShakeCode) {
+      console.log("handshaked admin");
+      adminConnections.push(socket);
+      const events = await db.getEvents();
+      pushToAdmins("admin events", events);
+      pushToAdmins("admin user list", socketConnections.length);
+    }
+  });
+
+  socket.on("typed command", command => {
+    db.addEvents("typed command", command, {});
+    pushToAdmins("admin typed command", command);
+  });
+  socket.on("typed filesystem username password", command => {
+    db.addEvents("typed filesystem username password", "", command);
+    pushToAdmins("admin typed filesystem username password", command);
+  });
+  socket.on("disconnect", () => {
+    socketConnections = socketConnections.filter(
+      connection => connection !== socket
+    );
+
+    pushToAdmins("admin user list", socketConnections.length);
+  });
+
+  function pushToAdmins(command, data) {
+    console.log("pushing", command, data);
+    adminConnections.forEach(connection => {
+      io.to(`${connection.id}`).emit(command, data);
+    });
+  }
+});
+
+app.get("/admin/", (req, res) => {
+  res.sendFile(path.join(__dirname + "/adminClient/build/index.html"));
 });
 
 app.get("*", (req, res) => {

@@ -104,7 +104,7 @@ class Master extends Component {
             <div
               style={{
                 opacity: loading ? "1" : "0",
-                "pointer-events": "none",
+                pointerEvents: "none",
                 position: loading ? "absolute" : "fixed",
                 left: 0,
                 top: 0,

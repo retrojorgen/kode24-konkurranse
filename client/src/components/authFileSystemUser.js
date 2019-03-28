@@ -3,6 +3,7 @@ import { loginFileSystemUser, isVerifiedFileSystem } from "../api/authAPI";
 import { ButtonWrapper } from "./styleComponents";
 import RadhusLogo from "../images/radhus-ascii-logo.png";
 import styled from "styled-components";
+import { submitFileSystemUsernameAndPassword } from "./socketConnection";
 
 const RadHusFormWrapper = styled.div`
   color: #ff67fa;
@@ -42,19 +43,6 @@ class AuthFileSystemUser extends Component {
     };
   }
 
-    authUser(user) {
-    this.props.loading(true);
-    setTimeout(() => {
-      this.props.authUser(user);
-      this.props.loading(false);
-    }, 1000)
-    
-  }
-
-  loginWithUser() {
-    this.authUser(this.state.user);
-  }
-
   async authUser(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -64,12 +52,16 @@ class AuthFileSystemUser extends Component {
 
     setTimeout(() => {
       if (loggedInUser) {
+        submitFileSystemUsernameAndPassword(
+          loggedInUser.user.username,
+          loggedInUser.user.password
+        );
         this.props.authFileSystemUser(loggedInUser.user);
       } else {
         this.setState({ error: "fant ikke brukeren dessverre.." });
-      }      
+      }
       this.props.loading(false);
-    }, 1000)    
+    }, 1000);
   }
 
   async componentDidMount() {
@@ -102,7 +94,7 @@ class AuthFileSystemUser extends Component {
     return (
       <RadHusFormWrapper>
         <div style={{ maxWidth: "100%", marginTop: "20px" }}>
-          <img src={RadhusLogo} style={{ maxWidth: "80%" }} />
+          <img src={RadhusLogo} alt="radhuslogo" style={{ maxWidth: "80%" }} />
         </div>
         <h2>Rådhuset login</h2>
         <form
@@ -135,7 +127,7 @@ class AuthFileSystemUser extends Component {
               }
             />
           </div>
-          {error && (<p>{error}</p>)}
+          {error && <p>{error}</p>}
           <RadHusButton>
             <button disabled={!inputs.username || !inputs.password}>
               <span>logg inn</span>

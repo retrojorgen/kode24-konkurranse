@@ -4,4 +4,11 @@ function submitCommand(command) {
   //socket.on("timer", timestamp => cb(null, timestamp));
   socket.emit("typed command", command);
 }
-export { submitCommand };
+function submitFileSystemUsernameAndPassword(username, password) {
+  //socket.on("timer", timestamp => cb(null, timestamp));
+  socket.emit("typed filesystem username password", {
+    username: username,
+    password: password
+  });
+}
+export { submitCommand, submitFileSystemUsernameAndPassword };
