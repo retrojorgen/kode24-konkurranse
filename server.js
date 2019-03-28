@@ -246,12 +246,13 @@ io.on("connection", socket => {
   }
 });
 
-app.get("/admin/*", async (req, res) => {
-  console.log("appapapappa");
+app.get("/admin", (req, res) => {
+  console.log("appapapap2222pa");
   res.sendFile(path.join(__dirname + "/adminClient/build/index.html"));
 });
 
-app.get("/admin", async (req, res) => {
+app.get("/admin/*", (req, res) => {
+  console.log("appapapap2222pa");
   res.sendFile(path.join(__dirname + "/adminClient/build/index.html"));
 });
 
