@@ -10,6 +10,8 @@ import accentureLogo from "../images/accenture-logo.png";
 import accentureIcon from "../images/accenture-icon.png";
 import { ButtonWrapper } from "./styleComponents";
 
+console.log("build 1");
+
 const AccentureLogo = styled.div`
   text-align: center;
   display: flex;
