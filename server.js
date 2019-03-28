@@ -26,7 +26,7 @@ let adminConnections = [];
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
-app.use("/files/admin", express.static(path.join(__dirname, "admin/build")));
+app.use("/admin", express.static(path.join(__dirname, "clientAdmin/build")));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
