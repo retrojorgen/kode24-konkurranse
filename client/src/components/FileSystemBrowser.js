@@ -237,7 +237,7 @@ class Master extends Component {
             if (line.type === "giphy")
               return (
                 <div>
-                  <img alt="gif" src={line.content} />
+                  <img height="140" alt="gif" src={line.content} />
                 </div>
               );
             if (line.type === "command")
