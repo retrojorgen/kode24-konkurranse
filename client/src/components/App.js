@@ -31,7 +31,7 @@ injectGlobal`
     height: 100%;
     width: 100%;
   }
-  body {
+  #root {
     margin: 0;
     padding: 0;
     font-family: 'VT323', monospace;
