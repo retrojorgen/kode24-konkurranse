@@ -10,10 +10,15 @@ const AuthWrapper = styled.div`
     font-size: 100px;
     text-shadow: 4px 4px 0px black;
     margin: 0;
+    font-family: "VT323", monospace;
   }
   h2 {
     color: black;
     text-shadow: none;
+    font-family: "VT323", monospace;
+  }
+  p {
+    font-family: "VT323", monospace;
   }
   form {
     width: 100%;

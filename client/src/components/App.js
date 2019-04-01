@@ -5,32 +5,28 @@ import { injectGlobal } from "styled-components";
 injectGlobal`
   @import url('https://fonts.googleapis.com/css?family=VT323');
 
-  ::-webkit-scrollbar {
+  #root::-webkit-scrollbar {
     width: 10px;
     background: #ff00ff;
   }
 
   /* Track */
-  ::-webkit-scrollbar-track {
+  #root::-webkit-scrollbar-track {
     background: #4f4e4e;
     border-radius: 0;
   }
 
   /* Handle */
-  ::-webkit-scrollbar-thumb {
+  #root::-webkit-scrollbar-thumb {
     background: #ff00ff;
     border-radius: 0;
   }
 
   /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
+  #root::-webkit-scrollbar-thumb:hover {
     background: #f76df7;
   }
 
-  html {
-    height: 100%;
-    width: 100%;
-  }
   #root {
     margin: 0;
     padding: 0;
