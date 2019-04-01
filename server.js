@@ -97,7 +97,8 @@ app.post("/api/login/filesystemuser", isLoggedIn, async (req, res) => {
   if (foundUser) {
     res.cookie("filesystemid", foundUser._id, {
       expires: new Date(Date.now() + 9000000000),
-      httpOnly: true
+      httpOnly: true,
+      domain: "kode24.no"
     });
     res.send({
       user: foundUser,
@@ -149,7 +150,8 @@ app.post("/api/verify/recover", async (req, res) => {
   if (foundUser) {
     res.cookie("id", foundUser._id, {
       expires: new Date(Date.now() + 9000000000),
-      httpOnly: true
+      httpOnly: true,
+      domain: "kode24.no"
     });
     res.send({
       verified: true,
@@ -205,7 +207,8 @@ app.post("/api/user/create", async (req, res) => {
   let createdUser = await db.addUser(email, username);
   res.cookie("id", createdUser._id, {
     expires: new Date(Date.now() + 9000000000),
-    httpOnly: true
+    httpOnly: true,
+    domain: "kode24.no"
   });
   res.send(createdUser);
 });
