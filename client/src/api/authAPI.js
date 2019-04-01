@@ -1,44 +1,58 @@
+let apiUrl = "";
+
+if (process.env.NODE_ENV === "production") {
+  apiUrl = "https://paaske2019.kode24.no";
+}
+
 const isVerified = async () => {
-  const response = await tryWebCall("/api/verify", "get", {});
+  const response = await tryWebCall(apiUrl + "/api/verify", "get", {});
   return response;
 };
 
 const isVerifiedFileSystem = async () => {
-  const response = await tryWebCall("/api/verify/filesystem", "get", {});
+  const response = await tryWebCall(
+    apiUrl + "/api/verify/filesystem",
+    "get",
+    {}
+  );
   return response;
 };
 
 const recoverByEmail = async email => {
-  const response = await tryWebCall("/api/verify/recover", "post", {
+  const response = await tryWebCall(apiUrl + "/api/verify/recover", "post", {
     email: email
   });
   return response;
 };
 
 const verifyEmail = async email => {
-  const response = await tryWebCall("/api/verify/email", "post", {
+  const response = await tryWebCall(apiUrl + "/api/verify/email", "post", {
     email: email
   });
   return response;
 };
 
 const verifyUsername = async username => {
-  const response = await tryWebCall("/api/verify/username", "post", {
+  const response = await tryWebCall(apiUrl + "/api/verify/username", "post", {
     username: username
   });
   return response;
 };
 
 const loginFileSystemUser = async (username, password) => {
-  const response = await tryWebCall("/api/login/filesystemuser", "post", {
-    username: username,
-    password: password
-  });
+  const response = await tryWebCall(
+    apiUrl + "/api/login/filesystemuser",
+    "post",
+    {
+      username: username,
+      password: password
+    }
+  );
   return response;
 };
 
 const createUser = async (email, username) => {
-  const response = await tryWebCall("/api/user/create", "post", {
+  const response = await tryWebCall(apiUrl + "/api/user/create", "post", {
     email: email,
     username: username
   });

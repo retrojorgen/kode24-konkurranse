@@ -64,59 +64,54 @@ class Master extends Component {
     let fileSystemUser = this.state.fileSystemUser;
     let loading = this.state.loading;
     return (
-      <PageWrapper>
+      <>
         <AuthWrapper>
-          <AuthContainer>
-            <ProxyFrame />
-            {!user.email && !user.username && (
-              <Content className="center big-padded">
-                <AuthUser
-                  authUser={this.authUser}
+          <ProxyFrame />
+          {!user.email && !user.username && (
+            <>
+              <AuthUser authUser={this.authUser} loading={this.toggleLoading} />
+            </>
+          )}
+
+          {user.email &&
+            user.username &&
+            !fileSystemUser.username &&
+            !fileSystemUser.password && (
+              <>
+                <AuthFileSystemUser
+                  authFileSystemUser={this.authFileSystemUser}
                   loading={this.toggleLoading}
                 />
-              </Content>
+              </>
             )}
-
-            {user.email &&
-              user.username &&
-              !fileSystemUser.username &&
-              !fileSystemUser.password && (
-                <Content className="center big-padded dark-mode">
-                  <AuthFileSystemUser
-                    authFileSystemUser={this.authFileSystemUser}
-                    loading={this.toggleLoading}
-                  />
-                </Content>
-              )}
-            {user.email &&
-              user.username &&
-              fileSystemUser.username &&
-              fileSystemUser.password && (
-                <Content className="center big-padded dark-mode">
-                  <FileSystemBrowser
-                    user={user}
-                    filesystemuser={fileSystemUser}
-                    logout={this.logoutFileSystemUser}
-                    loading={this.toggleLoading}
-                  />
-                </Content>
-              )}
-            <div
-              style={{
-                opacity: loading ? "1" : "0",
-                pointerEvents: "none",
-                position: loading ? "absolute" : "fixed",
-                left: 0,
-                top: 0,
-                width: "100%",
-                height: "100%"
-              }}
-            >
-              <LoadingFlicker />
-            </div>
-          </AuthContainer>
+          {user.email &&
+            user.username &&
+            fileSystemUser.username &&
+            fileSystemUser.password && (
+              <>
+                <FileSystemBrowser
+                  user={user}
+                  filesystemuser={fileSystemUser}
+                  logout={this.logoutFileSystemUser}
+                  loading={this.toggleLoading}
+                />
+              </>
+            )}
+          <div
+            style={{
+              opacity: loading ? "1" : "0",
+              pointerEvents: "none",
+              position: loading ? "absolute" : "fixed",
+              left: 0,
+              top: 0,
+              width: "100%",
+              height: "100%"
+            }}
+          >
+            <LoadingFlicker />
+          </div>
         </AuthWrapper>
-      </PageWrapper>
+      </>
     );
   }
 }

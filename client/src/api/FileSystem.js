@@ -1,15 +1,21 @@
+let apiUrl = "";
+
+if (process.env.NODE_ENV === "production") {
+  apiUrl = "https://paaske2019.kode24.no";
+}
+
 const getFiles = async email => {
-  const response = await tryWebCall("/api/files", "post", {});
+  const response = await tryWebCall(apiUrl + "/api/files", "post", {});
   return response;
 };
 
 const getHelp = async email => {
-  const response = await tryWebCall("/api/help", "get");
+  const response = await tryWebCall(apiUrl + "/api/help", "get");
   return response;
 };
 
 const trollFiles = async () => {
-  const response = await tryWebCall("/api/troll", "get");
+  const response = await tryWebCall(apiUrl + "/api/troll", "get");
   return response;
 };
 

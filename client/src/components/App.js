@@ -39,7 +39,6 @@ injectGlobal`
     width: 100%;
     color: #ff67fa;
     text-shadow: 0 0 20px #ff67fa;
-    background-color: #262822;
     display: flex;
     align-items: center;
     justify-content: center;

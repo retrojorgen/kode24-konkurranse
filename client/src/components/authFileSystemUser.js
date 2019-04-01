@@ -8,6 +8,7 @@ import { submitFileSystemUsernameAndPassword } from "./socketConnection";
 const RadHusFormWrapper = styled.div`
   color: #ff67fa;
   text-shadow: 0 0 20px #ff67fa;
+  background-color: black;
   h2 {
     color: #ff67fa;
   }
@@ -16,6 +17,11 @@ const RadHusFormWrapper = styled.div`
     border: 0;
     border-bottom: 2px solid #ff67fa;
     background: transparent;
+  }
+  padding: 20px;
+  @media (min-width: 1000px) {
+    width: 800px;
+    height: 600px;
   }
 `;
 
@@ -90,7 +96,7 @@ class AuthFileSystemUser extends Component {
     let error = this.state.error;
     return (
       <RadHusFormWrapper>
-        <div style={{ maxWidth: "100%", marginTop: "20px" }}>
+        <div>
           <img src={RadhusLogo} alt="radhuslogo" style={{ maxWidth: "80%" }} />
         </div>
         <h2>Rådhuset login</h2>

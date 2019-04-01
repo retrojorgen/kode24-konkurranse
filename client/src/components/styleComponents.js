@@ -1,36 +1,9 @@
 import styled from "styled-components";
 
 const AuthWrapper = styled.div`
-  background: #a100ff;
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Content = styled.div`
-  position: absolute;
-  left: 14px;
-  top: 14px;
-  width: calc(100% - 28px);
-  height: calc(100% - 28px);
-  &.center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  &.big-padded {
-    padding: 40px;
-  }
-  &.dark-mode {
-    background-color: black;
-  }
-
   h1 {
     color: white;
     text-transform: lowercase;
@@ -57,9 +30,24 @@ const Content = styled.div`
     text-align: center;
     text-transform: uppercase;
     font-family: "VT323", monospace;
+    outline: none;
     &::placeholder {
       font-family: "VT323", monospace;
     }
+  }
+  box-shadow: 10px 16px 0px black;
+  color: #a100ff;
+  text-shadow: none;
+  text-align: center;
+  text-transform: uppercase;
+  background: #d2d2d2;
+  padding: 14px;
+  position: relative;
+
+  @media (min-width: 1000px) {
+    width: auto;
+    flex-direction: row;
+    box-shadow: 20px 26px 0px black;
   }
 `;
 
@@ -91,32 +79,16 @@ const ProxyFrame = styled.div`
     z-index: 10;
   }
 `;
-const AuthContainer = styled.div`
-  color: #a100ff;
-  text-shadow: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  text-transform: uppercase;
-
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  max-width: 800px;
-  max-height: 600px;
-  background: #d2d2d2;
-  box-shadow: 20px 26px 0px black;
-  padding: 40px;
-  position: relative;
-  overflow: hidden;
-`;
 
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: space-between;
+  flex-direction: column;
   justify-content: center;
-
+  @media (min-width: 1000px) {
+    flex-direction: row;
+    align-items: space-between;
+  }
   button {
     background: transparent;
     text-transform: uppercase;
@@ -165,4 +137,4 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-export { ProxyFrame, AuthWrapper, AuthContainer, ButtonWrapper, Content };
+export { ProxyFrame, AuthWrapper, ButtonWrapper };

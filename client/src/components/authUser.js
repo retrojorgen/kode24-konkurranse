@@ -11,7 +11,7 @@ import accentureLogo from "../images/accenture-logo.png";
 import accentureIcon from "../images/accenture-icon.png";
 import { ButtonWrapper } from "./styleComponents";
 
-console.log("build 1");
+console.log("build 2");
 
 const AccentureLogo = styled.div`
   text-align: center;
@@ -26,19 +26,23 @@ const AccentureLogo = styled.div`
     width: 40px;
     margin-left: 40px;
   }
+  .accenture-logo {
+    width: auto;
+    max-width: 100%;
+  }
 `;
 
 const AccentureLoginWrap = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 20px;
   background: #d2d2d2;
+  @media (min-width: 1000px) {
+    width: 800px;
+    height: 600px;
+  }
 `;
 
 class AuthUser extends Component {

@@ -8,26 +8,24 @@ import { submitCommand } from "./socketConnection";
 
 const PolyWrapper = styled.div`
   color: #ff67fa;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   padding: 20px;
   font-size: 20px;
   text-shadow: 0 0 20px #ff67fa;
   overflow: auto;
   text-transform: uppercase;
   text-align: left;
+  background-color: black;
 
   pre {
     font-family: inherit;
   }
   input {
     text-align: center;
+  }
+
+  @media (min-width: 1000px) {
+    width: 800px;
+    height: 600px;
   }
   @media (min-width: 1025px) {
     padding: 40px;
