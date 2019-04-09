@@ -17,6 +17,7 @@ const corsOptions = {
   origin: "https://paaske2019.kode24.no/admin",
   origin: "https://kode24.no",
   origin: "https://porsgrunn.exposed",
+  origin: "https://cocky-hypatia-977e4c.netlify.com",
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
