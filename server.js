@@ -10,7 +10,7 @@ const moment = require("moment");
 const cors = require("cors");
 
 const corsOptions = {
-  credentials: true,
+  //credentials: true,
   origin: "http://localhost:3000",
   origin: "https://kode24-2019-paaske.herokuapp.com/",
   origin: "https://paaske2019.kode24.no/",
