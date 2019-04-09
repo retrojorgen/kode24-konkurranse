@@ -128,6 +128,15 @@ app.post(
   }
 );
 
+app.get("/api/exposed/messages", async (req, res) => {
+  let foundMessages = await db.getExposedMessages();
+  if (foundMessages) {
+    res.send(foundMessages);
+  } else {
+    res.send(404, {});
+  }
+});
+
 app.get(
   "/api/troll/",
   isLoggedIn,

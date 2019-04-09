@@ -20,6 +20,12 @@ const UserSchema = new mongoose.Schema({
   answersInFolders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Folder" }]
 });
 
+const ExposedMessagesSchema = new mongoose.Schema({
+  title: { type: String, unique: true, lowercase: true },
+  message: [],
+  scheduled: { type: Date, default: Date.now }
+});
+
 const EventsSchema = new mongoose.Schema({
   type: { type: String },
   command: { type: String },
@@ -49,6 +55,7 @@ const FolderSchema = new mongoose.Schema({
 });
 
 const Folder = mongoose.model("Folder", FolderSchema);
+const ExposedMessage = mongoose.model("exposedMessages", ExposedMessagesSchema);
 const User = mongoose.model("User", UserSchema);
 const FileSystemUser = mongoose.model("FileSystemUser", FileSystemUserSchema);
 const Event = mongoose.model("Events", EventsSchema);
@@ -65,6 +72,31 @@ async function addUser(email, username) {
 
     await newUser.save();
     return newUser;
+  } catch (error) {
+    console.log("dataerror", error);
+    return false;
+  }
+}
+
+async function getExposedMessages() {
+  var today = moment().startOf("day");
+  var tomorrow = moment(today).endOf("day");
+
+  try {
+    let messages = await ExposedMessage.find({
+      scheduled: { $lt: tomorrow.toDate() }
+    });
+    /**
+    console.log("hest", messages);
+    let newMessage = new ExposedMessage({
+      title: "hello",
+      message: ["hello"],
+      scheduled: new Date()
+    });
+     
+    newMessage.save();
+    */
+    return messages;
   } catch (error) {
     console.log("dataerror", error);
     return false;
@@ -183,5 +215,6 @@ module.exports = {
   findFilesByFileSystemUserId: findFilesByFileSystemUserId,
   trollFiles: trollFiles,
   addEvents: addEvents,
-  getEvents: getEvents
+  getEvents: getEvents,
+  getExposedMessages
 };
