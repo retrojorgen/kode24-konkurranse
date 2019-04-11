@@ -46,7 +46,11 @@ const PolyWrapper = styled.div`
   }
 `;
 
-const PolyLines = styled.div``;
+const PolyLines = styled.div`
+  .regular {
+    text-transform: none;
+  }
+`;
 
 const PolyInputWrapper = styled.div``;
 
@@ -112,6 +116,7 @@ class Master extends Component {
   }
 
   async componentDidMount() {
+    console.log("component did mount", "getting files for user");
     this.setState({
       lines: [
         {
@@ -165,7 +170,6 @@ class Master extends Component {
   }
 
   scrollToBottom = () => {
-    console.log(this.bottomRef, this.bottomRef.current);
     this.bottomRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -174,6 +178,7 @@ class Master extends Component {
   }
 
   parseLine(line) {
+    console.log(line, this.state.user);
     submitCommand(line);
     this.addLines({
       type: "command",
@@ -207,7 +212,8 @@ class Master extends Component {
         }
         break;
       case "LOGOUT":
-        console.log("hest");
+        console.log("logger ut");
+        this.setState({ user: {} });
         this.props.logout();
         break;
       case "PRINT":
@@ -250,7 +256,11 @@ class Master extends Component {
             if (line.type === "error")
               return <p key={index}>** ERROR: &nbsp;{line.content}&nbsp;**</p>;
             if (line.type === "regular")
-              return <p key={index}>{line.content}</p>;
+              return (
+                <p key={index} className="regular">
+                  {line.content}
+                </p>
+              );
             if (line.type === "txt")
               return <TxtListing key={index} filecontent={line.content} />;
             if (line.type === "photo")

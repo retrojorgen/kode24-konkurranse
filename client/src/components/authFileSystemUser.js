@@ -121,7 +121,7 @@ class AuthFileSystemUser extends Component {
           <div>
             <input
               name="pass-filesystem"
-              type="password"
+              type="text"
               value={inputs.password}
               placeholder="Passord"
               autoComplete="new-password"

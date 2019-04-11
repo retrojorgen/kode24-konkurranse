@@ -93,14 +93,13 @@ class Input extends Component {
   // perhaps implement up on keyboard for repeat?
   sendToParse() {
     let characters = this.state.characters;
-    this.props.sendToParse(this.state.characters);
-
     let previousInputs = this.state.previousInputs;
     previousInputs.push(characters);
     this.setState({
       characters: "",
       previousInputs: previousInputs
     });
+    this.props.sendToParse(characters);
   }
 
   // when input field changes update value in state
@@ -117,6 +116,10 @@ class Input extends Component {
 
   componentWillMount() {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
   componentDidMount() {

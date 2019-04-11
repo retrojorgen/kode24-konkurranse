@@ -1,5 +1,7 @@
+let domain = ".kode24.no";
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").load();
+  domain = "";
 }
 
 const express = require("express");
@@ -102,7 +104,7 @@ app.post("/api/login/filesystemuser", isLoggedIn, async (req, res) => {
     res.cookie("filesystemid", foundUser._id, {
       expires: new Date(Date.now() + 9000000000),
       httpOnly: true,
-      domain: "kode24.no"
+      domain: domain
     });
     res.send({
       user: foundUser,
@@ -160,11 +162,12 @@ app.get(
 app.post("/api/verify/recover", async (req, res) => {
   var email = req.body.email.toLowerCase();
   let foundUser = await db.findUserByEmail(email);
+  console.log("setting for domain", domain);
   if (foundUser) {
     res.cookie("id", foundUser._id, {
       expires: new Date(Date.now() + 9000000000),
       httpOnly: true,
-      domain: "kode24.no"
+      domain: domain
     });
     res.send({
       verified: true,
@@ -221,7 +224,7 @@ app.post("/api/user/create", async (req, res) => {
   res.cookie("id", createdUser._id, {
     expires: new Date(Date.now() + 9000000000),
     httpOnly: true,
-    domain: "kode24.no"
+    domain: domain
   });
   res.send(createdUser);
 });

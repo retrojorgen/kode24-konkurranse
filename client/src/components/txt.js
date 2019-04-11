@@ -5,7 +5,11 @@ const TxtListing = props => {
   return (
     <div>
       {content.map((line, key) => {
-        return <p key={key}>{line}</p>;
+        return (
+          <p key={key} className="regular">
+            {line}
+          </p>
+        );
       })}
     </div>
   );
