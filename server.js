@@ -151,6 +151,19 @@ app.get("/api/exposed/messages", async (req, res) => {
   }
 });
 
+app.post("/api/exposed/login", (req, res) => {
+  if (
+    req.body.username.toLowerCase() === process.env.EXPOSEDSECRET.toLowerCase()
+  ) {
+    res.send({
+      username: process.env.EXPOSEDSECRET,
+      message: process.env.EXPOSEDMESSAGE
+    });
+  } else {
+    res.send(404, {});
+  }
+});
+
 app.get(
   "/api/troll/",
   isLoggedIn,
