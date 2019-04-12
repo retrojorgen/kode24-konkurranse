@@ -60,7 +60,7 @@ class AuthFileSystemUser extends Component {
       if (loggedInUser) {
         this.props.authFileSystemUser(loggedInUser.user);
       } else {
-        this.setState({ error: "fant ikke brukeren dessverre.." });
+        this.setState({ error: "Feil i brukernavn eller passord.." });
       }
       this.props.loading(false);
     }, 1000);
