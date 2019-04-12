@@ -111,7 +111,7 @@ class AuthFileSystemUser extends Component {
               name="nick-filesystem"
               type="text"
               value={inputs.username}
-              placeholder="Brukernavn"
+              placeholder="Skriv brukernavn"
               autoComplete="new-password"
               onChange={event =>
                 this.typeHandler("username", event, () => true)
@@ -123,7 +123,7 @@ class AuthFileSystemUser extends Component {
               name="pass-filesystem"
               type="text"
               value={inputs.password}
-              placeholder="Passord"
+              placeholder="Skriv passord"
               autoComplete="new-password"
               onChange={event =>
                 this.typeHandler("password", event, () => true)
