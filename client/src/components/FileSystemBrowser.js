@@ -170,7 +170,11 @@ class Master extends Component {
   }
 
   scrollToBottom = () => {
-    this.bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    this.bottomRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start"
+    });
   };
 
   componentDidUpdate() {
