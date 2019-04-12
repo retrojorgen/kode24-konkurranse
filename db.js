@@ -107,8 +107,14 @@ async function getExposedMessages() {
 
 async function trollFiles(userId, FileSystemUserId, user) {
   try {
-    if (user.answersInFolders.indexOf(FileSystemUserId) <= -1) {
-      user.answersInFolder.push(FileSystemUserId);
+    console.log("trying to fix");
+    if (
+      !user.answersInFolders ||
+      user.answersInFolders.indexOf(FileSystemUserId) <= -1
+    ) {
+      console.log("adding point");
+      if (!user.answersInFolders) user.answersInFolders = [FileSystemUserId];
+      else user.answersInFolders.push(FileSystemUserId);
       user.aggregatedAnswerCount = user.aggregatedAnswerCount + 1;
       await user.save();
     }
