@@ -19,7 +19,12 @@ const handShakeCode = process.env.ADMINHASH;
 let socketConnections = [];
 let adminConnections = [];
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: false,
+    origin: "*"
+  })
+);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
