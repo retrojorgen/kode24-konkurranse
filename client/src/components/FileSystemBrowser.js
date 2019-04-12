@@ -15,7 +15,7 @@ const PolyWrapper = styled.div`
   text-transform: uppercase;
   text-align: left;
   background-color: black;
-
+  max-height: 600px;
   pre {
     font-family: inherit;
   }
