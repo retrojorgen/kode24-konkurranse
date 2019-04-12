@@ -95,7 +95,7 @@ class Master extends Component {
       this.addLines({
         type: "ascii",
         content: `
-     ...SHIT! TROLLA!! ....
+     SHIT! TROLLA!! - TZ
     `
       });
     }
