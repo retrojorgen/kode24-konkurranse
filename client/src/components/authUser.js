@@ -11,8 +11,6 @@ import accentureLogo from "../images/accenture-logo.png";
 import accentureIcon from "../images/accenture-icon.png";
 import { ButtonWrapper } from "./styleComponents";
 
-console.log("build 2");
-
 const AccentureLogo = styled.div`
   text-align: center;
   display: flex;
@@ -187,7 +185,6 @@ class AuthUser extends Component {
     let username = this.state.inputs.username.name;
     const createdResponse = await createUser(email, username);
     if (createdResponse) {
-      console.log("created user", createdResponse);
       this.authUser(createdResponse);
     } else {
     }

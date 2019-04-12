@@ -41,7 +41,6 @@ const tryWebCall = async (url, method, data) => {
       throw new Error("404");
     }
   } catch (error) {
-    console.log(error);
     return false;
   }
 };

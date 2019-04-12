@@ -75,7 +75,6 @@ async function addUser(email, username) {
     await newUser.save();
     return newUser;
   } catch (error) {
-    console.log("dataerror", error);
     return false;
   }
 }
@@ -88,50 +87,34 @@ async function getExposedMessages() {
     let messages = await ExposedMessage.find({
       scheduled: { $lt: tomorrow.toDate() }
     });
-    /**
-    console.log("hest", messages);
-    let newMessage = new ExposedMessage({
-      title: "hello",
-      message: ["hello"],
-      scheduled: new Date()
-    });
-     
-    newMessage.save();
-    */
     return messages;
   } catch (error) {
-    console.log("dataerror", error);
     return false;
   }
 }
 
 async function trollFiles(userId, FileSystemUserId, user) {
   try {
-    console.log("trying to fix");
     if (
       !user.answersInFolders ||
       user.answersInFolders.indexOf(FileSystemUserId) <= -1
     ) {
-      console.log("adding point");
       if (!user.answersInFolders) user.answersInFolders = [FileSystemUserId];
       else user.answersInFolders.push(FileSystemUserId);
       user.aggregatedAnswerCount = user.aggregatedAnswerCount + 1;
       await user.save();
     }
-    console.log("bruker", userId);
     return await Folder.updateOne(
       { userId: FileSystemUserId },
       { $push: { answers: userId } }
     );
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
 
 async function addEvents(eventType, command, data) {
   try {
-    console.log("legger til event", command, data);
     let newEvent = new Event({
       type: eventType,
       command: command,
@@ -141,7 +124,6 @@ async function addEvents(eventType, command, data) {
     await newEvent.save();
     return true;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }

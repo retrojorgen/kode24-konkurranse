@@ -68,7 +68,6 @@ class AuthFileSystemUser extends Component {
 
   async componentDidMount() {
     let isVerified = await isVerifiedFileSystem();
-    console.log(isVerified, "hest");
     if (isVerified) {
       this.setState({
         inputs: {

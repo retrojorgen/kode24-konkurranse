@@ -168,7 +168,6 @@ app.get(
 app.post("/api/verify/recover", async (req, res) => {
   var email = req.body.email.toLowerCase();
   let foundUser = await db.findUserByEmail(email);
-  console.log("setting for domain", domain);
   if (foundUser) {
     res.cookie("id", foundUser._id, {
       expires: new Date(Date.now() + 9000000000),
@@ -275,12 +274,10 @@ io.on("connection", socket => {
 });
 
 app.get("/admin", (req, res) => {
-  console.log("appapapap2222pa");
   res.sendFile(path.join(__dirname + "/clientAdmin/build/index.html"));
 });
 
 app.get("/admin/*", (req, res) => {
-  console.log("appapapap2222pa");
   res.sendFile(path.join(__dirname + "/clientAdmin/build/index.html"));
 });
 

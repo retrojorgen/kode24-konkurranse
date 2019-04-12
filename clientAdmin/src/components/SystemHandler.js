@@ -77,7 +77,6 @@ class Master extends Component {
     }
 
     getAdminList(list => {
-      console.log(list);
       this.setState({
         activeUsers: list
       });
@@ -96,7 +95,6 @@ class Master extends Component {
     });
 
     getFileSystemUsernamePassword(command => {
-      console.log(command);
       this.setState({
         fileSystemUsernameAndPassword: [
           ...this.state.fileSystemUsernameAndPassword,
@@ -127,8 +125,6 @@ class Master extends Component {
       });
       this.setState(newState);
     });
-
-    console.log(cookie);
   }
 
   render() {

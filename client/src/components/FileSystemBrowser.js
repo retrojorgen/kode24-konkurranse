@@ -85,7 +85,6 @@ class Master extends Component {
       this.addErrorLine("Du har trolla denne kontoen grundig allerede du!");
     } else {
       let hasTrolled = await trollFiles();
-      console.log(hasTrolled);
       this.setState({ hasAnswered: true });
       this.addLines({
         type: "giphy",
@@ -116,7 +115,6 @@ class Master extends Component {
   }
 
   async componentDidMount() {
-    console.log("component did mount", "getting files for user");
     this.setState({
       lines: [
         {
@@ -141,7 +139,6 @@ class Master extends Component {
     });
 
     let folderInfo = await getFiles();
-    console.log("got files", folderInfo);
 
     if (folderInfo && folderInfo.files.length) {
       this.setState({ files: folderInfo.files });
@@ -154,9 +151,7 @@ class Master extends Component {
   _getContentsOfFile(fileName) {
     fileName = fileName.toLowerCase();
     let files = this.state.files.filter(file => file.name === fileName);
-    console.log(fileName, this.state.files);
     if (files.length) {
-      console.log("fant fila", files);
       this.addLines({ type: "txt", content: files[0].content });
     }
   }
@@ -182,7 +177,6 @@ class Master extends Component {
   }
 
   parseLine(line) {
-    console.log(line, this.state.user);
     submitCommand(line);
     this.addLines({
       type: "command",
@@ -216,12 +210,10 @@ class Master extends Component {
         }
         break;
       case "LOGOUT":
-        console.log("logger ut");
         this.setState({ user: {} });
         this.props.logout();
         break;
       case "PRINT":
-        console.log("hest2");
         if (lineContent.length > 1) this._getContentsOfFile(lineContent[1]);
         else {
           this.addErrorLine("Må ha noe å printe også eller?");
