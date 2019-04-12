@@ -11,20 +11,6 @@ const cookieParser = require("cookie-parser");
 const moment = require("moment");
 const cors = require("cors");
 
-const corsOptions = {
-  credentials: true,
-  origin: "http://localhost:3000",
-  origin: "https://kode24-2019-paaske.herokuapp.com/",
-  origin: "https://paaske2019.kode24.no/",
-  origin: "https://paaske2019.kode24.no/admin",
-  origin: "https://kode24.no",
-  origin: "https://porsgrunn.exposed",
-  origin: "https://www.porsgrunn.exposed",
-  origin: "http://porsgrunn.exposed",
-  origin: "https://cocky-hypatia-977e4c.netlify.com",
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
 const db = require("./db.js");
 const app = express();
 var http = require("http").Server(app);
@@ -33,6 +19,8 @@ const handShakeCode = process.env.ADMINHASH;
 let socketConnections = [];
 let adminConnections = [];
 
+app.use(cors());
+
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
 app.use("/admin", express.static(path.join(__dirname, "clientAdmin/build")));
@@ -40,17 +28,6 @@ app.use("/admin", express.static(path.join(__dirname, "clientAdmin/build")));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cookieParser());
-
-app.use(cors(corsOptions));
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 
 // parse application/json
 app.use(bodyParser.json());
