@@ -17,7 +17,9 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   username: { type: String, unique: true, lowercase: true },
   aggregatedAnswerCount: { type: Number, default: 0 },
-  answersInFolders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Folder" }]
+  answersInFolders: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "FileSystemUser" }
+  ]
 });
 
 const ExposedMessagesSchema = new mongoose.Schema({
@@ -103,8 +105,13 @@ async function getExposedMessages() {
   }
 }
 
-async function trollFiles(userId, FileSystemUserId) {
+async function trollFiles(userId, FileSystemUserId, user) {
   try {
+    if (user.answersInFolders.indexOf(FileSystemUserId) <= -1) {
+      user.answersInFolder.push(FileSystemUserId);
+      user.aggregatedAnswerCount = user.aggregatedAnswerCount + 1;
+      await user.save();
+    }
     console.log("bruker", userId);
     return await Folder.updateOne(
       { userId: FileSystemUserId },

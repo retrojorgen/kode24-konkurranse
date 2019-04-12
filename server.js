@@ -156,7 +156,7 @@ app.get(
   async (req, res) => {
     let userId = req.user._id;
     let fileSystemUserId = req.fileSystemUser._id;
-    let isTrolled = await db.trollFiles(userId, fileSystemUserId);
+    let isTrolled = await db.trollFiles(userId, fileSystemUserId, req.user);
     if (isTrolled) {
       res.send({});
     } else {
