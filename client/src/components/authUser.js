@@ -39,7 +39,7 @@ const AccentureLoginWrap = styled.div`
   justify-content: center;
   padding: 20px;
   background: #d2d2d2;
-  @media (min-width: 1000px) {
+  @media (min-width: 980px) {
     width: 800px;
     height: 600px;
   }

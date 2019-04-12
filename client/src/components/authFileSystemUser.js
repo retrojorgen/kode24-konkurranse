@@ -18,7 +18,7 @@ const RadHusFormWrapper = styled.div`
     background: transparent;
   }
   padding: 20px;
-  @media (min-width: 1000px) {
+  @media (min-width: 980px) {
     width: 800px;
     height: 600px;
   }

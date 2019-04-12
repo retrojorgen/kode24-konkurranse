@@ -23,11 +23,11 @@ const PolyWrapper = styled.div`
     text-align: center;
   }
 
-  @media (min-width: 1000px) {
+  @media (min-width: 980px) {
     width: 800px;
     height: 600px;
   }
-  @media (min-width: 1025px) {
+  @media (min-width: 980px) {
     padding: 40px;
   }
   .photo {

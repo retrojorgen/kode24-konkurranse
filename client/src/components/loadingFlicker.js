@@ -40,31 +40,31 @@ const LoadingFlickerStyle = styled.div`
   }
   animation: ${flicker} 0.5s ${props => props.delay}s linear infinite;
   &.purple {
-      .p {
-          background: #c617db;
-      }
-      .y {
-          background: #a12baf;
-      }
-      .g {
-          background: #8b0be5;
-      }
-      .b {
-          background: #ff10a8;
-      }
+    .p {
+      background: #c617db;
+    }
+    .y {
+      background: #a12baf;
+    }
+    .g {
+      background: #8b0be5;
+    }
+    .b {
+      background: #ff10a8;
+    }
   }
 `;
 
 const LoadingBackground = styled.div`
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
 `;
 
-const LoadingFlicker = (props) => (
+const LoadingFlicker = props => (
   <>
     <LoadingBackground />
     <LoadingFlickerStyle delay="0" className={props}>
@@ -122,7 +122,7 @@ const LoadingFlicker = (props) => (
       <div className="g" />
       <div className="y" />
       <div className="b" />
-    </LoadingFlickerStyle>        
+    </LoadingFlickerStyle>
   </>
 );
 

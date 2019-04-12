@@ -49,7 +49,7 @@ const AuthWrapper = styled.div`
   padding: 14px;
   position: relative;
 
-  @media (min-width: 1000px) {
+  @media (min-width: 980px) {
     width: auto;
     flex-direction: row;
     box-shadow: 20px 26px 0px black;
@@ -90,7 +90,7 @@ const ButtonWrapper = styled.div`
   align-items: space-between;
   flex-direction: column;
   justify-content: center;
-  @media (min-width: 1000px) {
+  @media (min-width: 980px) {
     flex-direction: row;
     align-items: space-between;
   }
