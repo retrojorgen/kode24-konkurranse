@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { loginFileSystemUser, isVerifiedFileSystem } from "../api/authAPI";
 import { ButtonWrapper } from "./styleComponents";
-import RadhusLogo from "../images/radhus-ascii-logo.png";
 import styled from "styled-components";
 import { submitFileSystemUsernameAndPassword } from "./socketConnection";
 
@@ -97,7 +96,11 @@ class AuthFileSystemUser extends Component {
     return (
       <RadHusFormWrapper>
         <div>
-          <img src={RadhusLogo} alt="radhuslogo" style={{ maxWidth: "80%" }} />
+          <img
+            src="https://paaske2019.kode24.no/radhus.jpg"
+            alt="radhuslogo"
+            style={{ maxWidth: "80%" }}
+          />
         </div>
         <h2>Rådhuset login</h2>
         <form
