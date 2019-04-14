@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { loginFileSystemUser, isVerifiedFileSystem } from "../api/authAPI";
 import { ButtonWrapper } from "./styleComponents";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { submitFileSystemUsernameAndPassword } from "./socketConnection";
 
 const RadHusFormWrapper = styled.div`
