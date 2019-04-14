@@ -69,7 +69,8 @@ const ProxyFrame = styled.div`
     z-index: 10;
   }
   &:after {
-    content: "Accenture proxy";
+    content: "Accenture proxy ${props =>
+      props.username ? "[ " + props.username + " ]" : ""}";
     pointer-events: none;
     position: absolute;
     left: 50%;
@@ -80,7 +81,7 @@ const ProxyFrame = styled.div`
     padding: 4px;
     width: auto;
     height: auto;
-    transform: translateX(-40px);
+    transform: translateX(-50%);
     z-index: 10;
   }
 `;
