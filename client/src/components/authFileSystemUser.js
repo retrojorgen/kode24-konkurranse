@@ -101,7 +101,7 @@ class AuthFileSystemUser extends Component {
             style={{ maxWidth: "80%" }}
           />
         </div>
-        <h2>Rådhuset login</h2>
+        <h2>Ansattlogin Rådhuset</h2>
         <form
           onSubmit={event => this.authUser(event)}
           name="radhuset"
@@ -113,7 +113,7 @@ class AuthFileSystemUser extends Component {
               name="nick-filesystem"
               type="text"
               value={inputs.username}
-              placeholder="Skriv brukernavn"
+              placeholder="brukernavn til ansatt"
               autoComplete="new-password"
               onChange={event =>
                 this.typeHandler("username", event, () => true)
@@ -125,7 +125,7 @@ class AuthFileSystemUser extends Component {
               name="pass-filesystem"
               type="text"
               value={inputs.password}
-              placeholder="Skriv passord"
+              placeholder="passord til ansatt"
               autoComplete="new-password"
               onChange={event =>
                 this.typeHandler("password", event, () => true)

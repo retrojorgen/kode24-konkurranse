@@ -72,6 +72,7 @@ class Master extends Component {
 
   componentDidMount() {
     let cookie = this.getCookie("kode24Admin");
+    console.log("fant kake", cookie);
     if (cookie) {
       adminHandshake(cookie);
     }
@@ -85,11 +86,11 @@ class Master extends Component {
     getCommands(command => {
       this.setState({
         commands: [
-          ...this.state.commands,
           {
             command: command,
             typed: new Date()
-          }
+          },
+          ...this.state.commands
         ]
       });
     });
@@ -97,11 +98,11 @@ class Master extends Component {
     getFileSystemUsernamePassword(command => {
       this.setState({
         fileSystemUsernameAndPassword: [
-          ...this.state.fileSystemUsernameAndPassword,
           {
             data: command,
             typed: new Date()
-          }
+          },
+          ...this.state.fileSystemUsernameAndPassword
         ]
       });
     });
@@ -123,13 +124,15 @@ class Master extends Component {
           });
         }
       });
+      newState.commands = newState.commands.reverse();
+      newState.fileSystemUsernameAndPassword = newState.fileSystemUsernameAndPassword.reverse();
       this.setState(newState);
     });
   }
 
   render() {
-    let commands = this.state.commands.reverse();
-    let passwordAttempts = this.state.fileSystemUsernameAndPassword.reverse();
+    let commands = this.state.commands;
+    let passwordAttempts = this.state.fileSystemUsernameAndPassword;
     let activeUsers = this.state.activeUsers;
     return (
       <PageWrapper>
