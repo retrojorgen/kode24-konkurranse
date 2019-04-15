@@ -16,7 +16,7 @@ const app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 const handShakeCode = process.env.ADMINHASH;
-let socketConnections = [];
+let socketConnections = {};
 let adminConnections = [];
 
 app.use(
@@ -78,6 +78,18 @@ const isLoggedInAsFileSystemUser = async function(req, res, next) {
     }
   } else {
     res.send("401", '"user not logged in"');
+  }
+};
+
+const isAdmin = function(req, res, next) {
+  if (req.cookies.kode24Admin && req.cookies.kode24Admin === handShakeCode) {
+    next();
+  } else {
+    if (req.params.adminCode === handShakeCode) {
+      next();
+    } else {
+      res.send("401", "Invalid user");
+    }
   }
 };
 
@@ -234,11 +246,46 @@ app.post("/api/user/create", async (req, res) => {
   res.send(createdUser);
 });
 
+app.get("/api/admin/events/:adminCode", isAdmin, async (req, res) => {
+  let commandEvents = await db.getEventByType("typed command");
+  commandEvents = commandEvents.filter(event => event.command !== "");
+  let upEvents = await db.getEventByType("typed filesystem username password");
+  let mysteryEvents = await db.getEventByType("typed mystery password");
+  res.send({
+    CommandEventsCount: commandEvents.length,
+    UPEventsCount: upEvents.length,
+    MysteryEventsCount: mysteryEvents.length,
+    UPEventsNewest: upEvents.slice(0, 10),
+    mysteryEventsNewest: mysteryEvents.slice(0, 10),
+    CommandEventsNewest: commandEvents.slice(0, 10)
+  });
+});
+
+app.get("/api/admin/answers/:adminCode", isAdmin, async (req, res) => {
+  let answers = await db.getAnswersByFolder();
+  let answersByKey = {};
+  answers.forEach(folder => {
+    answersByKey[folder.userId.username] = folder.answers.length;
+  });
+  res.send(answersByKey);
+});
+
+app.get("/api/admin/users/:adminCode", isAdmin, async (req, res) => {
+  let users = await db.getUserCount();
+  res.send({
+    users: users.length
+  });
+});
+
+function getConnectionLength() {
+  return Object.keys(socketConnections).length;
+}
+
 io.on("connection", socket => {
-  socketConnections.push(socket);
+  socketConnections[socket.id] = socket;
 
   socket.on("admin get user list", () => {
-    pushToAdmins("admin user list", socketConnections.length);
+    pushToAdmins("admin user list", getConnectionLength());
   });
 
   socket.on("admin handshake", async handshake => {
@@ -246,32 +293,39 @@ io.on("connection", socket => {
       adminConnections.push(socket);
       const events = await db.getEvents();
       pushToAdmins("admin events", events);
-      pushToAdmins("admin user list", socketConnections.length);
+      pushToAdmins("admin user list", getConnectionLength());
     }
   });
 
   socket.on("typed command", command => {
-    db.addEvents("typed command", command, {});
-    pushToAdmins("admin typed command", command);
+    if (command) {
+      db.addEvents("typed command", command, {});
+      pushToAdmins("admin typed command", command);
+    }
   });
+
+  socket.on("typed mystery password", command => {
+    if (command) {
+      db.addEvents("typed mystery password", command, {});
+      pushToAdmins("admin typed mystery password", command);
+    }
+  });
+
   socket.on("typed filesystem username password", command => {
     db.addEvents("typed filesystem username password", "", command);
     pushToAdmins("admin typed filesystem username password", command);
   });
   socket.on("disconnect", () => {
-    socketConnections = socketConnections.filter(
-      connection => connection !== socket
-    );
-
-    pushToAdmins("admin user list", socketConnections.length);
+    delete socketConnections[socket.id];
+    pushToAdmins("admin user list", getConnectionLength());
   });
-
-  function pushToAdmins(command, data) {
-    adminConnections.forEach(connection => {
-      io.to(`${connection.id}`).emit(command, data);
-    });
-  }
 });
+
+function pushToAdmins(command, data) {
+  adminConnections.forEach(connection => {
+    io.to(`${connection.id}`).emit(command, data);
+  });
+}
 
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname + "/clientAdmin/build/index.html"));

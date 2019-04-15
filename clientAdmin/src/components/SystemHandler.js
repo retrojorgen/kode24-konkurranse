@@ -4,25 +4,33 @@ import {
   adminHandshake,
   getAdminList,
   getCommands,
-  getFileSystemUsernamePassword,
-  getEvents
+  getFileSystemUsernamePassword
 } from "./socketConnection";
+import { getEvents, getAnswers, getUsers } from "../api/authAPI";
 
 const PageWrapper = styled.div`
   width: 100%;
   display: flex;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   .longlist,
   .info-container {
-    border: 2px solid #ff67fa;
     margin: 20px;
     width: 100%;
     flex: 1 1 100%;
+    overflow: hidden;
     h1 {
       margin: 0;
       padding: 20px;
       background: #ff67fa;
       color: black;
       text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     ul {
       list-style: none;
@@ -32,6 +40,18 @@ const PageWrapper = styled.div`
         padding: 10px;
         font-size: 32px;
       }
+    }
+  }
+  .longlist {
+    position: relative;
+    &:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(0, #262822, transparent);
     }
   }
   .info-container {
@@ -50,7 +70,11 @@ class Master extends Component {
     this.state = {
       commands: [],
       fileSystemUsernameAndPassword: [],
-      activeUsers: 0
+      commandsCount: 0,
+      fileSystemUsernameAndPasswordCount: 0,
+      activeUsers: 0,
+      registeredUsers: 0,
+      answers: {}
     };
   }
 
@@ -70,9 +94,29 @@ class Master extends Component {
     return "";
   }
 
+  async componentWillMount() {
+    let cookie = this.getCookie("kode24Admin");
+    let events = await getEvents(cookie);
+
+    this.setState({
+      commands: events.CommandEventsNewest || [],
+      fileSystemUsernameAndPassword: events.UPEventsNewest || [],
+      commandsCount: events.CommandEventsCount || 0,
+      fileSystemUsernameAndPasswordCount: events.UPEventsCount || 0
+    });
+    let users = await getUsers(cookie);
+    this.setState({
+      registeredUsers: users.users
+    });
+    let answers = await getAnswers(cookie);
+    this.setState({
+      answers: answers
+    });
+  }
+
   componentDidMount() {
     let cookie = this.getCookie("kode24Admin");
-    console.log("fant kake", cookie);
+
     if (cookie) {
       adminHandshake(cookie);
     }
@@ -85,6 +129,7 @@ class Master extends Component {
 
     getCommands(command => {
       this.setState({
+        commandsCount: this.state.commandsCount + 1,
         commands: [
           {
             command: command,
@@ -97,6 +142,8 @@ class Master extends Component {
 
     getFileSystemUsernamePassword(command => {
       this.setState({
+        fileSystemUsernameAndPasswordCount:
+          this.state.fileSystemUsernameAndPasswordCount + 1,
         fileSystemUsernameAndPassword: [
           {
             data: command,
@@ -106,48 +153,35 @@ class Master extends Component {
         ]
       });
     });
-
-    getEvents(events => {
-      let newState = Object.assign({}, this.state);
-
-      events.forEach(event => {
-        if (event.type === "typed command") {
-          newState.commands.push({
-            command: event.command,
-            typed: event.added
-          });
-        }
-        if (event.type === "typed filesystem username password") {
-          newState.fileSystemUsernameAndPassword.push({
-            data: event.data,
-            typed: event.added
-          });
-        }
-      });
-      newState.commands = newState.commands.reverse();
-      newState.fileSystemUsernameAndPassword = newState.fileSystemUsernameAndPassword.reverse();
-      this.setState(newState);
-    });
   }
 
   render() {
     let commands = this.state.commands;
     let passwordAttempts = this.state.fileSystemUsernameAndPassword;
     let activeUsers = this.state.activeUsers;
+    let answers = this.state.answers;
+    let { commandsCount, fileSystemUsernameAndPasswordCount } = this.state;
     return (
       <PageWrapper>
         <div className="longlist">
-          <h1>Kommandoer</h1>
+          <h1>
+            Kommandoer <span className="counter">{commandsCount}</span>
+          </h1>
           <ul>
-            {commands.map((command, index) => (
+            {commands.slice(0, 12).map((command, index) => (
               <li key={index}>{command.command}</li>
             ))}
           </ul>
         </div>
         <div className="longlist">
-          <h1>Innloggingsforsøk</h1>
+          <h1>
+            Innloggingsforsøk{" "}
+            <span className="counter">
+              {fileSystemUsernameAndPasswordCount}
+            </span>
+          </h1>
           <ul>
-            {passwordAttempts.map((command, index) => (
+            {passwordAttempts.slice(0, 12).map((command, index) => (
               <li key={index}>
                 {command.data.username} / {command.data.password}
               </li>
@@ -155,8 +189,15 @@ class Master extends Component {
           </ul>
         </div>
         <div className="info-container">
-          <h1>Aktive brukere</h1>
-          <h2>{activeUsers}</h2>
+          <h1>
+            Aktive brukere<span className="counter">{activeUsers}</span>
+          </h1>
+          {Object.keys(answers).map((key, index) => (
+            <h1 key={index}>
+              {key}
+              <span className="counter">{answers[key]}</span>
+            </h1>
+          ))}
         </div>
       </PageWrapper>
     );
