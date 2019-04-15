@@ -128,6 +128,32 @@ async function addEvents(eventType, command, data) {
   }
 }
 
+async function getEventByType(eventType) {
+  try {
+    return await Event.find({ type: eventType }).sort({ added: -1 });
+  } catch (error) {
+    return false;
+  }
+}
+
+async function getAnswersByFolder() {
+  try {
+    return await Folder.find({})
+      .sort({ added: -1 })
+      .populate("userId");
+  } catch (error) {
+    return false;
+  }
+}
+
+async function getUserCount() {
+  try {
+    return await User.find({});
+  } catch (error) {
+    return false;
+  }
+}
+
 async function getEvents() {
   try {
     return await Event.find({});
@@ -211,5 +237,8 @@ module.exports = {
   trollFiles: trollFiles,
   addEvents: addEvents,
   getEvents: getEvents,
-  getExposedMessages
+  getExposedMessages: getExposedMessages,
+  getAnswersByFolder: getAnswersByFolder,
+  getEventByType: getEventByType,
+  getUserCount: getUserCount
 };
