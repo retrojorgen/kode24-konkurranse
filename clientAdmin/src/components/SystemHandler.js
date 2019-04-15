@@ -96,7 +96,6 @@ class Master extends Component {
 
   async componentWillMount() {
     let cookie = this.getCookie("kode24Admin");
-    console.log("events", cookie);
     let events = await getEvents(cookie);
 
     this.setState({
@@ -123,7 +122,6 @@ class Master extends Component {
     }
 
     getAdminList(list => {
-      console.log("aktive brukere", list);
       this.setState({
         activeUsers: list
       });
