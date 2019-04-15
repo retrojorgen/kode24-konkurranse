@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const AuthWrapper = styled.div`
   position: relative;
@@ -69,7 +69,8 @@ const ProxyFrame = styled.div`
     z-index: 10;
   }
   &:after {
-    content: "Accenture proxy";
+    content: "Accenture proxy ${props =>
+      props.username ? "[ " + props.username + " ]" : ""}";
     pointer-events: none;
     position: absolute;
     left: 50%;
@@ -80,8 +81,26 @@ const ProxyFrame = styled.div`
     padding: 4px;
     width: auto;
     height: auto;
-    transform: translateX(-40px);
+    transform: translateX(-50%);
     z-index: 10;
+  }
+`;
+
+const jumpButton = keyframes`
+  0% {
+    transform: translateX(-0px) translateY(-0px);
+  }
+  6% {
+    transform: translateX(-0px) translateY(-0px);
+  }
+  10% {
+    transform: translateX(-4px) translateY(-4px);
+  }
+  16% {
+    transform: translateX(-0px) translateY(-0px);
+  }
+  100% {
+    transform: translateX(-0px) translateY(-0px);
   }
 `;
 
@@ -90,6 +109,7 @@ const ButtonWrapper = styled.div`
   align-items: space-between;
   flex-direction: column;
   justify-content: center;
+
   @media (min-width: 980px) {
     flex-direction: row;
     align-items: space-between;
@@ -107,6 +127,8 @@ const ButtonWrapper = styled.div`
     height: 60px;
     min-width: 200px;
     margin: 10px;
+    animation: ${jumpButton} 2s ${props => (props.delay ? props.delay : "0s")}
+      infinite linear;
     &:disabled {
       color: rgba(255, 255, 255, 0.4);
     }

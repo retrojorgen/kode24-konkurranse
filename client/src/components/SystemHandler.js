@@ -66,7 +66,7 @@ class Master extends Component {
     return (
       <>
         <AuthWrapper>
-          <ProxyFrame />
+          <ProxyFrame username={user.username} />
           {!user.email && !user.username && (
             <>
               <AuthUser authUser={this.authUser} loading={this.toggleLoading} />
